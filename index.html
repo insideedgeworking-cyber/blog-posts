@@ -257,6 +257,19 @@ let currentPost = null;
 let isNew = false;
 let currentTab = 'all';
 let currentCategory = 'all';
+let writingGuide = '';   // docs/記事作成ガイド.md の内容（生成・修正時に参照）
+
+// ── 記事作成ガイドの読み込み（生成プロンプトに反映）──
+async function loadGuide() {
+  try {
+    const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/docs/${encodeURIComponent('記事作成ガイド.md')}?t=${Date.now()}`;
+    const r = await fetch(url, {cache:'no-store'});
+    if (r.ok) writingGuide = await r.text();
+  } catch(e) {}
+}
+function guideBlock() {
+  return writingGuide ? `【記事作成ガイド：必ずこの方針・SEO対策・修正メモに従うこと】\n${writingGuide}\n\n────────\n\n` : '';
+}
 
 function getSettings() {
   return {
@@ -546,7 +559,7 @@ document.getElementById('gen-btn').addEventListener('click', async function(){
   showStatus('i','🤖 本文を生成中...（少し時間がかかります）');
   try {
     const text = await callClaude(
-`あなたはアフィリエイトブログのプロライターです。以下の条件で、読者に価値がありSEOにも強い日本語のブログ記事を作成してください。
+`${guideBlock()}あなたはアフィリエイトブログのプロライターです。以下の条件で、読者に価値がありSEOにも強い日本語のブログ記事を作成してください。
 
 テーマ: ${currentPost.theme}
 カテゴリ: ${currentPost.category}
@@ -583,7 +596,7 @@ document.getElementById('revise-btn').addEventListener('click', async function()
   showStatus('e','🤖 修正中...');
   try {
     const text = await callClaude(
-`以下のブログ記事を、指示に従って修正してください。
+`${guideBlock()}以下のブログ記事を、指示に従って修正してください。
 
 【現在のタイトル】
 ${currentPost.title}
@@ -724,6 +737,7 @@ document.getElementById('settings-close-btn').addEventListener('click', ()=>docu
 // ── 初期化 ──
 buildFilterBar();
 buildCategorySelect();
+loadGuide();
 loadPosts();
 </script>
 </body>
