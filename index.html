@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>ブログ記事管理</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; color: #333; }
+
+header { background: #1a73e8; color: white; padding: 14px 16px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; }
+header h1 { font-size: 17px; font-weight: bold; }
+.header-right { display: flex; gap: 8px; align-items: center; }
+.badge { background: rgba(255,255,255,0.25); border-radius: 12px; padding: 3px 10px; font-size: 13px; }
+.icon-btn { background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 8px; padding: 5px 10px; font-size: 18px; cursor: pointer; }
+
+.new-bar { padding: 10px; background: white; border-bottom: 1px solid #eee; }
+.new-btn { width: 100%; padding: 12px; border: none; border-radius: 10px; background: #1a73e8; color: white; font-size: 15px; font-weight: bold; cursor: pointer; }
+.new-btn:hover { background: #1666d0; }
+
+.tabs { display: flex; background: white; border-bottom: 1px solid #ddd; position: sticky; top: 49px; z-index: 99; overflow-x: auto; }
+.tab { flex: 1; text-align: center; padding: 11px 4px; font-size: 12px; cursor: pointer; color: #888; border-bottom: 2px solid transparent; white-space: nowrap; }
+.tab.active { color: #1a73e8; border-bottom-color: #1a73e8; font-weight: bold; }
+.tab-count { background: #e8f0fe; color: #1a73e8; border-radius: 10px; padding: 1px 6px; font-size: 11px; font-weight: bold; margin-left: 3px; }
+
+.filter-bar { padding: 8px 10px; background: white; display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid #eee; overflow-x: auto; }
+.filter-btn { padding: 4px 11px; border-radius: 20px; border: 1px solid #ddd; background: white; font-size: 12px; cursor: pointer; white-space: nowrap; }
+.filter-btn.active { background: #1a73e8; color: white; border-color: #1a73e8; }
+
+.scripts-list { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+.script-card { background: white; border-radius: 12px; padding: 14px; box-shadow: 0 1px 4px rgba(0,0,0,.08); cursor: pointer; }
+.script-card.dragging { opacity: .4; }
+.script-card.drag-over { border: 2px dashed #1a73e8; }
+.drag-handle { color: #bbb; font-size: 18px; cursor: grab; padding: 0 6px 0 0; flex-shrink: 0; user-select: none; }
+.drag-handle:active { cursor: grabbing; }
+.move-btns { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; margin-right: 6px; }
+.move-btn { background: #f0f0f0; border: none; border-radius: 5px; width: 26px; height: 22px; font-size: 12px; cursor: pointer; color: #555; line-height: 1; }
+.move-btn:active { background: #1a73e8; color: white; }
+@media (hover: hover) and (pointer: fine) { .move-btns { display: none; } }
+@media (hover: none), (pointer: coarse) { .drag-handle { display: none; } }
+.order-badge { background: #1a73e8; color: white; border-radius: 10px; padding: 1px 7px; font-size: 12px; font-weight: bold; margin-right: 4px; }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.card-title { font-size: 15px; font-weight: bold; line-height: 1.4; flex: 1; }
+.card-title .muted { color: #aaa; font-weight: normal; }
+.card-meta { margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
+.tag { font-size: 12px; padding: 3px 8px; border-radius: 10px; background: #f0f0f0; color: #555; }
+.tag.cat { background: #e8f0fe; color: #1a56b8; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+.status-idea { background: #f4b400; }
+.status-drafting { background: #9334e6; }
+.status-approved { background: #34a853; }
+.status-published { background: #1a73e8; }
+
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; overflow-y: auto; }
+.modal-overlay.open { display: block; }
+.modal { background: white; max-width: 720px; margin: 16px auto; border-radius: 16px; overflow: hidden; }
+.modal-header { background: #1a73e8; color: white; padding: 12px 14px; display: flex; gap: 8px; align-items: center; }
+.modal-header h2 { font-size: 14px; line-height: 1.4; flex: 1; }
+.close-btn { background: none; border: none; color: white; font-size: 22px; cursor: pointer; }
+
+.modal-tabs { display: flex; border-bottom: 1px solid #eee; background: #fafafa; }
+.modal-tab { flex: 1; text-align: center; padding: 10px 0; font-size: 13px; cursor: pointer; color: #888; border-bottom: 2px solid transparent; }
+.modal-tab.active { color: #1a73e8; border-bottom-color: #1a73e8; font-weight: bold; }
+
+.modal-body { padding: 14px; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.section { margin-top: 16px; }
+.section:first-child { margin-top: 0; }
+.section h3 { font-size: 13px; font-weight: bold; color: #555; margin-bottom: 8px; }
+label { font-size: 13px; color: #666; display: block; margin-bottom: 5px; }
+select { width: 100%; padding: 9px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; background: white; }
+input[type=text] { width: 100%; padding: 9px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; font-family: inherit; }
+textarea { width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 10px; font-size: 14px; resize: vertical; min-height: 80px; font-family: inherit; line-height: 1.6; }
+textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; }
+
+.gen-btn { width: 100%; padding: 12px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; font-weight: bold; margin-top: 12px; }
+.gen-btn:disabled { background: #ccc; cursor: not-allowed; }
+.sub-btn { width: 100%; padding: 10px; background: #e8f0fe; color: #1a56b8; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: bold; margin-top: 8px; }
+.sub-btn:disabled { background: #eee; color: #aaa; cursor: not-allowed; }
+@media (max-width: 768px) { .gen-only-pc { display: none; } }
+
+.char-count { font-size: 12px; color: #888; text-align: right; margin-top: 4px; }
+.gen-status { background: #e8f0fe; border-radius: 8px; padding: 12px; text-align: center; color: #1a56b8; font-size: 14px; margin-top: 10px; display: none; }
+.gen-status.error { background: #fff0f0; color: #c00; }
+
+.preview { border: 1px solid #eee; border-radius: 10px; padding: 16px; max-height: 460px; overflow-y: auto; line-height: 1.8; }
+.preview h1 { font-size: 22px; margin: 16px 0 10px; }
+.preview h2 { font-size: 19px; margin: 18px 0 8px; border-bottom: 2px solid #1a73e8; padding-bottom: 4px; }
+.preview h3 { font-size: 16px; margin: 14px 0 6px; color: #1a56b8; }
+.preview p { margin: 8px 0; }
+.preview ul, .preview ol { margin: 8px 0 8px 22px; }
+.preview li { margin: 4px 0; }
+.preview a { color: #1a73e8; }
+.preview strong { color: #c0392b; }
+.preview code { background: #f0f0f0; padding: 1px 5px; border-radius: 4px; font-size: 13px; }
+.preview blockquote { border-left: 3px solid #1a73e8; padding-left: 12px; color: #555; margin: 10px 0; }
+
+.save-btn { background: #34a853; color: white; border: none; border-radius: 8px; padding: 12px 0; width: 100%; font-size: 15px; cursor: pointer; margin-top: 14px; font-weight: bold; }
+.save-btn:hover { background: #2c9247; }
+.saving { opacity: .6; cursor: not-allowed; }
+
+.settings-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 300; }
+.settings-modal.open { display: flex; align-items: center; justify-content: center; padding: 20px; }
+.settings-box { background: white; border-radius: 16px; padding: 20px; width: 100%; max-width: 420px; }
+.settings-box h2 { font-size: 16px; font-weight: bold; margin-bottom: 16px; }
+.settings-box input { width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 10px; font-size: 14px; margin-bottom: 10px; font-family: monospace; }
+
+.loading { text-align: center; padding: 40px 20px; color: #888; font-size: 14px; }
+.spinner { display: inline-block; width: 28px; height: 28px; border: 3px solid #eee; border-top-color: #1a73e8; border-radius: 50%; animation: spin .7s linear infinite; margin-bottom: 10px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty { text-align: center; padding: 60px 20px; color: #aaa; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📝 ブログ記事管理</h1>
+  <div class="header-right">
+    <span class="badge" id="total-badge">0本</span>
+    <button class="icon-btn" id="settings-btn">⚙️</button>
+  </div>
+</header>
+
+<div class="new-bar">
+  <button class="new-btn" id="new-btn">＋ 新規テーマを追加</button>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="all">全て</div>
+  <div class="tab" data-tab="idea">💡アイデア<span class="tab-count" id="cnt-idea"></span></div>
+  <div class="tab" data-tab="drafting">✍️作成中<span class="tab-count" id="cnt-drafting"></span></div>
+  <div class="tab" data-tab="approved">✅承認済<span class="tab-count" id="cnt-approved"></span></div>
+  <div class="tab" data-tab="published">📤投稿済<span class="tab-count" id="cnt-published"></span></div>
+</div>
+
+<div class="filter-bar" id="filter-bar"></div>
+
+<div class="scripts-list" id="scripts-list">
+  <div class="loading"><div class="spinner"></div><br>読み込み中...</div>
+</div>
+
+<!-- 記事詳細モーダル -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-title"></h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button id="delete-modal" style="background:#e53935;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:14px;font-weight:bold;cursor:pointer;">🗑</button>
+        <button class="close-btn" id="close-modal">×</button>
+      </div>
+    </div>
+    <div class="modal-tabs">
+      <div class="modal-tab active" data-mtab="idea">💡 アイデア&生成</div>
+      <div class="modal-tab" data-mtab="edit">✏️ 編集</div>
+      <div class="modal-tab" data-mtab="preview">👁 プレビュー</div>
+    </div>
+    <div class="modal-body">
+
+      <!-- アイデア&生成 -->
+      <div class="tab-panel active" id="panel-idea">
+        <div class="section">
+          <label>🏷 テーマ（この記事は何について？）</label>
+          <textarea id="theme-input" rows="2" placeholder="例：YouTubeショッピングアフィリエイトの始め方" style="min-height:auto;"></textarea>
+        </div>
+        <div class="section">
+          <label>💡 アイデア・盛り込みたい要素</label>
+          <textarea id="ideas-input" rows="4" placeholder="例：初心者向け / 登録条件 / 収益化の流れ / 注意点 / おすすめジャンル"></textarea>
+        </div>
+        <div class="section">
+          <label>📂 カテゴリ</label>
+          <select id="category-input"></select>
+        </div>
+        <div class="section">
+          <label>🔑 キーワード（カンマ区切り・SEO用）</label>
+          <input type="text" id="keywords-input" placeholder="YouTubeショッピング, アフィリエイト, 始め方">
+        </div>
+        <button class="gen-btn" id="gen-btn">🤖 この内容で本文を生成</button>
+        <div class="gen-status" id="gen-status-i"></div>
+        <button class="save-btn" id="save-btn-i">GitHubに保存</button>
+      </div>
+
+      <!-- 編集 -->
+      <div class="tab-panel" id="panel-edit">
+        <div class="section">
+          <label>📝 タイトル</label>
+          <textarea id="title-input" rows="2" placeholder="記事タイトル" oninput="syncTitle(this)" style="min-height:auto;"></textarea>
+        </div>
+        <div class="section">
+          <label>📄 本文（Markdown）</label>
+          <textarea id="body-input" class="body-area" oninput="syncBody(this)" placeholder="本文がここに入ります"></textarea>
+          <div class="char-count" id="char-count">0文字</div>
+          <button class="sub-btn" id="copy-all-btn">📋 タイトル＋本文を全文コピー</button>
+        </div>
+        <div class="section">
+          <label>🔧 修正指示（Claudeにどう直してほしいか）</label>
+          <textarea id="revise-input" rows="2" placeholder="例：具体例をもっと増やして / 導入をキャッチーに / 専門用語をかみ砕いて" style="min-height:auto;"></textarea>
+          <button class="sub-btn" id="revise-btn">この指示で修正する</button>
+        </div>
+        <div class="gen-status" id="gen-status-e"></div>
+        <button class="save-btn" id="save-btn-e">GitHubに保存</button>
+      </div>
+
+      <!-- プレビュー -->
+      <div class="tab-panel" id="panel-preview">
+        <div class="preview" id="preview-area"></div>
+        <div class="section">
+          <label>📌 ステータス</label>
+          <select id="status-input">
+            <option value="idea">💡 アイデア</option>
+            <option value="drafting">✍️ 作成中</option>
+            <option value="approved">✅ 承認済（投稿OK）</option>
+            <option value="published">📤 投稿済</option>
+          </select>
+        </div>
+        <div class="section">
+          <label>🗒 メモ</label>
+          <textarea id="notes-input" rows="2" placeholder="気になった点・修正案など" style="min-height:auto;"></textarea>
+        </div>
+        <button class="save-btn" id="save-btn-p">GitHubに保存</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- 設定モーダル -->
+<div class="settings-modal" id="settings-modal">
+  <div class="settings-box">
+    <h2>⚙️ 設定</h2>
+    <label>Anthropic API Key（本文生成に使用）</label>
+    <input type="password" id="anthropic-key-input" placeholder="sk-ant-...">
+    <label>GitHub Token（保存に使用）</label>
+    <input type="password" id="github-token-input" placeholder="ghp_ または github_pat_...">
+    <label>生成モデル</label>
+    <input type="text" id="model-input" placeholder="claude-sonnet-4-6">
+    <button style="background:#1a73e8;color:white;border:none;border-radius:8px;padding:10px 0;width:100%;font-size:14px;cursor:pointer;font-weight:bold;" id="settings-save-btn">保存</button>
+    <button style="width:100%;margin-top:8px;padding:10px;border:none;background:#eee;border-radius:8px;cursor:pointer;" id="settings-close-btn">キャンセル</button>
+  </div>
+</div>
+
+<script>
+const REPO   = 'insideedgeworking-cyber/blog-posts';
+const BRANCH = 'main';
+const API_BASE = `https://api.github.com/repos/${REPO}/contents/posts/`;
+const CATEGORIES = ["アフィリエイト", "用語", "ノウハウ", "ツール紹介", "比較", "体験談", "その他"];
+const DEFAULT_MODEL = 'claude-sonnet-4-6';
+
+let posts = [];
+let approvedOrder = [];   // 承認済みの並び順（id配列）= GitHubの _order.json
+let orderSha = '';
+let currentPost = null;
+let isNew = false;
+let currentTab = 'all';
+let currentCategory = 'all';
+
+function getSettings() {
+  return {
+    anthropicKey: localStorage.getItem('blog_anthropic_key') || '',
+    githubToken:  localStorage.getItem('blog_github_token')  || '',
+    model:        localStorage.getItem('blog_model') || DEFAULT_MODEL
+  };
+}
+
+const statusLabel = { idea:'アイデア', drafting:'作成中', approved:'承認済', published:'投稿済' };
+
+// ── カテゴリフィルタ生成 ──
+function buildFilterBar() {
+  const bar = document.getElementById('filter-bar');
+  bar.innerHTML = `<button class="filter-btn active" data-cat="all">全て</button>` +
+    CATEGORIES.map(c => `<button class="filter-btn" data-cat="${c}">${c}</button>`).join('');
+  bar.querySelectorAll('.filter-btn').forEach(b => b.addEventListener('click', () => {
+    bar.querySelectorAll('.filter-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active'); currentCategory = b.dataset.cat; renderList();
+  }));
+}
+function buildCategorySelect() {
+  document.getElementById('category-input').innerHTML =
+    CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('');
+}
+
+// ── 読み込み ──
+async function loadPosts() {
+  document.getElementById('scripts-list').innerHTML = '<div class="loading"><div class="spinner"></div><br>読み込み中...</div>';
+  try {
+    const res   = await fetch(`${API_BASE}?ref=${BRANCH}&t=${Date.now()}`, {cache:'no-store'});
+    const files = await res.json();
+    if (!Array.isArray(files)) throw new Error('リポジトリにアクセスできません');
+    const jsons = files.filter(f => f.name.startsWith('post_') && f.name.endsWith('.json'));
+    posts = await Promise.all(jsons.map(async f => {
+      const r = await fetch(f.download_url + '?t=' + Date.now(), {cache:'no-store'});
+      return r.json();
+    }));
+    posts.sort((a,b) => (b.created_at||'').localeCompare(a.created_at||''));
+    // 並び順ファイル
+    const orderFile = files.find(f => f.name === '_order.json');
+    if (orderFile) {
+      orderSha = orderFile.sha;
+      const r = await fetch(orderFile.download_url + '?t=' + Date.now(), {cache:'no-store'});
+      const o = await r.json();
+      approvedOrder = o.approved_order || [];
+    }
+    document.getElementById('total-badge').textContent = `${posts.length}本`;
+    renderList();
+  } catch(e) {
+    document.getElementById('scripts-list').innerHTML = '<div class="empty">⚠️ ' + e.message + '<br><br>⚙️設定でGitHub Tokenを入れ、REPO名が正しいか確認してください</div>';
+  }
+}
+
+function applyApprovedOrder(list) {
+  if (!approvedOrder.length) return list;
+  const ordered = [], rest = [...list];
+  approvedOrder.forEach(id => { const i = rest.findIndex(s=>s.id===id); if(i>=0){ ordered.push(rest[i]); rest.splice(i,1); } });
+  return [...ordered, ...rest];
+}
+
+function updateCounts() {
+  ['idea','drafting','approved','published'].forEach(st => {
+    const n = posts.filter(p => (p.status||'idea')===st).length;
+    const el = document.getElementById('cnt-'+st);
+    if (el) el.textContent = n ? n : '';
+  });
+}
+
+function renderList() {
+  updateCounts();
+  const c = document.getElementById('scripts-list');
+  let list = posts;
+  if (currentTab!=='all') list = list.filter(p => (p.status||'idea')===currentTab);
+  if (currentCategory!=='all') list = list.filter(p => p.category===currentCategory);
+
+  const isApproved = currentTab==='approved';
+  if (isApproved) list = applyApprovedOrder(list);
+  else list.sort((a,b)=>(b.created_at||'').localeCompare(a.created_at||''));
+
+  if (!list.length){ c.innerHTML='<div class="empty">📭 記事がありません<br><br>「＋新規テーマを追加」から始めましょう</div>'; return; }
+
+  c.innerHTML = list.map((s, idx) => {
+    const titleHtml = s.title ? s.title : `<span class="muted">（タイトル未設定）${s.theme||''}</span>`;
+    const orderNum = isApproved ? `<span class="order-badge">${idx+1}</span>` : '';
+    const handle   = isApproved ? `<span class="drag-handle" title="ドラッグして並び替え">☰</span>` : '';
+    const moveBtns = isApproved ? `<div class="move-btns">
+      <button class="move-btn" onclick="moveCard('${s.id}',-1,event)">▲</button>
+      <button class="move-btn" onclick="moveCard('${s.id}',1,event)">▼</button>
+    </div>` : '';
+    return `<div class="script-card" id="card-${s.id}" draggable="${isApproved}" data-id="${s.id}"
+      ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)"
+      onclick="handleCardClick(event,'${s.id}')">
+      <div class="card-top">
+        <div style="display:flex;align-items:center;flex:1;min-width:0;">
+          ${moveBtns}${handle}
+          <div class="card-title">${orderNum}${titleHtml}</div>
+        </div>
+      </div>
+      <div class="card-meta">
+        ${s.category?`<span class="tag cat">${s.category}</span>`:''}
+        <span class="tag"><span class="status-dot status-${s.status||'idea'}"></span>${statusLabel[s.status||'idea']}</span>
+        <span class="tag">📄 ${s.char_count||0}字</span>
+        <span class="tag">📅 ${s.created_at||''}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── ドラッグ&ドロップ（承認済タブ）──
+let dragSrcId = null;
+function onDragStart(e){ dragSrcId=e.currentTarget.dataset.id; e.currentTarget.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; }
+function onDragOver(e){ e.preventDefault(); e.dataTransfer.dropEffect='move'; document.querySelectorAll('.script-card').forEach(el=>el.classList.remove('drag-over')); e.currentTarget.classList.add('drag-over'); }
+function onDrop(e){
+  e.preventDefault();
+  const targetId = e.currentTarget.dataset.id;
+  if (!dragSrcId || dragSrcId===targetId) return;
+  const cards = [...document.querySelectorAll('.script-card')].map(el=>el.dataset.id);
+  const from = cards.indexOf(dragSrcId), to = cards.indexOf(targetId);
+  cards.splice(from,1); cards.splice(to,0,dragSrcId);
+  commitOrder(cards);
+}
+function onDragEnd(e){ document.querySelectorAll('.script-card').forEach(el=>el.classList.remove('dragging','drag-over')); }
+function handleCardClick(e, id){
+  if (e.target.classList.contains('drag-handle')) return;
+  if (e.target.classList.contains('move-btn')) return;
+  openModal(id);
+}
+function moveCard(id, dir, e){
+  e.stopPropagation();
+  const cards = [...document.querySelectorAll('.script-card')].map(el=>el.dataset.id);
+  const idx = cards.indexOf(id), newIdx = idx+dir;
+  if (newIdx<0 || newIdx>=cards.length) return;
+  cards.splice(idx,1); cards.splice(newIdx,0,id);
+  commitOrder(cards);
+}
+// 並び順を更新→GitHubへ保存
+async function commitOrder(cards) {
+  approvedOrder = cards;
+  renderList();
+  await saveOrderToGitHub();
+}
+async function saveOrderToGitHub() {
+  const { githubToken } = getSettings();
+  if (!githubToken) return;
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify({approved_order: approvedOrder}, null, 2))));
+  const body = {message:'update: 承認済みの並び順', content, branch:BRANCH};
+  if (orderSha) body.sha = orderSha;
+  try {
+    const res = await fetch(`${API_BASE}_order.json`, {
+      method:'PUT', headers:{Authorization:`token ${githubToken}`,'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    if (res.ok) { const d = await res.json(); orderSha = d.content.sha; }
+  } catch(e){}
+}
+
+// ── モーダル ──
+function nextId() {
+  let max = 0;
+  posts.forEach(p => { const n = parseInt((p.id||'').replace('post_','')); if(!isNaN(n)&&n>max) max=n; });
+  return 'post_' + String(max+1).padStart(3,'0');
+}
+function today() { return new Date().toISOString().slice(0,10); }
+
+function newPost() {
+  isNew = true;
+  currentPost = { id: nextId(), created_at: today(), theme:'', ideas:'', title:'', category: CATEGORIES[0], keywords:[], body:'', char_count:0, status:'idea', wp_post_id:null, notes:'' };
+  openModalForm('💡 新規テーマ');
+  switchModalTab('idea');
+}
+function openModal(id) {
+  isNew = false;
+  currentPost = JSON.parse(JSON.stringify(posts.find(s=>s.id===id)));
+  if (!currentPost) return;
+  openModalForm(currentPost.title || currentPost.theme || '記事');
+  switchModalTab('idea');
+}
+function openModalForm(titleText) {
+  document.getElementById('modal-title').textContent = titleText;
+  document.getElementById('delete-modal').style.display = isNew ? 'none' : 'block';
+  hideStatus();
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function switchModalTab(tab) {
+  document.querySelectorAll('.modal-tab').forEach(t => t.classList.toggle('active', t.dataset.mtab===tab));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`panel-${tab}`).classList.add('active');
+  if (tab==='idea')    fillIdea();
+  if (tab==='edit')    fillEdit();
+  if (tab==='preview') fillPreview();
+}
+
+function fillIdea() {
+  document.getElementById('theme-input').value    = currentPost.theme || '';
+  document.getElementById('ideas-input').value    = currentPost.ideas || '';
+  document.getElementById('category-input').value = currentPost.category || CATEGORIES[0];
+  document.getElementById('keywords-input').value = (currentPost.keywords||[]).join(', ');
+}
+function readIdea() {
+  currentPost.theme    = document.getElementById('theme-input').value.trim();
+  currentPost.ideas    = document.getElementById('ideas-input').value.trim();
+  currentPost.category = document.getElementById('category-input').value;
+  currentPost.keywords = document.getElementById('keywords-input').value.split(',').map(s=>s.trim()).filter(Boolean);
+}
+function fillEdit() {
+  document.getElementById('title-input').value = currentPost.title || '';
+  document.getElementById('body-input').value  = currentPost.body || '';
+  updateCharCount();
+}
+function syncTitle(el){ currentPost.title = el.value; document.getElementById('modal-title').textContent = el.value || '記事'; }
+function syncBody(el){ currentPost.body = el.value; updateCharCount(); }
+function updateCharCount(){
+  const n = (currentPost.body||'').replace(/\s/g,'').length;
+  currentPost.char_count = (currentPost.body||'').length;
+  document.getElementById('char-count').textContent = `${n}文字（空白除く）`;
+}
+function fillPreview() {
+  document.getElementById('preview-area').innerHTML = renderMarkdown(currentPost.body || '*本文がまだありません*');
+  document.getElementById('status-input').value = currentPost.status || 'idea';
+  document.getElementById('notes-input').value  = currentPost.notes || '';
+}
+
+// ── 簡易Markdownレンダラ ──
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function inline(s){
+  return esc(s)
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank">$1</a>')
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>');
+}
+function renderMarkdown(md){
+  const lines = md.split('\n');
+  let html = '', inUl = false, inOl = false;
+  const closeLists = () => { if(inUl){html+='</ul>';inUl=false;} if(inOl){html+='</ol>';inOl=false;} };
+  for (let raw of lines) {
+    const line = raw.replace(/\s+$/,'');
+    if (/^###\s+/.test(line)) { closeLists(); html += `<h3>${inline(line.replace(/^###\s+/,''))}</h3>`; }
+    else if (/^##\s+/.test(line)) { closeLists(); html += `<h2>${inline(line.replace(/^##\s+/,''))}</h2>`; }
+    else if (/^#\s+/.test(line)) { closeLists(); html += `<h1>${inline(line.replace(/^#\s+/,''))}</h1>`; }
+    else if (/^>\s+/.test(line)) { closeLists(); html += `<blockquote>${inline(line.replace(/^>\s+/,''))}</blockquote>`; }
+    else if (/^\s*[-*]\s+/.test(line)) { if(!inUl){closeLists();html+='<ul>';inUl=true;} html += `<li>${inline(line.replace(/^\s*[-*]\s+/,''))}</li>`; }
+    else if (/^\s*\d+\.\s+/.test(line)) { if(!inOl){closeLists();html+='<ol>';inOl=true;} html += `<li>${inline(line.replace(/^\s*\d+\.\s+/,''))}</li>`; }
+    else if (line.trim()==='') { closeLists(); }
+    else { closeLists(); html += `<p>${inline(line)}</p>`; }
+  }
+  closeLists();
+  return html;
+}
+
+// ── Claude API ──
+async function callClaude(prompt, maxTokens=8000) {
+  const { anthropicKey, model } = getSettings();
+  if (!anthropicKey) throw new Error('Anthropic APIキーが未設定です（⚙️設定）');
+  const res = await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key': anthropicKey,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body: JSON.stringify({ model: model||DEFAULT_MODEL, max_tokens:maxTokens, messages:[{role:'user',content:prompt}] })
+  });
+  if (!res.ok) { const t = await res.text(); throw new Error(`API ${res.status}: ${t.slice(0,120)}`); }
+  const data = await res.json();
+  return data.content[0].text;
+}
+function parseJsonObj(text){
+  const m = text.match(/\{[\s\S]*\}/);
+  if (!m) throw new Error('JSONを取り出せませんでした');
+  return JSON.parse(m[0]);
+}
+
+function showStatus(panel, msg, isError=false){
+  const el = document.getElementById('gen-status-'+panel);
+  el.textContent = msg; el.className = 'gen-status' + (isError?' error':''); el.style.display='block';
+}
+function hideStatus(){ ['i','e'].forEach(p=>{ const el=document.getElementById('gen-status-'+p); if(el) el.style.display='none'; }); }
+
+// 本文生成
+document.getElementById('gen-btn').addEventListener('click', async function(){
+  readIdea();
+  if (!currentPost.theme) { showStatus('i','⚠️ テーマを入力してください', true); return; }
+  this.disabled = true;
+  showStatus('i','🤖 本文を生成中...（少し時間がかかります）');
+  try {
+    const text = await callClaude(
+`あなたはアフィリエイトブログのプロライターです。以下の条件で、読者に価値がありSEOにも強い日本語のブログ記事を作成してください。
+
+テーマ: ${currentPost.theme}
+カテゴリ: ${currentPost.category}
+盛り込みたい要素: ${currentPost.ideas || '（指定なし・テーマに沿って構成）'}
+狙うキーワード: ${(currentPost.keywords||[]).join('、') || '（テーマから適切に）'}
+
+ルール:
+- 本文はMarkdown（見出しは##と###、箇条書きは-、強調は**）
+- 導入→本論（複数の見出し）→まとめ の構成
+- 具体例・数字・手順を入れて分かりやすく
+- 読者の検索意図に答える。煽りすぎない自然な文体
+- 2000〜3500字程度
+- タイトルはクリックしたくなる魅力的なもの
+
+次のJSON形式のみで返してください（前後に説明文を付けない）:
+{"title":"記事タイトル","body":"Markdown本文"}`);
+    const obj = parseJsonObj(text);
+    currentPost.title = obj.title || currentPost.title;
+    currentPost.body  = obj.body || '';
+    currentPost.char_count = currentPost.body.length;
+    if (currentPost.status==='idea') currentPost.status = 'drafting';
+    showStatus('i','✅ 生成完了！「✏️編集」「👁プレビュー」で確認して保存してください');
+    document.getElementById('modal-title').textContent = currentPost.title;
+  } catch(e){ showStatus('i','❌ '+e.message, true); }
+  this.disabled = false;
+});
+
+// 修正指示
+document.getElementById('revise-btn').addEventListener('click', async function(){
+  const instr = document.getElementById('revise-input').value.trim();
+  if (!instr) { showStatus('e','⚠️ 修正指示を入力してください', true); return; }
+  if (!currentPost.body) { showStatus('e','⚠️ 先に本文を生成してください', true); return; }
+  this.disabled = true;
+  showStatus('e','🤖 修正中...');
+  try {
+    const text = await callClaude(
+`以下のブログ記事を、指示に従って修正してください。
+
+【現在のタイトル】
+${currentPost.title}
+
+【現在の本文（Markdown）】
+${currentPost.body}
+
+【修正指示】
+${instr}
+
+ルール:
+- Markdown形式を維持
+- 指示の箇所を中心に、全体の自然さを保って書き直す
+- タイトルも必要なら調整
+
+次のJSON形式のみで返してください（前後に説明文を付けない）:
+{"title":"修正後タイトル","body":"修正後のMarkdown本文"}`);
+    const obj = parseJsonObj(text);
+    currentPost.title = obj.title || currentPost.title;
+    currentPost.body  = obj.body || currentPost.body;
+    currentPost.char_count = currentPost.body.length;
+    fillEdit();
+    document.getElementById('modal-title').textContent = currentPost.title;
+    document.getElementById('revise-input').value = '';
+    showStatus('e','✅ 修正完了！内容を確認して保存してください');
+  } catch(e){ showStatus('e','❌ '+e.message, true); }
+  this.disabled = false;
+});
+
+// 全文コピー
+document.getElementById('copy-all-btn').addEventListener('click', function(){
+  const text = `${currentPost.title||''}\n\n${currentPost.body||''}`;
+  const done = () => { const o=this.textContent; this.textContent='✅ コピーしました'; setTimeout(()=>this.textContent=o,1500); };
+  if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done));
+  else fallbackCopy(text, done);
+}.bind(document.getElementById('copy-all-btn')));
+function fallbackCopy(text, cb){
+  const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try{ document.execCommand('copy'); cb(); }catch(e){ alert('コピー失敗'); } ta.remove();
+}
+
+// ── GitHub保存 ──
+function readPreviewFields(){
+  const st = document.getElementById('status-input'); const nt = document.getElementById('notes-input');
+  if (st && document.getElementById('panel-preview').classList.contains('active')) currentPost.status = st.value;
+  if (nt && document.getElementById('panel-preview').classList.contains('active')) currentPost.notes = nt.value;
+}
+async function saveToGitHub() {
+  const { githubToken } = getSettings();
+  if (!githubToken) { alert('⚙️設定でGitHub Tokenを入力してください'); return false; }
+  // 各パネルの入力を取り込む
+  if (document.getElementById('panel-idea').classList.contains('active')) readIdea();
+  readPreviewFields();
+  currentPost.char_count = (currentPost.body||'').length;
+
+  const fileName = `${currentPost.id}.json`;
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(currentPost, null, 2))));
+  let sha = '';
+  try {
+    const r = await fetch(`${API_BASE}${fileName}?t=${Date.now()}`, {headers:{Authorization:`token ${githubToken}`}, cache:'no-store'});
+    if (r.ok){ sha = (await r.json()).sha; }
+  } catch(e){}
+  const body = {message:`${isNew?'create':'update'}: ${currentPost.title||currentPost.theme}`, content, branch:BRANCH};
+  if (sha) body.sha = sha;
+  const res = await fetch(`${API_BASE}${fileName}`, {
+    method:'PUT', headers:{Authorization:`token ${githubToken}`,'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) return false;
+  // ローカル反映
+  if (isNew) { posts.unshift(JSON.parse(JSON.stringify(currentPost))); isNew = false; document.getElementById('delete-modal').style.display='block'; }
+  else { const i = posts.findIndex(s=>s.id===currentPost.id); if(i>=0) posts[i]=JSON.parse(JSON.stringify(currentPost)); }
+  // 承認済の並び順に追加（新たに承認済になった場合、末尾へ）
+  if (currentPost.status==='approved' && !approvedOrder.includes(currentPost.id)) { approvedOrder.push(currentPost.id); await saveOrderToGitHub(); }
+  if (currentPost.status!=='approved' && approvedOrder.includes(currentPost.id)) { approvedOrder = approvedOrder.filter(x=>x!==currentPost.id); await saveOrderToGitHub(); }
+  document.getElementById('total-badge').textContent = `${posts.length}本`;
+  renderList();
+  return true;
+}
+['save-btn-i','save-btn-e','save-btn-p'].forEach(id => {
+  document.getElementById(id).addEventListener('click', async function(){
+    const o=this.textContent; this.textContent='保存中...'; this.classList.add('saving');
+    const ok = await saveToGitHub();
+    alert(ok ? '✅ GitHubに保存しました' : '❌ 保存に失敗しました（Token権限・REPO名を確認）');
+    this.textContent=o; this.classList.remove('saving');
+  });
+});
+
+// ── 削除 ──
+async function deletePost() {
+  if (!currentPost || isNew) return;
+  const { githubToken } = getSettings();
+  if (!githubToken) { alert('⚙️設定でGitHub Tokenを入れてください'); return; }
+  if (!confirm(`「${currentPost.title||currentPost.theme}」を削除しますか？\nGitHubから完全に削除されます`)) return;
+  const fileName = `${currentPost.id}.json`;
+  let sha = '';
+  try { const r = await fetch(`${API_BASE}${fileName}?t=${Date.now()}`, {headers:{Authorization:`token ${githubToken}`}, cache:'no-store'}); if(r.ok) sha=(await r.json()).sha; } catch(e){}
+  if (!sha) { alert('❌ ファイルが見つかりません'); return; }
+  const res = await fetch(`${API_BASE}${fileName}`, {
+    method:'DELETE', headers:{Authorization:`token ${githubToken}`,'Content-Type':'application/json'},
+    body: JSON.stringify({message:`delete: ${currentPost.title||currentPost.theme}`, sha, branch:BRANCH})
+  });
+  if (res.ok) {
+    posts = posts.filter(x=>x.id!==currentPost.id);
+    if (approvedOrder.includes(currentPost.id)) { approvedOrder = approvedOrder.filter(x=>x!==currentPost.id); await saveOrderToGitHub(); }
+    document.getElementById('total-badge').textContent = `${posts.length}本`;
+    renderList();
+    document.getElementById('modal-overlay').classList.remove('open');
+    alert('🗑 削除しました');
+  } else alert('❌ 削除に失敗しました');
+}
+
+// ── イベント ──
+document.getElementById('new-btn').addEventListener('click', newPost);
+document.querySelectorAll('.modal-tab').forEach(t => t.addEventListener('click', ()=>switchModalTab(t.dataset.mtab)));
+document.getElementById('close-modal').addEventListener('click', ()=>document.getElementById('modal-overlay').classList.remove('open'));
+document.getElementById('delete-modal').addEventListener('click', deletePost);
+document.getElementById('modal-overlay').addEventListener('click', e=>{ if(e.target===document.getElementById('modal-overlay')) document.getElementById('modal-overlay').classList.remove('open'); });
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', ()=>{ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active'); currentTab=t.dataset.tab; renderList(); }));
+
+document.getElementById('settings-btn').addEventListener('click', ()=>{
+  const s = getSettings();
+  document.getElementById('anthropic-key-input').value = s.anthropicKey;
+  document.getElementById('github-token-input').value  = s.githubToken;
+  document.getElementById('model-input').value         = s.model;
+  document.getElementById('settings-modal').classList.add('open');
+});
+document.getElementById('settings-save-btn').addEventListener('click', ()=>{
+  localStorage.setItem('blog_anthropic_key', document.getElementById('anthropic-key-input').value.trim());
+  localStorage.setItem('blog_github_token',  document.getElementById('github-token-input').value.trim());
+  localStorage.setItem('blog_model',         document.getElementById('model-input').value.trim() || DEFAULT_MODEL);
+  document.getElementById('settings-modal').classList.remove('open');
+  alert('✅ 設定を保存しました'); loadPosts();
+});
+document.getElementById('settings-close-btn').addEventListener('click', ()=>document.getElementById('settings-modal').classList.remove('open'));
+
+// ── 初期化 ──
+buildFilterBar();
+buildCategorySelect();
+loadPosts();
+</script>
+</body>
+</html>

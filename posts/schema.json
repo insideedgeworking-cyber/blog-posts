@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "ブログ記事（アフィリエイト）データ形式。1テーマ1ファイル＝1投稿。",
+  "example": {
+    "id": "post_001",
+    "created_at": "2026-06-02",
+    "theme": "YouTubeショッピングアフィリエイトの始め方",
+    "ideas": "初心者向け / 登録条件 / 収益化の流れ / 注意点 / おすすめジャンル を盛り込む",
+    "title": "【初心者向け】YouTubeショッピングアフィリエイトの始め方を完全解説",
+    "category": "アフィリエイト",
+    "keywords": ["YouTubeショッピング", "アフィリエイト", "始め方", "初心者"],
+    "body": "## はじめに\n\n本文をMarkdownで...",
+    "char_count": 0,
+    "status": "idea",
+    "wp_post_id": null,
+    "notes": ""
+  },
+  "status_values": {
+    "idea": "💡 アイデア（テーマだけ・本文未生成）",
+    "drafting": "✍️ 作成中（本文を生成・修正している）",
+    "approved": "✅ 承認済（投稿OK・並び替え対象）",
+    "published": "📤 投稿済（WordPressの下書きに送信済み）"
+  },
+  "categories": ["アフィリエイト", "用語", "ノウハウ", "ツール紹介", "比較", "体験談", "その他"],
+  "notes": "承認済みの並び順は posts/_order.json に保存される。投稿はその順番で上から行う。"
+}
