@@ -247,7 +247,7 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
     <label>GitHub Token（保存に使用）</label>
     <input type="password" id="github-token-input" placeholder="ghp_ または github_pat_...">
     <label>生成モデル</label>
-    <input type="text" id="model-input" placeholder="claude-sonnet-4-6">
+    <input type="text" id="model-input" placeholder="claude-opus-4-8">
     <button style="background:#1a73e8;color:white;border:none;border-radius:8px;padding:10px 0;width:100%;font-size:14px;cursor:pointer;font-weight:bold;" id="settings-save-btn">保存</button>
     <button style="width:100%;margin-top:8px;padding:10px;border:none;background:#eee;border-radius:8px;cursor:pointer;" id="settings-close-btn">キャンセル</button>
   </div>
@@ -270,7 +270,7 @@ const REPO   = 'insideedgeworking-cyber/blog-posts';
 const BRANCH = 'main';
 const API_BASE = `https://api.github.com/repos/${REPO}/contents/posts/`;
 const CATEGORIES = ["アフィリエイト", "用語", "ノウハウ", "ツール紹介", "比較", "体験談", "その他"];
-const DEFAULT_MODEL = 'claude-sonnet-4-6';
+const DEFAULT_MODEL = 'claude-opus-4-8';
 
 let posts = [];
 let approvedOrder = [];   // 承認済みの並び順（id配列）= GitHubの _order.json
