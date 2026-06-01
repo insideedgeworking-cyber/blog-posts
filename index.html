@@ -122,6 +122,7 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
   <h1>📝 ブログ記事管理</h1>
   <div class="header-right">
     <span class="badge" id="total-badge">0本</span>
+    <button class="icon-btn" id="aff-btn" title="アフィリエイト素材">🔗</button>
     <button class="icon-btn" id="settings-btn">⚙️</button>
   </div>
 </header>
@@ -197,6 +198,15 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
           <button class="sub-btn" id="copy-all-btn">📋 タイトル＋本文を全文コピー</button>
         </div>
         <div class="section">
+          <label>🔗 アフィリエイトを差し込む（本文のカーソル位置に挿入）</label>
+          <select id="aff-select"></select>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button class="sub-btn" id="aff-insert-btn" style="margin-top:0;">選んだ素材を挿入</button>
+            <button class="sub-btn" id="aff-slot-btn" style="margin-top:0;background:#fff3e0;color:#a05a00;">差し込み枠だけ挿入</button>
+          </div>
+          <div style="font-size:12px;color:#888;margin-top:6px;">素材の登録・編集は右上の🔗から</div>
+        </div>
+        <div class="section">
           <label>🔧 修正指示（Claudeにどう直してほしいか）</label>
           <textarea id="revise-input" rows="2" placeholder="例：具体例をもっと増やして / 導入をキャッチーに / 専門用語をかみ砕いて" style="min-height:auto;"></textarea>
           <button class="sub-btn" id="revise-btn">この指示で修正する</button>
@@ -243,6 +253,18 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
   </div>
 </div>
 
+<!-- アフィリエイト素材モーダル -->
+<div class="settings-modal" id="aff-modal">
+  <div class="settings-box" style="max-width:560px;">
+    <h2>🔗 アフィリエイト素材</h2>
+    <div style="font-size:13px;color:#777;margin-bottom:12px;">よく使うアフィリリンク/広告コードを登録。記事の「✏️編集」から本文に差し込めます。</div>
+    <div id="aff-list" style="max-height:50vh;overflow-y:auto;"></div>
+    <button class="sub-btn" id="aff-add-btn" style="margin-top:10px;">＋ 素材を追加</button>
+    <button style="background:#34a853;color:white;border:none;border-radius:8px;padding:11px 0;width:100%;font-size:14px;cursor:pointer;font-weight:bold;margin-top:12px;" id="aff-save-btn">GitHubに保存</button>
+    <button style="width:100%;margin-top:8px;padding:10px;border:none;background:#eee;border-radius:8px;cursor:pointer;" id="aff-close-btn">閉じる</button>
+  </div>
+</div>
+
 <script>
 const REPO   = 'insideedgeworking-cyber/blog-posts';
 const BRANCH = 'main';
@@ -258,6 +280,8 @@ let isNew = false;
 let currentTab = 'all';
 let currentCategory = 'all';
 let writingGuide = '';   // docs/記事作成ガイド.md の内容（生成・修正時に参照）
+let affiliates = [];     // アフィリエイト素材（posts/affiliates.json）
+let affSha = '';
 
 // ── 記事作成ガイドの読み込み（生成プロンプトに反映）──
 async function loadGuide() {
@@ -479,6 +503,7 @@ function readIdea() {
 function fillEdit() {
   document.getElementById('title-input').value = currentPost.title || '';
   document.getElementById('body-input').value  = currentPost.body || '';
+  populateAffSelect();
   updateCharCount();
 }
 function syncTitle(el){ currentPost.title = el.value; document.getElementById('modal-title').textContent = el.value || '記事'; }
@@ -734,10 +759,91 @@ document.getElementById('settings-save-btn').addEventListener('click', ()=>{
 });
 document.getElementById('settings-close-btn').addEventListener('click', ()=>document.getElementById('settings-modal').classList.remove('open'));
 
+// ── アフィリエイト素材 ──
+async function loadAffiliates() {
+  try {
+    const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/posts/affiliates.json?t=${Date.now()}`;
+    const r = await fetch(url, {cache:'no-store'});
+    if (r.ok) { const d = await r.json(); affiliates = d.items || []; }
+  } catch(e) {}
+  populateAffSelect();
+}
+function populateAffSelect() {
+  const sel = document.getElementById('aff-select');
+  if (!sel) return;
+  sel.innerHTML = affiliates.length
+    ? affiliates.map((a,i)=>`<option value="${i}">${(a.name||'(無題)').replace(/</g,'&lt;')}</option>`).join('')
+    : `<option value="">（素材なし — 🔗から登録）</option>`;
+}
+// 本文のカーソル位置に挿入
+function insertAtBodyCursor(text) {
+  const ta = document.getElementById('body-input');
+  const s = ta.selectionStart ?? ta.value.length;
+  const e = ta.selectionEnd ?? ta.value.length;
+  const before = ta.value.slice(0, s), after = ta.value.slice(e);
+  const block = `\n\n${text}\n\n`;
+  ta.value = before + block + after;
+  currentPost.body = ta.value;
+  updateCharCount();
+  const pos = s + block.length;
+  ta.focus(); ta.setSelectionRange(pos, pos);
+}
+document.getElementById('aff-insert-btn').addEventListener('click', () => {
+  const i = document.getElementById('aff-select').value;
+  if (i==='' || !affiliates[i]) { alert('素材がありません。🔗から登録してください'); return; }
+  insertAtBodyCursor(affiliates[i].code || '');
+});
+document.getElementById('aff-slot-btn').addEventListener('click', () => {
+  insertAtBodyCursor('<!-- ▼アフィリエイト：ここに貼る▼ -->');
+});
+
+// 管理モーダル
+function renderAffList() {
+  document.getElementById('aff-list').innerHTML = affiliates.map((a,i)=>`
+    <div style="border:1px solid #eee;border-radius:8px;padding:10px;margin-bottom:10px;">
+      <input type="text" class="aff-name" data-i="${i}" value="${(a.name||'').replace(/"/g,'&quot;')}" placeholder="素材名（例：楽天 商品A）" style="margin-bottom:8px;">
+      <textarea class="aff-code" data-i="${i}" rows="3" placeholder="アフィリエイトのHTML/リンクを貼る" style="font-family:monospace;font-size:12px;">${(a.code||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')}</textarea>
+      <button class="aff-del" data-i="${i}" style="margin-top:6px;background:none;border:1px solid #e53935;color:#e53935;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;">削除</button>
+    </div>`).join('') || '<div style="color:#aaa;text-align:center;padding:20px;">素材がありません</div>';
+  document.querySelectorAll('.aff-del').forEach(b => b.addEventListener('click', () => { readAffList(); affiliates.splice(parseInt(b.dataset.i),1); renderAffList(); }));
+}
+function readAffList() {
+  affiliates = affiliates.map((a,i)=>({
+    name: document.querySelector(`.aff-name[data-i="${i}"]`)?.value ?? a.name,
+    code: document.querySelector(`.aff-code[data-i="${i}"]`)?.value ?? a.code
+  }));
+}
+async function saveAffiliates() {
+  const { githubToken } = getSettings();
+  if (!githubToken) { alert('⚙️設定でGitHub Tokenを入力してください'); return false; }
+  readAffList();
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify({items: affiliates}, null, 2))));
+  // sha取得
+  let sha = affSha;
+  try { const r = await fetch(`${API_BASE}affiliates.json?t=${Date.now()}`, {headers:{Authorization:`token ${githubToken}`}, cache:'no-store'}); if(r.ok) sha=(await r.json()).sha; } catch(e){}
+  const body = {message:'update: アフィリエイト素材', content, branch:BRANCH};
+  if (sha) body.sha = sha;
+  const res = await fetch(`${API_BASE}affiliates.json`, {
+    method:'PUT', headers:{Authorization:`token ${githubToken}`,'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+  if (res.ok) { affSha = (await res.json()).content.sha; populateAffSelect(); return true; }
+  return false;
+}
+document.getElementById('aff-btn').addEventListener('click', () => { renderAffList(); document.getElementById('aff-modal').classList.add('open'); });
+document.getElementById('aff-add-btn').addEventListener('click', () => { readAffList(); affiliates.push({name:'',code:''}); renderAffList(); });
+document.getElementById('aff-save-btn').addEventListener('click', async function(){
+  const o=this.textContent; this.textContent='保存中...';
+  const ok = await saveAffiliates();
+  alert(ok?'✅ 保存しました':'❌ 保存に失敗しました'); this.textContent=o;
+});
+document.getElementById('aff-close-btn').addEventListener('click', () => document.getElementById('aff-modal').classList.remove('open'));
+
 // ── 初期化 ──
 buildFilterBar();
 buildCategorySelect();
 loadGuide();
+loadAffiliates();
 loadPosts();
 </script>
 </body>

@@ -1,0 +1,8 @@
+{
+  "items": [
+    {
+      "name": "（サンプル）楽天 おすすめ商品",
+      "code": "<!-- ここにASPからのアフィリエイトHTML/リンクを貼る -->\n<a href=\"https://example.com/af\" target=\"_blank\" rel=\"nofollow sponsored\">おすすめ商品はこちら</a>"
+    }
+  ]
+}
