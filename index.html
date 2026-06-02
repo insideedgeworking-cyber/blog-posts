@@ -283,13 +283,18 @@ let writingGuide = '';   // docs/記事作成ガイド.md の内容（生成・�
 let affiliates = [];     // アフィリエイト素材（posts/affiliates.json）
 let affSha = '';
 
-// ── 記事作成ガイドの読み込み（生成プロンプトに反映）──
+// ── 記事作成ガイド・執筆ルールの読み込み（生成プロンプトに反映）──
 async function loadGuide() {
-  try {
-    const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/docs/${encodeURIComponent('記事作成ガイド.md')}?t=${Date.now()}`;
-    const r = await fetch(url, {cache:'no-store'});
-    if (r.ok) writingGuide = await r.text();
-  } catch(e) {}
+  const docs = ['記事作成ガイド.md', '執筆ルール.md'];
+  const parts = [];
+  for (const name of docs) {
+    try {
+      const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/docs/${encodeURIComponent(name)}?t=${Date.now()}`;
+      const r = await fetch(url, {cache:'no-store'});
+      if (r.ok) parts.push(`# ${name}\n` + await r.text());
+    } catch(e) {}
+  }
+  writingGuide = parts.join('\n\n══════════\n\n');
 }
 function guideBlock() {
   return writingGuide ? `【記事作成ガイド：必ずこの方針・SEO対策・修正メモに従うこと】\n${writingGuide}\n\n────────\n\n` : '';
