@@ -1,70 +1,113 @@
 # -*- coding: utf-8 -*-
-"""副業ジャンル別 月収レンジの横棒グラフを生成する。
-出典: アフィリエイトマーケティング協会(2025) / poten社 副業平均収入調査(2025) ほか。
-上限値は成功者の水準であり、多くの人は初期は低水準である点を注記する。"""
+"""ブログ用の収入グラフを生成する。
+1) 副業ジャンル別の月収レンジ（fukugyo-income.png）
+2) 職業別の平均年収比較 飲食/全業種平均/IT・PC系/AI系（shokugyo-income.png）
+
+参考ブログ(ヒトデ/副業コンパス/きつねコード等)に倣い、淡い同系色・余白多め・
+グリッド控えめのクリーンなスタイル。出典は各図に注記。
+"""
 import os
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
 
+IMG_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "images")
+os.makedirs(IMG_DIR, exist_ok=True)
+
 # 日本語フォント（Windows同梱の游ゴシック→なければメイリオ）
-font_path = None
-for cand in (r"C:\Windows\Fonts\YuGothM.ttc", r"C:\Windows\Fonts\meiryo.ttc",
-             r"C:\Windows\Fonts\YuGothR.ttc", r"C:\Windows\Fonts\msgothic.ttc"):
-    if os.path.exists(cand):
-        font_path = cand
+_font_path = None
+for _cand in (r"C:\Windows\Fonts\YuGothM.ttc", r"C:\Windows\Fonts\meiryo.ttc",
+              r"C:\Windows\Fonts\YuGothR.ttc", r"C:\Windows\Fonts\msgothic.ttc"):
+    if os.path.exists(_cand):
+        _font_path = _cand
         break
-fp = font_manager.FontProperties(fname=font_path)
+FP = font_manager.FontProperties(fname=_font_path)
 
-# (ラベル, 下限, 上限, 上限表記)
-data = [
-    ("ブログ・アフィリエイト", 0, 100, "100万円超"),
-    ("コンテンツ販売\n(note・Booth)", 0, 50, "50万円超"),
-    ("動画編集", 5, 30, "30万円"),
-    ("せどり・物販", 3, 30, "30万円"),
-    ("Webライター", 3, 20, "20万円"),
-]
-# 上から見やすいよう逆順で描画
-data = data[::-1]
 
-labels = [d[0] for d in data]
-lows = [d[1] for d in data]
-highs = [d[2] for d in data]
-caps = [d[3] for d in data]
+def _fp(size, weight="normal"):
+    f = FP.copy()
+    f.set_size(size)
+    f.set_weight(weight)
+    return f
 
-fig, ax = plt.subplots(figsize=(8.6, 4.6), dpi=150)
-y = range(len(data))
-colors = ["#4f8cff", "#5aa9e6", "#5fb878", "#f0a93b", "#e8694f"]
 
-for i, (lo, hi) in enumerate(zip(lows, highs)):
-    ax.barh(i, hi - lo, left=lo, height=0.55, color=colors[i % len(colors)],
-            edgecolor="white", zorder=3)
-    # 右端にレンジ表記（下限〜上限）
-    range_label = f"{lo}〜{caps[i]}"
-    ax.text(hi + 2.0, i, range_label, va="center", ha="left",
-            fontproperties=fp, fontsize=10.5, color="#333")
+def make_chart(filename, title, rows, xlabel, xmax, note):
+    """rows: list of (label, lo, hi, value_text, color)。
+    lo==hi の場合は単一値の棒。余白広めで描画する。"""
+    n = len(rows)
+    # 余白を広めに：1項目あたり高さ0.9inを確保
+    fig_h = 1.7 + n * 0.92
+    fig, ax = plt.subplots(figsize=(9.2, fig_h), dpi=160)
 
-ax.set_yticks(list(y))
-ax.set_yticklabels(labels, fontproperties=fp, fontsize=11)
-ax.set_xlim(0, 132)
-ax.set_xlabel("月収の目安（万円）", fontproperties=fp, fontsize=11)
-ax.set_title("副業ジャンル別 月収レンジの目安", fontproperties=fp,
-             fontsize=15, fontweight="bold", pad=14)
-ax.grid(axis="x", color="#e6e6e6", zorder=0)
-for s in ("top", "right", "left"):
-    ax.spines[s].set_visible(False)
-ax.tick_params(axis="x", labelsize=9)
+    rows = rows[::-1]  # 上から順に並ぶように反転
+    bar_h = 0.46       # 細めの棒＋広い隙間でスッキリ
+    for i, (label, lo, hi, vtxt, color) in enumerate(rows):
+        ax.barh(i, hi - lo, left=lo, height=bar_h, color=color,
+                edgecolor="white", linewidth=1.2, zorder=3)
+        ax.text(hi + xmax * 0.02, i, vtxt, va="center", ha="left",
+                fontproperties=_fp(11.5), color="#444")
 
-# 注記
-fig.text(0.012, 0.015,
-         "※上限は成功者の水準。アフィリは月1,000円未満が約4割・1万円超えに半年ほどとも。"
-         "／出典:アフィリエイトマーケティング協会2025・poten社調査ほか",
-         fontproperties=fp, fontsize=7.3, color="#888")
+    ax.set_yticks(range(n))
+    ax.set_yticklabels([r[0] for r in rows], fontproperties=_fp(12))
+    ax.set_ylim(-0.7, n - 0.3)        # 上下に余白
+    ax.set_xlim(0, xmax)
+    ax.set_xlabel(xlabel, fontproperties=_fp(11.5), labelpad=10)
+    ax.set_title(title, fontproperties=_fp(16.5, "bold"), pad=20, loc="left", x=0.0)
 
-plt.tight_layout(rect=(0, 0.04, 1, 1))
-out = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                   "images", "fukugyo-income.png")
-os.makedirs(os.path.dirname(out), exist_ok=True)
-fig.savefig(out, dpi=150, facecolor="white", bbox_inches="tight")
-print("saved:", out)
+    ax.grid(axis="x", color="#eef1f4", linewidth=1, zorder=0)
+    ax.set_axisbelow(True)
+    for s in ("top", "right", "left"):
+        ax.spines[s].set_visible(False)
+    ax.spines["bottom"].set_color("#dfe3e8")
+    ax.tick_params(axis="x", labelsize=9.5, colors="#888", length=0)
+    ax.tick_params(axis="y", length=0)
+
+    fig.text(0.013, 0.022, note, fontproperties=_fp(7.6), color="#9aa0a6")
+
+    # 余白：左にラベル分、下に注記分を確保
+    fig.subplots_adjust(left=0.235, right=0.965, top=0.84, bottom=0.16 + 0.015 * n)
+    out = os.path.join(IMG_DIR, filename)
+    fig.savefig(out, dpi=160, facecolor="white")
+    plt.close(fig)
+    print("saved:", out)
+
+
+# 同系色パレット（淡いブルー基調＋ポイント色）
+BLUE = "#6f9fd8"        # 標準
+BLUE_LT = "#a9c6e6"     # 薄い
+CORAL = "#e88a73"       # 低い側の強調（飲食）
+GREEN = "#5cb389"       # 高い側の強調（AI）
+
+# 1) 副業ジャンル別 月収レンジ ----------------------------------------
+make_chart(
+    "fukugyo-income.png",
+    "副業ジャンル別 月収レンジの目安",
+    [
+        ("ブログ・\nアフィリエイト", 0, 100, "0〜100万円超", BLUE),
+        ("コンテンツ販売\n(note・Booth)", 0, 50, "0〜50万円超", BLUE_LT),
+        ("動画編集", 5, 30, "5〜30万円", BLUE_LT),
+        ("せどり・物販", 3, 30, "3〜30万円", BLUE_LT),
+        ("Webライター", 3, 20, "3〜20万円", BLUE_LT),
+    ],
+    "月収の目安（万円）",
+    132,
+    "※上限は成功者の水準。アフィリは月1,000円未満が約4割・1万円超えに半年ほどとも。"
+    "／出典: アフィリエイトマーケティング協会2025・poten社調査ほか",
+)
+
+# 2) 職業別 平均年収の比較 --------------------------------------------
+make_chart(
+    "shokugyo-income.png",
+    "職業別 平均年収の比較",
+    [
+        ("飲食業", 0, 358, "約358万円", CORAL),
+        ("全業種の平均", 0, 458, "約458万円", BLUE_LT),
+        ("IT・PC系\nエンジニア", 0, 550, "約550万円", BLUE),
+        ("AI・機械学習\nエンジニア", 0, 650, "約650万円", GREEN),
+    ],
+    "平均年収（万円）",
+    760,
+    "※出典: 国税庁 民間給与実態統計(全業種平均)・厚労省 job tag・求人ボックス 給料ナビ"
+    "・doda/パーソルキャリア(2024〜2025) を基に作成。金額は目安。",
+)
