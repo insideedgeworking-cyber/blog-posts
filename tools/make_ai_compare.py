@@ -72,3 +72,29 @@ fig.text(0.012, 0.04, "※無料でも試せる。料金は代表的な個人向
 fig.subplots_adjust(left=0.02, right=0.98, top=0.84, bottom=0.1)
 fig.savefig(os.path.join(IMG,"ai-compare.png"), facecolor="white", bbox_inches="tight"); plt.close(fig)
 print("saved ai-compare.png")
+
+# 3) 開発・自動化系（コーディングエージェント）比較表 ----------------
+header3 = ["ツール", "使う場所", "料金の目安", "特徴・こんな人向け"]
+data3 = [
+    ["Claude Code", "ターミナル", "Claude Pro(約3,000円)に込み", "自律的に複数ファイルを編集。実装向き"],
+    ["OpenAI Codex", "ターミナル/クラウド", "ChatGPT(無料〜)に込み", "任せて待つ“おまかせ”型。大きな作業向き"],
+    ["GitHub Copilot", "エディタの中", "月10ドル〜", "書きながら補完・相談。二人三脚で"],
+    ["Cursor", "AI専用エディタ", "月20ドル〜", "VS Code型。エディタごとAI化"],
+]
+fig, ax = plt.subplots(figsize=(10.6, 3.0), dpi=160); ax.axis("off")
+tbl = ax.table(cellText=data3, colLabels=header3, cellLoc="center", loc="center",
+               colWidths=[0.2, 0.18, 0.27, 0.35])
+tbl.auto_set_font_size(False); tbl.scale(1, 2.0)
+for (r,c), cell in tbl.get_celld().items():
+    cell.set_edgecolor("#e3e9f0"); txt = cell.get_text()
+    if r == 0:
+        cell.set_facecolor(BLUE); txt.set_color("white"); txt.set_fontproperties(fp(11,"bold"))
+    else:
+        cell.set_facecolor("#ffffff" if r%2 else "#f5f8fc")
+        txt.set_fontproperties(fp(10.5 if c>0 else 11, "bold" if c==0 else "normal"))
+        if c==0: txt.set_color(BLUE)
+ax.set_title("AIにPC作業を任せる「開発・自動化系」ツール（2026年6月時点）", fontproperties=fp(14.5,"bold"), loc="left", x=0, pad=14)
+fig.text(0.012, 0.04, "※やや上級者向け。料金はチャット版の契約に含まれることが多い。改定により変わる。", fontproperties=fp(7.5), color="#9aa0a6")
+fig.subplots_adjust(left=0.02, right=0.98, top=0.84, bottom=0.1)
+fig.savefig(os.path.join(IMG,"ai-coding.png"), facecolor="white", bbox_inches="tight"); plt.close(fig)
+print("saved ai-coding.png")
