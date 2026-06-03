@@ -77,13 +77,14 @@ print("saved ai-compare.png")
 header3 = ["ツール", "使う場所", "料金の目安", "特徴・こんな人向け"]
 data3 = [
     ["Claude Code", "ターミナル", "Claude Pro(約3,000円)に込み", "自律的に複数ファイルを編集。実装向き"],
+    ["Cowork", "デスクトップアプリ", "Claude(約3,000円)に込み", "ノーコード寄り。ファイル/Office作業を自動化"],
     ["OpenAI Codex", "ターミナル/クラウド", "ChatGPT(無料〜)に込み", "任せて待つ“おまかせ”型。大きな作業向き"],
     ["GitHub Copilot", "エディタの中", "月10ドル〜", "書きながら補完・相談。二人三脚で"],
     ["Cursor", "AI専用エディタ", "月20ドル〜", "VS Code型。エディタごとAI化"],
 ]
-fig, ax = plt.subplots(figsize=(10.6, 3.0), dpi=160); ax.axis("off")
+fig, ax = plt.subplots(figsize=(10.8, 3.6), dpi=160); ax.axis("off")
 tbl = ax.table(cellText=data3, colLabels=header3, cellLoc="center", loc="center",
-               colWidths=[0.2, 0.18, 0.27, 0.35])
+               colWidths=[0.19, 0.2, 0.26, 0.35])
 tbl.auto_set_font_size(False); tbl.scale(1, 2.0)
 for (r,c), cell in tbl.get_celld().items():
     cell.set_edgecolor("#e3e9f0"); txt = cell.get_text()
@@ -94,7 +95,7 @@ for (r,c), cell in tbl.get_celld().items():
         txt.set_fontproperties(fp(10.5 if c>0 else 11, "bold" if c==0 else "normal"))
         if c==0: txt.set_color(BLUE)
 ax.set_title("AIにPC作業を任せる「開発・自動化系」ツール（2026年6月時点）", fontproperties=fp(14.5,"bold"), loc="left", x=0, pad=14)
-fig.text(0.012, 0.04, "※やや上級者向け。料金はチャット版の契約に含まれることが多い。改定により変わる。", fontproperties=fp(7.5), color="#9aa0a6")
+fig.text(0.012, 0.04, "※Coworkはノーコード寄りで初心者にも。料金はチャット版の契約に含まれることが多い。改定あり。", fontproperties=fp(7.5), color="#9aa0a6")
 fig.subplots_adjust(left=0.02, right=0.98, top=0.84, bottom=0.1)
 fig.savefig(os.path.join(IMG,"ai-coding.png"), facecolor="white", bbox_inches="tight"); plt.close(fig)
 print("saved ai-coding.png")
@@ -201,3 +202,13 @@ make_table("video-gen.png", "動画生成AIの比較（2026年6月）",
     ],
     [0.26, 0.24, 0.5],
     "※OpenAIのSoraは2026年に終了し、現在ChatGPTでは動画生成は使えません。料金・仕様は改定あり。", figh=3.4)
+
+make_table("research-compare.png", "リサーチに強いAIの比較（2026年6月）",
+    ["ツール", "無料", "料金の目安", "得意なこと"],
+    [
+        ["Perplexity", "○", "Pro 約3,000円", "出典つきでネット全体を調べる"],
+        ["NotebookLM", "○", "Plus 約2,900円", "自分の資料だけから回答・音声化"],
+        ["Gemini Deep Research", "月5回", "AI Pro 2,900円〜", "テーマを自動で深掘り調査"],
+    ],
+    [0.26, 0.13, 0.24, 0.37],
+    "※リサーチ＝ネット全体はPerplexity、自分の資料はNotebookLMが得意。料金・仕様は改定あり。", figh=2.7)
