@@ -129,11 +129,11 @@ make_matrix("chatgpt-plans.png", "ChatGPT プラン×機能（2026年6月）",
         ["使えるAIモデル", "標準(制限)", "多め", "最新・高性能", "最上位"],
         ["メッセージ量", "少", "中", "多", "最大"],
         ["Deep Research(深い調査)", "×", "△", "○", "○"],
-        ["Sora(動画生成)", "×", "×", "○", "○"],
+        ["画像生成", "△制限", "○", "○", "○"],
         ["Codex(コーディング)", "△お試し", "△", "○", "○"],
         ["広告", "あり", "あり", "なし", "なし"],
     ],
-    "※Codexは単体契約ではなくChatGPTの契約に“含まれる”。実用はPlus以上が目安。20ドル≒約3,000円換算。改定あり。")
+    "※Codexは単体契約ではなくChatGPTの契約に“含まれる”。実用はPlus以上が目安。動画生成Soraは2026年に終了。20ドル≒約3,000円換算。改定あり。")
 
 make_matrix("claude-plans.png", "Claude プラン×機能（2026年6月）",
     ["機能 ＼ プラン", "Free", "Pro\n約3,000円", "Max 5x\n約16,000円", "Max 20x\n約32,000円"],
@@ -155,3 +155,49 @@ make_matrix("gemini-plans.png", "Gemini プラン×機能（2026年6月）",
         ["Deep Think(高度な推論)", "×", "×", "×", "○"],
     ],
     "※AI Plusは最初の2か月600円。AI Proは初月無料。Ultraは20TB/30TBの2段階。改定あり。")
+
+# 5) 汎用テーブル（画像生成・動画生成の比較用） ----------------------
+def make_table(fname, title, header, rows, widths, note, figh=3.0):
+    fig, ax = plt.subplots(figsize=(10.6, figh), dpi=160); ax.axis("off")
+    tbl = ax.table(cellText=rows, colLabels=header, cellLoc="center", loc="center", colWidths=widths)
+    tbl.auto_set_font_size(False); tbl.scale(1, 2.0)
+    for (r,c), cell in tbl.get_celld().items():
+        cell.set_edgecolor("#e3e9f0"); t = cell.get_text()
+        if r == 0:
+            cell.set_facecolor(BLUE); t.set_color("white"); t.set_fontproperties(fp(10.5,"bold"))
+        else:
+            cell.set_facecolor("#ffffff" if r%2 else "#f5f8fc")
+            t.set_fontproperties(fp(10.5 if c>0 else 11, "bold" if c==0 else "normal"))
+            if c==0: t.set_color(BLUE)
+            s = t.get_text()
+            if s.startswith("○"): t.set_color("#2e9e5b")
+            elif s == "×": t.set_color("#c64b3c")
+    ax.set_title(title, fontproperties=fp(14.5,"bold"), loc="left", x=0, pad=12)
+    fig.text(0.012, 0.04, note, fontproperties=fp(7.5), color="#9aa0a6")
+    fig.subplots_adjust(left=0.02, right=0.98, top=0.84, bottom=0.1)
+    fig.savefig(os.path.join(IMG, fname), facecolor="white", bbox_inches="tight"); plt.close(fig)
+    print("saved", fname)
+
+make_table("image-gen.png", "画像生成AIの比較（2026年6月）",
+    ["ツール", "無料", "料金の目安", "特徴・向いてる用途"],
+    [
+        ["ChatGPT(画像)", "△制限", "Plus 約3,000円", "会話で指示・部分修正が得意。万能型"],
+        ["Gemini(Nano Banana)", "○ 1日約100回", "無料〜2,900円", "日本語の文字入れに強い。無料枠が多い"],
+        ["Midjourney", "×", "月10ドル〜", "アート/イラストが最高品質。商用OK(有料)"],
+        ["Adobe Firefly", "△", "Adobe契約", "商用利用が安心。Photoshop等と連携"],
+        ["Canva", "○", "無料〜", "デザインと一体。SNS・バナー作成向き"],
+    ],
+    [0.2, 0.16, 0.2, 0.44],
+    "※商用利用の可否は各サービスの規約を必ず確認。料金・仕様は改定あり。", figh=3.4)
+
+make_table("video-gen.png", "動画生成AIの比較（2026年6月）",
+    ["ツール", "料金の目安", "特徴"],
+    [
+        ["Google Veo (Gemini)", "AI Pro 2,900円〜", "現在の本命。高品質。Ultraで音声付き"],
+        ["Grok Imagine (Grok)", "Lite 980円〜", "安く動画も作れる。Xと相性がよい"],
+        ["Runway", "月12ドル〜", "プロ向け。映像品質が最高峰"],
+        ["Kling", "無料枠あり", "無料枠が充実。音声も同時に生成"],
+        ["Pika", "低価格", "高速・手軽に短い動画を作れる"],
+    ],
+    [0.26, 0.24, 0.5],
+    "※OpenAIのSoraは2026年に終了し、現在ChatGPTでは動画生成は使えません。料金・仕様は改定あり。", figh=3.4)
