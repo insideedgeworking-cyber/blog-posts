@@ -44,6 +44,55 @@ def inline(s):
     s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
     return s
 
+GLOSSARY_PATH = os.path.join(ROOT, "posts", "_glossary.json")
+
+def load_glossary():
+    try:
+        return json.load(open(GLOSSARY_PATH, encoding="utf-8-sig"))
+    except Exception:
+        return None
+
+def save_glossary_url(url):
+    g = load_glossary()
+    if g is not None and g.get("url") != url:
+        g["url"] = url
+        json.dump(g, open(GLOSSARY_PATH, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+
+def add_anchor_ids(html, gloss):
+    """用語解説記事の見出しに id を付ける（他記事からの飛び先アンカー）。"""
+    for e in gloss["terms"]:
+        m = e.get("match")
+        if not m:
+            continue
+        # <h3>CPU（…）</h3> → <h3 id="g-cpu">CPU（…）</h3>（最初の一致のみ）
+        pat = re.compile(r'(<h[23])>(' + re.escape(m) + r')')
+        html, n = pat.subn(r'\1 id="g-' + e["slug"] + r'">\2', html, count=1)
+    return html
+
+def autolink_terms(body, gloss, url):
+    """本文(マークダウン)中、各用語の最初の1回だけを用語解説へリンクする。"""
+    pairs = []
+    for e in gloss["terms"]:
+        for a in e.get("aliases", []):
+            pairs.append((a, e["slug"]))
+    pairs.sort(key=lambda x: -len(x[0]))      # 長い語を優先（部分一致の誤リンク防止）
+    used = set()
+    lines = body.split("\n")
+    for i, line in enumerate(lines):
+        s = line.lstrip()
+        if s.startswith(("#", "!", "<!--", ">", "|")) or "](" in line:
+            continue                          # 見出し/画像/コメント/引用/既存リンク行は対象外
+        for a, slug in pairs:
+            if slug in used:
+                continue
+            idx = line.find(a)
+            if idx < 0:
+                continue
+            lines[i] = line[:idx] + f"[{a}]({url}#g-{slug})" + line[idx + len(a):]
+            line = lines[i]
+            used.add(slug)
+    return "\n".join(lines)
+
 RAW_IMG_RE = re.compile(r'https://raw\.githubusercontent\.com/[^)\s]+/images/[A-Za-z0-9._-]+')
 
 def media_find(cred, slug):
@@ -119,12 +168,28 @@ def main():
     if "--status" in sys.argv:
         status = sys.argv[sys.argv.index("--status") + 1]
 
+    dry = "--dry" in sys.argv
     post = json.load(open(os.path.join(ROOT, "posts", f"{post_id}.json"), encoding="utf-8-sig"))
     cred = load_cred()
-    cat_id = get_or_create_category(cred, post["category"])
-    body = localize_images(cred, post["body"])          # 画像をWPメディアへ移して自前URLに
-    content = md_to_html(body)
 
+    gloss = load_glossary()
+    is_glossary = bool(gloss) and post_id == gloss.get("glossary_post_id")
+
+    body = post["body"] if dry else localize_images(cred, post["body"])   # 画像をWPメディアへ
+    # 用語の自動リンク（用語解説記事そのものは対象外。URL未確定ならスキップ）
+    if gloss and gloss.get("url") and not is_glossary:
+        body = autolink_terms(body, gloss, gloss["url"])
+        print("  用語リンク:", body.count(gloss["url"] + "#g-"), "件")
+    content = md_to_html(body)
+    if is_glossary and gloss:
+        content = add_anchor_ids(content, gloss)
+        print("  用語アンカー付与:", content.count('id="g-'), "件")
+
+    if dry:
+        print("--- DRY RUN（投稿しません）。本文HTML先頭600字 ---")
+        print(content[:600]); return
+
+    cat_id = get_or_create_category(cred, post["category"])
     payload = {"title": post["title"], "content": content,
                "status": status, "categories": [cat_id]}
     if post.get("excerpt"):                              # メタ説明（検索スニペット用）
@@ -133,6 +198,8 @@ def main():
         res = api(cred, f"/posts/{post['wp_post_id']}", "POST", payload)
     else:
         res = api(cred, "/posts", "POST", payload)
+    if is_glossary:                                            # 用語解説のURLを記録（他記事のリンク先）
+        save_glossary_url(res.get("link", ""))
 
     print("OK id=", res["id"], "status=", res["status"], "category=", post["category"], f"(id {cat_id})")
     print("edit:", cred["site_url"].rstrip("/") + f"/wp-admin/post.php?post={res['id']}&action=edit")

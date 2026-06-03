@@ -1,0 +1,165 @@
+{
+  "glossary_post_id": "post_002",
+  "url": "https://workstartedge.com/%e3%80%90%e4%bf%9d%e5%ad%98%e7%89%88%e3%80%91%e3%83%91%e3%82%bd%e3%82%b3%e3%83%b3%e7%94%a8%e8%aa%9e%e3%81%be%e3%81%a8%e3%82%81%ef%bd%9c%e5%89%af%e6%a5%ad%e3%83%bb%e3%82%b2%e3%83%bc%e3%83%a0%e7%94%a8pc/",
+  "terms": [
+    {
+      "slug": "gpu",
+      "match": "GPU",
+      "aliases": [
+        "グラフィックボード",
+        "グラボ",
+        "GPU"
+      ]
+    },
+    {
+      "slug": "cpu",
+      "match": "CPU",
+      "aliases": [
+        "CPU"
+      ]
+    },
+    {
+      "slug": "memory",
+      "match": "メモリ",
+      "aliases": [
+        "メモリ"
+      ]
+    },
+    {
+      "slug": "storage",
+      "match": "ストレージ",
+      "aliases": [
+        "ストレージ"
+      ]
+    },
+    {
+      "slug": "ssd",
+      "match": "SSDとHDD",
+      "aliases": [
+        "SSD",
+        "HDD"
+      ]
+    },
+    {
+      "slug": "vram",
+      "match": "VRAM",
+      "aliases": [
+        "VRAM"
+      ]
+    },
+    {
+      "slug": "sata-nvme",
+      "match": "SATA",
+      "aliases": [
+        "NVMe",
+        "M.2",
+        "SATA"
+      ]
+    },
+    {
+      "slug": "spec",
+      "match": "スペック",
+      "aliases": [
+        "スペック"
+      ]
+    },
+    {
+      "slug": "corei",
+      "match": "Intel Core",
+      "aliases": [
+        "Core i7",
+        "Core i5",
+        "Core i3",
+        "Core i9"
+      ]
+    },
+    {
+      "slug": "ryzen",
+      "match": "AMD Ryzen",
+      "aliases": [
+        "Ryzen"
+      ]
+    },
+    {
+      "slug": "bto",
+      "match": "BTO",
+      "aliases": [
+        "BTO"
+      ]
+    },
+    {
+      "slug": "motherboard",
+      "match": "マザーボード",
+      "aliases": [
+        "マザーボード"
+      ]
+    },
+    {
+      "slug": "psu",
+      "match": "電源ユニット",
+      "aliases": [
+        "電源ユニット"
+      ]
+    },
+    {
+      "slug": "cooling",
+      "match": "冷却",
+      "aliases": [
+        "水冷",
+        "空冷"
+      ]
+    },
+    {
+      "slug": "bench",
+      "match": "ベンチマーク",
+      "aliases": [
+        "ベンチマーク"
+      ]
+    },
+    {
+      "slug": "refresh",
+      "match": "モニター",
+      "aliases": [
+        "リフレッシュレート"
+      ]
+    },
+    {
+      "slug": "resolution",
+      "match": "解像度",
+      "aliases": [
+        "解像度",
+        "フルHD",
+        "WQHD"
+      ]
+    },
+    {
+      "slug": "fps",
+      "match": "fps",
+      "aliases": [
+        "fps"
+      ]
+    },
+    {
+      "slug": "gmouse",
+      "match": "ゲーミングマウス",
+      "aliases": [
+        "ゲーミングマウス",
+        "多ボタンマウス"
+      ]
+    },
+    {
+      "slug": "lefthand",
+      "match": "左手デバイス",
+      "aliases": [
+        "左手デバイス"
+      ]
+    },
+    {
+      "slug": "mechkb",
+      "match": "メカニカルキーボード",
+      "aliases": [
+        "メカニカルキーボード"
+      ]
+    }
+  ]
+}
