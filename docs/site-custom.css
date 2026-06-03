@@ -1,0 +1,31 @@
+/* =========================================================
+   WorkStartEdge サイトデザイン用CSS（青基調＋オレンジ差し色）
+   貼り付け先: WordPress 管理画面 → 外観 → カスタマイズ → 追加CSS
+   ※ ここはバックアップ。REST API では追加CSSを書けないため手動貼り付け。
+      色を変えたい時は :root の2色を差し替えれば全体に反映。
+   ========================================================= */
+:root{ --ws-blue:#2f6fb3; --ws-orange:#ff7a3d; }
+
+/* 背景・カード */
+body{ background:#e7edf5 !important; color:#333 !important; }
+.entry-card-wrap{ background:#fff !important; border-radius:12px !important; box-shadow:0 3px 14px rgba(31,58,95,.10) !important; overflow:hidden; margin-bottom:22px !important; }
+article.post, .article{ background:#fff !important; border-radius:12px; }
+
+/* ヘッダーを青く */
+#header-container{ background:linear-gradient(135deg,#2f6fb3,#234f82) !important; }
+.tagline{ color:#cfe0f2 !important; }
+.logo-header .site-name, .site-name-text-link, #site-title a{ color:#fff !important; }
+#header-in{ padding-top:16px !important; padding-bottom:16px !important; }
+#navi{ background:rgba(0,0,0,.12) !important; }
+#navi .navi-in>ul>li>a, #navi a{ color:#fff !important; }
+#navi .navi-in>ul>li>a:hover{ background:rgba(255,255,255,.15) !important; }
+
+/* リンク・見出し */
+.entry-content a{ color:#2f6fb3 !important; }
+.entry-content h2, .article h2{ background:#fff !important; border:none !important; border-left:6px solid #2f6fb3 !important; border-bottom:2px solid #e3e9f0 !important; padding:.45em .7em !important; color:#1d3a5f !important; border-radius:0 6px 6px 0; }
+.entry-content h3, .article h3{ border-left:4px solid #ff7a3d !important; padding-left:.6em !important; color:#1d3a5f !important; }
+
+/* ボタン・引用・画像 */
+.wp-block-button__link, .btn, a.btn, .more-button{ background:#ff7a3d !important; border-color:#ff7a3d !important; color:#fff !important; border-radius:8px !important; }
+.entry-content blockquote{ border-left:4px solid #2f6fb3 !important; background:#f5f8fc !important; padding:1em 1.2em !important; border-radius:0 8px 8px 0; }
+.entry-content img{ border-radius:8px; }
