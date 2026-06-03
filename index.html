@@ -48,6 +48,7 @@ header h1 { font-size: 17px; font-weight: bold; }
 .card-meta { margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
 .tag { font-size: 12px; padding: 3px 8px; border-radius: 10px; background: #f0f0f0; color: #555; }
 .tag.cat { background: #e8f0fe; color: #1a56b8; }
+.card-status { font-size: 12px; padding: 3px 6px; border-radius: 10px; border: 1px solid #ddd; background: #fff; color: #555; cursor: pointer; }
 .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
 .status-idea { background: #f4b400; }
 .status-drafting { background: #9334e6; }
@@ -210,7 +211,7 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
         </div>
         <div class="section">
           <label>🔧 修正指示（Claudeにどう直してほしいか）</label>
-          <textarea id="revise-input" rows="2" placeholder="例：具体例をもっと増やして / 導入をキャッチーに / 専門用語をかみ砕いて" style="min-height:auto;"></textarea>
+          <textarea id="revise-input" rows="2" placeholder="例：具体例をもっと増やして / 導入をキャッチーに / 専門用語をかみ砕いて" style="min-height:auto;" oninput="if(currentPost)localStorage.setItem('blog_revise_'+currentPost.id,this.value)"></textarea>
           <button class="sub-btn" id="revise-btn">この指示で修正する</button>
         </div>
         <div class="gen-status" id="gen-status-e"></div>
@@ -275,7 +276,8 @@ const CATEGORIES = ["アフィリエイト", "副業", "YouTube", "X・Threads",
 const DEFAULT_MODEL = 'claude-opus-4-8';
 
 let posts = [];
-let approvedOrder = [];   // 承認済みの並び順（id配列）= GitHubの _order.json
+let manualOrder = [];     // 全記事の手動並び順（id配列）= GitHubの _order.json の manual_order
+let approvedOrder = [];   // 承認済みの並び順（投稿順）= manual_order のうち承認済みだけ。投稿ツールが参照
 let orderSha = '';
 let currentPost = null;
 let isNew = false;
@@ -347,7 +349,10 @@ async function loadPosts() {
       const r = await fetch(orderFile.download_url + '?t=' + Date.now(), {cache:'no-store'});
       const o = await r.json();
       approvedOrder = o.approved_order || [];
+      // 旧データ互換：manual_order が無ければ approved_order を種にする
+      manualOrder = (o.manual_order && o.manual_order.length) ? o.manual_order : [...approvedOrder];
     }
+    normalizeOrder();
     document.getElementById('total-badge').textContent = `${posts.length}本`;
     renderList();
   } catch(e) {
@@ -355,11 +360,16 @@ async function loadPosts() {
   }
 }
 
-function applyApprovedOrder(list) {
-  if (!approvedOrder.length) return list;
-  const ordered = [], rest = [...list];
-  approvedOrder.forEach(id => { const i = rest.findIndex(s=>s.id===id); if(i>=0){ ordered.push(rest[i]); rest.splice(i,1); } });
-  return [...ordered, ...rest];
+// 並び順を整える：存在しないidを除き、未登録の記事を末尾(新しい順)に追加
+function normalizeOrder() {
+  const ids = posts.map(p => p.id);
+  manualOrder = manualOrder.filter(id => ids.includes(id));
+  posts.forEach(p => { if (!manualOrder.includes(p.id)) manualOrder.push(p.id); });
+}
+function orderIndex(id) { const i = manualOrder.indexOf(id); return i < 0 ? 9999 : i; }
+// 承認済みだけを手動順で抜き出す＝投稿順（投稿ツールが読む approved_order）
+function deriveApprovedOrder() {
+  approvedOrder = manualOrder.filter(id => { const p = posts.find(x=>x.id===id); return p && p.status==='approved'; });
 }
 
 function updateCounts() {
@@ -378,20 +388,24 @@ function renderList() {
   if (currentCategory!=='all') list = list.filter(p => p.category===currentCategory);
 
   const isApproved = currentTab==='approved';
-  if (isApproved) list = applyApprovedOrder(list);
-  else list.sort((a,b)=>(b.created_at||'').localeCompare(a.created_at||''));
+  // 全タブで手動の並び順を適用
+  list = list.slice().sort((a,b)=> orderIndex(a.id) - orderIndex(b.id));
 
   if (!list.length){ c.innerHTML='<div class="empty">📭 記事がありません<br><br>「＋新規テーマを追加」から始めましょう</div>'; return; }
 
   c.innerHTML = list.map((s, idx) => {
     const titleHtml = s.title ? s.title : `<span class="muted">（タイトル未設定）${s.theme||''}</span>`;
     const orderNum = isApproved ? `<span class="order-badge">${idx+1}</span>` : '';
-    const handle   = isApproved ? `<span class="drag-handle" title="ドラッグして並び替え">☰</span>` : '';
-    const moveBtns = isApproved ? `<div class="move-btns">
+    const handle   = `<span class="drag-handle" title="ドラッグして並び替え">☰</span>`;
+    const moveBtns = `<div class="move-btns">
       <button class="move-btn" onclick="moveCard('${s.id}',-1,event)">▲</button>
       <button class="move-btn" onclick="moveCard('${s.id}',1,event)">▼</button>
-    </div>` : '';
-    return `<div class="script-card" id="card-${s.id}" draggable="${isApproved}" data-id="${s.id}"
+    </div>`;
+    const cur = s.status||'idea';
+    const statusSel = `<select class="card-status" onclick="event.stopPropagation()" onchange="changeStatus(event,'${s.id}')">`
+      + ['idea','drafting','approved','published'].map(v=>`<option value="${v}" ${v===cur?'selected':''}>${({idea:'💡アイデア',drafting:'✍️作成中',approved:'✅承認済',published:'📤投稿済'})[v]}</option>`).join('')
+      + `</select>`;
+    return `<div class="script-card" id="card-${s.id}" draggable="true" data-id="${s.id}"
       ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)"
       onclick="handleCardClick(event,'${s.id}')">
       <div class="card-top">
@@ -402,7 +416,7 @@ function renderList() {
       </div>
       <div class="card-meta">
         ${s.category?`<span class="tag cat">${s.category}</span>`:''}
-        <span class="tag"><span class="status-dot status-${s.status||'idea'}"></span>${statusLabel[s.status||'idea']}</span>
+        <span class="status-dot status-${cur}"></span>${statusSel}
         <span class="tag">📄 ${s.char_count||0}字</span>
         <span class="tag">📅 ${s.created_at||''}</span>
       </div>
@@ -410,7 +424,7 @@ function renderList() {
   }).join('');
 }
 
-// ── ドラッグ&ドロップ（承認済タブ）──
+// ── ドラッグ&ドロップ（全タブ対応）──
 let dragSrcId = null;
 function onDragStart(e){ dragSrcId=e.currentTarget.dataset.id; e.currentTarget.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; }
 function onDragOver(e){ e.preventDefault(); e.dataTransfer.dropEffect='move'; document.querySelectorAll('.script-card').forEach(el=>el.classList.remove('drag-over')); e.currentTarget.classList.add('drag-over'); }
@@ -421,12 +435,13 @@ function onDrop(e){
   const cards = [...document.querySelectorAll('.script-card')].map(el=>el.dataset.id);
   const from = cards.indexOf(dragSrcId), to = cards.indexOf(targetId);
   cards.splice(from,1); cards.splice(to,0,dragSrcId);
-  commitOrder(cards);
+  commitVisibleOrder(cards);
 }
 function onDragEnd(e){ document.querySelectorAll('.script-card').forEach(el=>el.classList.remove('dragging','drag-over')); }
 function handleCardClick(e, id){
   if (e.target.classList.contains('drag-handle')) return;
   if (e.target.classList.contains('move-btn')) return;
+  if (e.target.classList.contains('card-status')) return;
   openModal(id);
 }
 function moveCard(id, dir, e){
@@ -435,18 +450,50 @@ function moveCard(id, dir, e){
   const idx = cards.indexOf(id), newIdx = idx+dir;
   if (newIdx<0 || newIdx>=cards.length) return;
   cards.splice(idx,1); cards.splice(newIdx,0,id);
-  commitOrder(cards);
+  commitVisibleOrder(cards);
 }
-// 並び順を更新→GitHubへ保存
-async function commitOrder(cards) {
-  approvedOrder = cards;
+// 表示中のカード順を全体の並び順(manualOrder)に反映→GitHubへ保存
+// （フィルタ中でも、表示外の記事の位置はそのまま保つ）
+async function commitVisibleOrder(visibleIds) {
+  const slots = [];
+  manualOrder.forEach((id, i) => { if (visibleIds.includes(id)) slots.push(i); });
+  slots.forEach((pos, k) => { manualOrder[pos] = visibleIds[k]; });
+  deriveApprovedOrder();
   renderList();
   await saveOrderToGitHub();
+}
+// カードから直接ステータス変更
+async function changeStatus(e, id) {
+  e.stopPropagation();
+  const val = e.target.value;
+  const p = posts.find(x=>x.id===id);
+  if (!p || p.status===val) return;
+  const prev = p.status; p.status = val;
+  e.target.disabled = true;
+  const ok = await putPost(p);
+  e.target.disabled = false;
+  if (!ok) { p.status = prev; alert('❌ ステータス変更の保存に失敗しました（Token/REPOを確認）'); renderList(); return; }
+  deriveApprovedOrder(); await saveOrderToGitHub();
+  updateCounts(); renderList();
+}
+// 任意の記事JSONをGitHubへ保存（ステータス変更などの単体更新用）
+async function putPost(p) {
+  const { githubToken } = getSettings();
+  if (!githubToken) { alert('⚙️設定でGitHub Tokenを入力してください'); return false; }
+  const fileName = `${p.id}.json`;
+  let sha = '';
+  try { const r = await fetch(`${API_BASE}${fileName}?t=${Date.now()}`, {headers:{Authorization:`token ${githubToken}`}, cache:'no-store'}); if(r.ok) sha=(await r.json()).sha; } catch(e){}
+  const body = {message:`update: ${p.id} status=${p.status}`, content: btoa(unescape(encodeURIComponent(JSON.stringify(p, null, 2)))), branch:BRANCH};
+  if (sha) body.sha = sha;
+  try {
+    const res = await fetch(`${API_BASE}${fileName}`, {method:'PUT', headers:{Authorization:`token ${githubToken}`,'Content-Type':'application/json'}, body: JSON.stringify(body)});
+    return res.ok;
+  } catch(e){ return false; }
 }
 async function saveOrderToGitHub() {
   const { githubToken } = getSettings();
   if (!githubToken) return;
-  const content = btoa(unescape(encodeURIComponent(JSON.stringify({approved_order: approvedOrder}, null, 2))));
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify({manual_order: manualOrder, approved_order: approvedOrder}, null, 2))));
   const body = {message:'update: 承認済みの並び順', content, branch:BRANCH};
   if (orderSha) body.sha = orderSha;
   try {
@@ -510,6 +557,8 @@ function readIdea() {
 function fillEdit() {
   document.getElementById('title-input').value = currentPost.title || '';
   document.getElementById('body-input').value  = currentPost.body || '';
+  // 修正指示は消えないようlocalStorageから復元（再読込やタブ離脱で消えるのを防ぐ）
+  document.getElementById('revise-input').value = localStorage.getItem('blog_revise_'+currentPost.id) || '';
   populateAffSelect();
   updateCharCount();
 }
@@ -651,8 +700,12 @@ ${instr}
     currentPost.title = obj.title || currentPost.title;
     currentPost.body  = obj.body || currentPost.body;
     currentPost.char_count = currentPost.body.length;
-    fillEdit();
+    document.getElementById('title-input').value = currentPost.title || '';
+    document.getElementById('body-input').value  = currentPost.body || '';
+    updateCharCount();
     document.getElementById('modal-title').textContent = currentPost.title;
+    // 修正が済んだので保存しておいた指示はクリア
+    localStorage.removeItem('blog_revise_'+currentPost.id);
     document.getElementById('revise-input').value = '';
     showStatus('e','✅ 修正完了！内容を確認して保存してください');
   } catch(e){ showStatus('e','❌ '+e.message, true); }
@@ -701,11 +754,12 @@ async function saveToGitHub() {
   });
   if (!res.ok) return false;
   // ローカル反映
-  if (isNew) { posts.unshift(JSON.parse(JSON.stringify(currentPost))); isNew = false; document.getElementById('delete-modal').style.display='block'; }
+  if (isNew) { posts.unshift(JSON.parse(JSON.stringify(currentPost))); isNew = false; document.getElementById('delete-modal').style.display='block'; manualOrder.unshift(currentPost.id); }
   else { const i = posts.findIndex(s=>s.id===currentPost.id); if(i>=0) posts[i]=JSON.parse(JSON.stringify(currentPost)); }
-  // 承認済の並び順に追加（新たに承認済になった場合、末尾へ）
-  if (currentPost.status==='approved' && !approvedOrder.includes(currentPost.id)) { approvedOrder.push(currentPost.id); await saveOrderToGitHub(); }
-  if (currentPost.status!=='approved' && approvedOrder.includes(currentPost.id)) { approvedOrder = approvedOrder.filter(x=>x!==currentPost.id); await saveOrderToGitHub(); }
+  // 並び順を整え、承認済み（＝投稿順）を更新してGitHubへ
+  normalizeOrder();
+  deriveApprovedOrder();
+  await saveOrderToGitHub();
   document.getElementById('total-badge').textContent = `${posts.length}本`;
   renderList();
   return true;
@@ -735,7 +789,8 @@ async function deletePost() {
   });
   if (res.ok) {
     posts = posts.filter(x=>x.id!==currentPost.id);
-    if (approvedOrder.includes(currentPost.id)) { approvedOrder = approvedOrder.filter(x=>x!==currentPost.id); await saveOrderToGitHub(); }
+    localStorage.removeItem('blog_revise_'+currentPost.id);
+    normalizeOrder(); deriveApprovedOrder(); await saveOrderToGitHub();
     document.getElementById('total-badge').textContent = `${posts.length}本`;
     renderList();
     document.getElementById('modal-overlay').classList.remove('open');
