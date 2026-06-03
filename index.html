@@ -231,7 +231,12 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
           </select>
         </div>
         <div class="section">
-          <label>🗒 メモ</label>
+          <label>🔎 メタ説明（検索結果に出る紹介文・120字目安）</label>
+          <textarea id="excerpt-input" rows="3" placeholder="この記事の魅力を120字前後で。検索結果のスニペットに使われます" style="min-height:auto;" oninput="updateExcerptCount()"></textarea>
+          <div class="char-count" id="excerpt-count">0字</div>
+        </div>
+        <div class="section">
+          <label>🗒 メモ（社内用・記事には出ません）</label>
           <textarea id="notes-input" rows="2" placeholder="気になった点・修正案など" style="min-height:auto;"></textarea>
         </div>
         <button class="save-btn" id="save-btn-p">GitHubに保存</button>
@@ -515,7 +520,7 @@ function today() { return new Date().toISOString().slice(0,10); }
 
 function newPost() {
   isNew = true;
-  currentPost = { id: nextId(), created_at: today(), theme:'', ideas:'', title:'', category: CATEGORIES[0], keywords:[], body:'', char_count:0, status:'idea', wp_post_id:null, notes:'' };
+  currentPost = { id: nextId(), created_at: today(), theme:'', ideas:'', title:'', category: CATEGORIES[0], keywords:[], body:'', char_count:0, status:'idea', wp_post_id:null, notes:'', excerpt:'' };
   openModalForm('💡 新規テーマ');
   switchModalTab('idea');
 }
@@ -573,6 +578,13 @@ function fillPreview() {
   document.getElementById('preview-area').innerHTML = renderMarkdown(currentPost.body || '*本文がまだありません*');
   document.getElementById('status-input').value = currentPost.status || 'idea';
   document.getElementById('notes-input').value  = currentPost.notes || '';
+  const ex = document.getElementById('excerpt-input');
+  ex.value = currentPost.excerpt || '';
+  updateExcerptCount();
+}
+function updateExcerptCount(){
+  const v = document.getElementById('excerpt-input').value;
+  document.getElementById('excerpt-count').textContent = `${v.length}字`;
 }
 
 // ── 簡易Markdownレンダラ ──
@@ -728,8 +740,10 @@ function fallbackCopy(text, cb){
 // ── GitHub保存 ──
 function readPreviewFields(){
   const st = document.getElementById('status-input'); const nt = document.getElementById('notes-input');
+  const ex = document.getElementById('excerpt-input');
   if (st && document.getElementById('panel-preview').classList.contains('active')) currentPost.status = st.value;
   if (nt && document.getElementById('panel-preview').classList.contains('active')) currentPost.notes = nt.value;
+  if (ex && document.getElementById('panel-preview').classList.contains('active')) currentPost.excerpt = ex.value;
 }
 async function saveToGitHub() {
   const { githubToken } = getSettings();

@@ -210,7 +210,7 @@ make_table("research-compare.png", "リサーチに強いAIの比較（2026年6�
     [
         ["Perplexity", "○", "Pro 約3,000円", "出典つきでネット全体を調べる"],
         ["NotebookLM", "○", "Google AIに込み", "自分の資料だけから回答・音声化"],
-        ["Gemini Deep Research", "月5回", "AI Pro 2,900円〜", "テーマを自動で深掘り調査"],
+        ["Gemini Deep Research", "月5回", "Geminiに含まれる", "テーマを自動で深掘り調査"],
     ],
     [0.26, 0.13, 0.24, 0.37],
     "※リサーチ＝ネット全体はPerplexity、自分の資料はNotebookLMが得意。料金・仕様は改定あり。", figh=2.7)
