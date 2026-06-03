@@ -44,6 +44,44 @@ def inline(s):
     s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
     return s
 
+RAW_IMG_RE = re.compile(r'https://raw\.githubusercontent\.com/[^)\s]+/images/[A-Za-z0-9._-]+')
+
+def media_find(cred, slug):
+    """同じslugのメディアが既にあれば、そのURLを返す（再アップロード防止）。"""
+    try:
+        res = api(cred, f"/media?slug={slug}&per_page=20")
+        for m in res:
+            if m.get("slug") == slug:
+                return m.get("source_url")
+    except SystemExit:
+        pass
+    return None
+
+def media_upload(cred, path, filename):
+    data = open(path, "rb").read()
+    req = urllib.request.Request(cred["_base"] + "/media", data=data, method="POST",
+        headers={"Authorization": "Basic " + cred["_token"], "Content-Type": "image/png",
+                 "Content-Disposition": f'attachment; filename="{filename}"'})
+    with urllib.request.urlopen(req, timeout=180) as r:
+        return json.load(r)["source_url"]
+
+def localize_images(cred, body):
+    """本文中のGitHub画像URLを、WordPressメディアにアップした自前URLへ置き換える。"""
+    for url in sorted(set(RAW_IMG_RE.findall(body))):
+        fname = url.split("/images/")[-1]
+        slug = re.sub(r"\.[A-Za-z0-9]+$", "", fname).lower()
+        local = os.path.join(ROOT, "images", fname)
+        wp_url = media_find(cred, slug)
+        if not wp_url:
+            if not os.path.exists(local):
+                print("  ! 画像が見つからずスキップ:", fname); continue
+            wp_url = media_upload(cred, local, fname)
+            print("  upload:", fname, "->", wp_url)
+        else:
+            print("  reuse :", fname, "->", wp_url)
+        body = body.replace(url, wp_url)
+    return body
+
 def md_to_html(md):
     out, in_ul = [], False
     def close():
@@ -84,10 +122,13 @@ def main():
     post = json.load(open(os.path.join(ROOT, "posts", f"{post_id}.json"), encoding="utf-8-sig"))
     cred = load_cred()
     cat_id = get_or_create_category(cred, post["category"])
-    content = md_to_html(post["body"])
+    body = localize_images(cred, post["body"])          # 画像をWPメディアへ移して自前URLに
+    content = md_to_html(body)
 
     payload = {"title": post["title"], "content": content,
                "status": status, "categories": [cat_id]}
+    if post.get("excerpt"):                              # メタ説明（検索スニペット用）
+        payload["excerpt"] = post["excerpt"]
     if post.get("wp_post_id"):                                 # 既存があれば更新
         res = api(cred, f"/posts/{post['wp_post_id']}", "POST", payload)
     else:

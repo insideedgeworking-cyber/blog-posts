@@ -3,7 +3,7 @@
   "created_at": "2026-06-02",
   "theme": "相棒となるAI選び、AIツール比較",
   "ideas": "まず、パートナー選び副業初心者、経験者問わず今の時代AIあるかないかで仕事の効率が全然違う\n\nGPTや、Claudeとかの性能比較、無料版ランキング、ちょっと課金するなら、ガチ課金するならでそれぞれランキング、使えるツールも詳しく書く、ツールの組み合わせとかも書く、\n今日の日付時点での話\n有料プラン料金の比較\nクレジットカード登録がいることの説明\nクレジットアフィリをいずれ入れる\nここで出てきた用語は作成中の用語解説の欄になかったら対応する用語解説の記事に入れる。\nそれぞれの得意分野など図などいれた方がわかりやすいとこは図も入れ\nあるないとではどんだけ違うかなどの情報も盛り込んで",
-  "title": "副業で使うAIツール完全比較【2026年6月】全プラン・画像/動画生成・自動化まで｜ChatGPT・Claude・Gemini・Claude Code",
+  "title": "AIツール比較2026｜副業向けの選び方とおすすめ【全プラン解説】",
   "category": "比較",
   "keywords": [
     "AIツール",
@@ -24,5 +24,6 @@
   "char_count": 8163,
   "status": "drafting",
   "wp_post_id": null,
-  "notes": "AIツール比較の柱記事(整理・完全版)。構成=全体像→①会話AI(ChatGPT/Claude/Gemini/Grok,プラン表3枚)→②リサーチ(Perplexity/NotebookLM/GeminiDeepResearch,research-compare表)→③画像生成(image-gen表)→④動画生成(video-gen表,Sora終了明記)→⑤自動化(Claude Code/Cowork/Codex/Copilot/Cursor,ai-coding表)→料金/クレカ/目的別/注意/FAQ/まとめ。全ツールを表に入れて唐突感を解消(CoworkはAI-coding表に, NotebookLMはresearch-compare表に)。冒頭に偏り注記(現在Claude使用→ひいき配慮)。引き込み=『文章/PC素人の私でもAIでここまで』＋末尾でブログ魅力→他記事誘導。一次情報=運営者がClaude Codeで当ブログ構築。図9枚: ai-compare/chatgpt-plans/claude-plans/gemini-plans/research-compare/image-gen/video-gen/ai-coding/ai-price (tools/make_ai_compare.py)。アフィリ枠=クレカ1。PR表記冒頭。料金2026-06・改定多→更新時要再確認。Soraは終了→動画はVeo本命。"
+  "notes": "AIツール比較の柱記事(整理・完全版)。構成=全体像→①会話AI(ChatGPT/Claude/Gemini/Grok,プラン表3枚)→②リサーチ(Perplexity/NotebookLM/GeminiDeepResearch,research-compare表)→③画像生成(image-gen表)→④動画生成(video-gen表,Sora終了明記)→⑤自動化(Claude Code/Cowork/Codex/Copilot/Cursor,ai-coding表)→料金/クレカ/目的別/注意/FAQ/まとめ。全ツールを表に入れて唐突感を解消(CoworkはAI-coding表に, NotebookLMはresearch-compare表に)。冒頭に偏り注記(現在Claude使用→ひいき配慮)。引き込み=『文章/PC素人の私でもAIでここまで』＋末尾でブログ魅力→他記事誘導。一次情報=運営者がClaude Codeで当ブログ構築。図9枚: ai-compare/chatgpt-plans/claude-plans/gemini-plans/research-compare/image-gen/video-gen/ai-coding/ai-price (tools/make_ai_compare.py)。アフィリ枠=クレカ1。PR表記冒頭。料金2026-06・改定多→更新時要再確認。Soraは終了→動画はVeo本命。",
+  "excerpt": "主要AIツール（ChatGPT・Claude・Gemini・Grokほか）を、料金プランから画像・動画生成、作業の自動化まで初心者向けに比較。文章もPCも未経験だった私がAIでここまで——あなたに合う一台の選び方を正直に解説します。"
 }
