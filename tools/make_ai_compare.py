@@ -98,3 +98,60 @@ fig.text(0.012, 0.04, "※やや上級者向け。料金はチャット版の契
 fig.subplots_adjust(left=0.02, right=0.98, top=0.84, bottom=0.1)
 fig.savefig(os.path.join(IMG,"ai-coding.png"), facecolor="white", bbox_inches="tight"); plt.close(fig)
 print("saved ai-coding.png")
+
+# 4) プラン×機能の早見表（どのプランに何が含まれるか） ----------------
+def make_matrix(fname, title, header, rows, note):
+    fig, ax = plt.subplots(figsize=(10.4, 0.7 + 0.62*(len(rows)+1)), dpi=160); ax.axis("off")
+    tbl = ax.table(cellText=rows, colLabels=header, cellLoc="center", loc="center",
+                   colWidths=[0.28, 0.18, 0.18, 0.18, 0.18])
+    tbl.auto_set_font_size(False); tbl.scale(1, 2.1)
+    for (r,c), cell in tbl.get_celld().items():
+        cell.set_edgecolor("#e3e9f0"); t = cell.get_text()
+        if r == 0:
+            cell.set_facecolor(BLUE); t.set_color("white"); t.set_fontproperties(fp(10.5,"bold"))
+        elif c == 0:
+            cell.set_facecolor("#eef3f9"); t.set_color("#1d3a5f"); t.set_fontproperties(fp(10.5,"bold")); t.set_ha("left")
+            cell.PAD = 0.04
+        else:
+            cell.set_facecolor("#ffffff" if r%2 else "#f7fafd"); t.set_fontproperties(fp(10.5))
+            s = t.get_text()
+            if s == "○": t.set_color("#2e9e5b")
+            elif s == "×": t.set_color("#c64b3c")
+    ax.set_title(title, fontproperties=fp(14.5,"bold"), loc="left", x=0, pad=12)
+    fig.text(0.012, 0.03, note, fontproperties=fp(7.5), color="#9aa0a6")
+    fig.subplots_adjust(left=0.02, right=0.98, top=0.86, bottom=0.12)
+    fig.savefig(os.path.join(IMG, fname), facecolor="white", bbox_inches="tight"); plt.close(fig)
+    print("saved", fname)
+
+make_matrix("chatgpt-plans.png", "ChatGPT プラン×機能（2026年6月）",
+    ["機能 ＼ プラン", "Free", "Go\n約1,500円", "Plus\n約3,000円", "Pro\n約32,000円"],
+    [
+        ["使えるAIモデル", "標準(制限)", "多め", "最新・高性能", "最上位"],
+        ["メッセージ量", "少", "中", "多", "最大"],
+        ["Deep Research(深い調査)", "×", "△", "○", "○"],
+        ["Sora(動画生成)", "×", "×", "○", "○"],
+        ["Codex(コーディング)", "△お試し", "△", "○", "○"],
+        ["広告", "あり", "あり", "なし", "なし"],
+    ],
+    "※Codexは単体契約ではなくChatGPTの契約に“含まれる”。実用はPlus以上が目安。20ドル≒約3,000円換算。改定あり。")
+
+make_matrix("claude-plans.png", "Claude プラン×機能（2026年6月）",
+    ["機能 ＼ プラン", "Free", "Pro\n約3,000円", "Max 5x\n約16,000円", "Max 20x\n約32,000円"],
+    [
+        ["最新モデル(Opus)", "×", "○", "○", "○"],
+        ["Claude Code(自動作業)", "×", "○", "○", "○"],
+        ["Projects/リサーチ", "△", "○", "○", "○"],
+        ["使える量の目安", "少", "基準", "5倍", "20倍"],
+    ],
+    "※Claude CodeはPro以上に“含まれる”(追加料金なし)。Max 5x/20xは機能は同じで使用量の差。20ドル≒約3,000円換算。改定あり。")
+
+make_matrix("gemini-plans.png", "Gemini プラン×機能（2026年6月）",
+    ["機能 ＼ プラン", "無料", "AI Plus\n1,200円", "AI Pro\n2,900円", "AI Ultra\n14,500円〜"],
+    [
+        ["Deep Research(深い調査)", "月5回", "○", "1日20回", "1日120回"],
+        ["Veo(動画生成)", "×", "△", "○(高速)", "○(音声付)"],
+        ["AIクレジット(画像/動画量)", "少", "200", "1,000", "25,000"],
+        ["Googleストレージ", "15GB", "200GB", "2TB", "20TB〜"],
+        ["Deep Think(高度な推論)", "×", "×", "×", "○"],
+    ],
+    "※AI Plusは最初の2か月600円。AI Proは初月無料。Ultraは20TB/30TBの2段階。改定あり。")
