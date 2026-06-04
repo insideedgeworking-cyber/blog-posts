@@ -1,5 +1,6 @@
 {
   "manual_order": [
+    "post_014",
     "post_007",
     "post_008",
     "post_009",
@@ -14,7 +15,5 @@
     "post_005",
     "post_006"
   ],
-  "approved_order": [
-    "post_006"
-  ]
+  "approved_order": []
 }
