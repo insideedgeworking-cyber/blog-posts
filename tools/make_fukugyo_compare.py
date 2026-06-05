@@ -48,3 +48,46 @@ make_table("fukugyo-compare.png", "副業7種類の早見表（収入・期間�
     [0.18, 0.30, 0.16, 0.20, 0.16],
     "※各種調査(2025〜2026)と運営者の実感をもとにした目安。収入・期間は人ややり方で大きく変わる。即金=作業した分すぐ収入／資産型=育つと継続収入。",
     figh=4.6)
+
+# ── 始めやすさ × 稼ぎやすさ のポジショニングマップ ──
+ORANGE = "#ff7a3d"
+# name, 始めやすさ(x), 稼ぎやすさ=早く確実に(y), タイプ, ラベル位置(dx,dy,ha)
+POINTS = [
+    ("ブログ・アフィリ", 4.6, 2.0, "asset", (0, -0.28, "center")),
+    ("YouTube",          2.8, 1.5, "asset", (0,  0.26, "center")),
+    ("X・Threads",       5.0, 2.4, "asset", (-0.1,0.26, "right")),
+    ("note販売",         3.7, 2.7, "asset", (0,  0.26, "center")),
+    ("Webライター",      4.2, 4.6, "labor", (0, -0.30, "center")),
+    ("動画編集",         2.7, 4.0, "labor", (0,  0.26, "center")),
+    ("せどり・物販",     1.9, 3.8, "labor", (0.15,-0.30,"left")),
+]
+def make_map(fname):
+    fig, ax = plt.subplots(figsize=(9.6, 7.2), dpi=160)
+    # 四分割の補助線
+    ax.axvline(3, color="#dfe5ec", lw=1, zorder=1); ax.axhline(3, color="#dfe5ec", lw=1, zorder=1)
+    quad = [(5.6,5.05,"手軽＆早く稼ぎやすい","right"),(0.65,5.05,"即金だが手間・資金","left"),
+            (5.6,1.0,"手軽だが時間がかかる(資産)","right"),(0.65,2.05,"ハードル高め","left")]
+    for x,y,t,ha in quad:
+        ax.text(x,y,t,fontproperties=fp(9.5,"bold"),color="#c2c8d0",ha=ha,va="center",zorder=1)
+    for name,x,y,typ,(dx,dy,ha) in POINTS:
+        col = BLUE if typ=="asset" else ORANGE
+        ax.scatter([x],[y],s=420,color=col,edgecolor="white",linewidth=1.5,zorder=3)
+        ax.text(x+dx,y+dy,name,fontproperties=fp(11.5,"bold"),color="#333",ha=ha,va="center",zorder=4)
+    ax.set_xlim(0.5,5.7); ax.set_ylim(0.7,5.2)
+    ax.set_xlabel("始めやすさ →（手軽・低コスト・低リスク）", fontproperties=fp(12,"bold"), color=BLUE)
+    ax.set_ylabel("稼ぎやすさ →（早く確実に稼げる）", fontproperties=fp(12,"bold"), color=BLUE)
+    ax.set_xticks([]); ax.set_yticks([])
+    for s in ("top","right"): ax.spines[s].set_visible(False)
+    for s in ("left","bottom"): ax.spines[s].set_color("#c2c8d0")
+    # 凡例
+    ax.scatter([],[],s=200,color=BLUE,label="資産型（今は下でも育てば天井が高い）")
+    ax.scatter([],[],s=200,color=ORANGE,label="労働型（即金だが作業＝収入）")
+    leg = ax.legend(loc="lower left", prop=fp(10), frameon=True, edgecolor="#e3e9f0")
+    ax.set_title("副業の「始めやすさ × 稼ぎやすさ」マップ", fontproperties=fp(15,"bold"), loc="left", x=0, pad=12)
+    fig.text(0.012,0.015,"※目安。右上ほど手軽で早く稼げる。青(資産型)は今は下でも、続ければ収入の天井が高い。",
+             fontproperties=fp(8), color="#9aa0a6")
+    fig.subplots_adjust(left=0.07, right=0.97, top=0.9, bottom=0.1)
+    fig.savefig(os.path.join(IMG, fname), facecolor="white", bbox_inches="tight"); plt.close(fig)
+    print("saved", fname)
+
+make_map("fukugyo-map.png")
