@@ -287,8 +287,12 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
       <div class="section">
         <label>📄 本文（生成結果・編集可）</label>
         <textarea id="note-body" class="body-area" placeholder="🤖で生成されます（ブログのコピペにはしません）" oninput="if(curNote){curNote.body=this.value;noteCount();}"></textarea>
+        <div class="preview" id="note-preview" style="display:none;"></div>
         <div class="char-count" id="note-count">0文字</div>
-        <button class="sub-btn" id="note-copy-btn" style="background:#e8f0fe;">📋 コピー（note.comに貼る）</button>
+        <div style="display:flex;gap:8px;">
+          <button class="sub-btn" id="note-preview-btn" style="margin-top:0;">👁 プレビュー</button>
+          <button class="sub-btn" id="note-copy-btn" style="margin-top:0;background:#e8f0fe;">📋 コピー（note.comに貼る）</button>
+        </div>
       </div>
       <button class="save-btn" id="note-save-btn">保存</button>
     </div>
@@ -742,6 +746,10 @@ function openNoteModal(){
   const sg=document.getElementById('note-suggest');
   if(curNote.suggest){ sg.textContent=curNote.suggest; sg.style.display='block'; } else { sg.textContent=''; sg.style.display='none'; }
   const el=document.getElementById('gen-status-note'); if(el) el.style.display='none';
+  // プレビューは閉じて編集モードに戻す
+  document.getElementById('note-preview').style.display='none';
+  document.getElementById('note-body').style.display='block';
+  document.getElementById('note-preview-btn').textContent='👁 プレビュー';
   renderNoteSources(); noteCount();
   document.getElementById('note-overlay').classList.add('open');
 }
@@ -886,6 +894,15 @@ document.getElementById('note-delete').addEventListener('click', async function(
   const res=await fetch(`${api}${fileName}`,{method:'DELETE',headers:{Authorization:`token ${githubToken}`,'Content-Type':'application/json'},body:JSON.stringify({message:`delete note ${curNote.id}`,sha,branch:'main'})});
   if(res.ok){ const list=curNoteKind==='paid'?notesPaid:notesFree; const i=list.findIndex(n=>n.id===curNote.id); if(i>=0) list.splice(i,1); document.getElementById('note-overlay').classList.remove('open'); updateCounts(); renderList(); alert('🗑 削除しました'); }
   else alert('❌ 削除に失敗しました');
+});
+document.getElementById('note-preview-btn').addEventListener('click', function(){
+  const ta=document.getElementById('note-body'), pv=document.getElementById('note-preview');
+  if (pv.style.display==='none'){
+    pv.innerHTML = renderMarkdown((curNote && curNote.body) ? curNote.body : '*本文がまだありません*');
+    pv.style.display='block'; ta.style.display='none'; this.textContent='✏️ 編集に戻る';
+  } else {
+    pv.style.display='none'; ta.style.display='block'; this.textContent='👁 プレビュー';
+  }
 });
 document.getElementById('note-close').addEventListener('click', ()=>document.getElementById('note-overlay').classList.remove('open'));
 document.getElementById('note-overlay').addEventListener('click', e=>{ if(e.target===document.getElementById('note-overlay')) document.getElementById('note-overlay').classList.remove('open'); });
