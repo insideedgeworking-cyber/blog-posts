@@ -262,7 +262,7 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
         </div>
         <div class="section">
           <label>💰 note有料（深掘り／システム化して直接課金で販売）</label>
-          <div style="font-size:12px;color:#888;margin-bottom:6px;line-height:1.6;">ブログそのままは有料化しません。①「💡有料ネタを提案」で“掘れる所／システム化できる所”を洗い出し → ②良ければネタ欄に書く → ③そのネタで本文生成（ブログは背景参照のみ・コピペしない）。<br>※構築システム系は基本この有料側。ブログからの「詳しくは有料noteで」の誘導は手動で入れてください。</div>
+          <div style="font-size:12px;color:#888;margin-bottom:6px;line-height:1.6;">ブログそのままは有料化しません。①「💡有料ネタを提案」で“掘れる所／システム化できる所”を洗い出し → ②良ければネタ欄に書く → ③そのネタで本文生成（ブログは背景参照のみ・コピペしない）。<br>🔒 有料は<b>非公開リポに保存</b>（公開されません・複数端末で見れる）。構築システム系は基本この有料側。ブログからの「詳しくは有料noteで」の誘導は手動で入れてください。</div>
           <button class="sub-btn" id="suggest-notepaid-btn" style="margin-top:0;background:#fff3e0;color:#a05a00;">💡 有料ネタを提案（ブログを分析）</button>
           <div id="notepaid-suggest" style="display:none;white-space:pre-wrap;font-size:13px;line-height:1.7;background:#fffaf0;border:1px solid #ffe0b2;border-radius:8px;padding:10px;margin-top:8px;"></div>
         </div>
@@ -316,6 +316,8 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
 const REPO   = 'insideedgeworking-cyber/blog-posts';
 const BRANCH = 'main';
 const API_BASE = `https://api.github.com/repos/${REPO}/contents/posts/`;
+const PRIVATE_REPO = 'insideedgeworking-cyber/blog-posts-private';   // note有料専用（非公開）
+const PRIV_API = `https://api.github.com/repos/${PRIVATE_REPO}/contents/paid/`;
 const CATEGORIES = ["アフィリエイト", "副業", "YouTube", "X・Threads", "AI活用", "用語", "ノウハウ", "ツール紹介", "比較", "体験談", "その他"];
 const DEFAULT_MODEL = 'claude-opus-4-8';
 
@@ -521,6 +523,8 @@ async function changeStatus(e, id) {
   updateCounts(); renderList();
   if (val==='published') await autoGenNoteFreeOnPublish(p);
 }
+// 公開リポに書く用：有料フィールドは必ず除外（公開リポに有料を置かない）
+function publicJson(p){ const o = JSON.parse(JSON.stringify(p)); delete o.note_paid; delete o.note_paid_idea; delete o.note_paid_suggest; delete o._paidLoaded; return o; }
 // 任意の記事JSONをGitHubへ保存（ステータス変更などの単体更新用）
 async function putPost(p) {
   const { githubToken } = getSettings();
@@ -528,7 +532,7 @@ async function putPost(p) {
   const fileName = `${p.id}.json`;
   let sha = '';
   try { const r = await fetch(`${API_BASE}${fileName}?t=${Date.now()}`, {headers:{Authorization:`token ${githubToken}`}, cache:'no-store'}); if(r.ok) sha=(await r.json()).sha; } catch(e){}
-  const body = {message:`update: ${p.id} status=${p.status}`, content: btoa(unescape(encodeURIComponent(JSON.stringify(p, null, 2)))), branch:BRANCH};
+  const body = {message:`update: ${p.id} status=${p.status}`, content: btoa(unescape(encodeURIComponent(JSON.stringify(publicJson(p), null, 2)))), branch:BRANCH};
   if (sha) body.sha = sha;
   try {
     const res = await fetch(`${API_BASE}${fileName}`, {method:'PUT', headers:{Authorization:`token ${githubToken}`,'Content-Type':'application/json'}, body: JSON.stringify(body)});
@@ -630,7 +634,16 @@ function updateExcerptCount(){
 
 // ── note 無料/有料 原稿 ──
 function blogUrlFor(p){ return p.wp_post_id ? `https://workstartedge.com/?p=${p.wp_post_id}` : 'https://workstartedge.com/'; }
-function fillNote(){
+async function fillNote(){
+  // 無料はpostに同梱／有料は非公開リポから取得（モーダルを開くたび1回だけ）
+  if (!currentPost._paidLoaded){
+    document.getElementById('notefree-input').value = currentPost.note_free || '';
+    document.getElementById('notepaididea-input').value = '';
+    document.getElementById('notepaid-input').value = '';
+    const { githubToken } = getSettings();
+    if (githubToken){ showStatus('n','🔒 非公開リポから有料データを読み込み中...'); await loadPaid(currentPost); hideStatus(); }
+    currentPost._paidLoaded = true;
+  }
   document.getElementById('notefree-input').value = currentPost.note_free || '';
   document.getElementById('notepaididea-input').value = currentPost.note_paid_idea || '';
   document.getElementById('notepaid-input').value = currentPost.note_paid || '';
@@ -638,6 +651,27 @@ function fillNote(){
   if (currentPost.note_paid_suggest){ box.textContent = currentPost.note_paid_suggest; box.style.display='block'; }
   else { box.textContent=''; box.style.display='none'; }
   updateNoteCounts();
+}
+// 有料データを非公開リポ paid/<id>.json から読み込み
+async function loadPaid(p){
+  const { githubToken } = getSettings();
+  if (!githubToken) return;
+  try{
+    const r = await fetch(`${PRIV_API}${p.id}.json?t=${Date.now()}`, {headers:{Authorization:`token ${githubToken}`, Accept:'application/vnd.github.raw'}, cache:'no-store'});
+    if (r.ok){ const d = JSON.parse(await r.text()); p.note_paid_idea=d.note_paid_idea||''; p.note_paid_suggest=d.note_paid_suggest||''; p.note_paid=d.note_paid||''; }
+  }catch(e){}
+}
+// 有料データを非公開リポ paid/<id>.json へ保存（公開リポには書かない）
+async function savePaid(p){
+  const { githubToken } = getSettings();
+  if (!githubToken) return false;
+  const payload = { note_paid_idea:p.note_paid_idea||'', note_paid_suggest:p.note_paid_suggest||'', note_paid:p.note_paid||'' };
+  const fileName = `${p.id}.json`;
+  let sha='';
+  try{ const r=await fetch(`${PRIV_API}${fileName}?t=${Date.now()}`, {headers:{Authorization:`token ${githubToken}`}, cache:'no-store'}); if(r.ok) sha=(await r.json()).sha; }catch(e){}
+  const body={message:`paid: ${p.id}`, content: btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2)))), branch:'main'};
+  if(sha) body.sha=sha;
+  try{ const res=await fetch(`${PRIV_API}${fileName}`, {method:'PUT', headers:{Authorization:`token ${githubToken}`,'Content-Type':'application/json'}, body:JSON.stringify(body)}); return res.ok; }catch(e){ return false; }
 }
 function syncNoteFree(el){ currentPost.note_free = el.value; updateNoteCounts(); }
 function syncNotePaid(el){ currentPost.note_paid = el.value; updateNoteCounts(); }
@@ -950,7 +984,7 @@ async function saveToGitHub() {
   currentPost.char_count = (currentPost.body||'').length;
 
   const fileName = `${currentPost.id}.json`;
-  const content = btoa(unescape(encodeURIComponent(JSON.stringify(currentPost, null, 2))));
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(publicJson(currentPost), null, 2))));
   let sha = '';
   try {
     const r = await fetch(`${API_BASE}${fileName}?t=${Date.now()}`, {headers:{Authorization:`token ${githubToken}`}, cache:'no-store'});
@@ -979,7 +1013,12 @@ async function saveToGitHub() {
   document.getElementById(id).addEventListener('click', async function(){
     const o=this.textContent; this.textContent='保存中...'; this.classList.add('saving');
     const ok = await saveToGitHub();
-    alert(ok ? '✅ GitHubに保存しました' : '❌ 保存に失敗しました（Token権限・REPO名を確認）');
+    // 有料（非公開リポ）：読み込み済みで中身があれば一緒に保存
+    let paidOk = true, paidSaved = false;
+    if (currentPost && currentPost._paidLoaded && ((currentPost.note_paid||'')||(currentPost.note_paid_idea||'')||(currentPost.note_paid_suggest||''))){
+      paidSaved = true; paidOk = await savePaid(currentPost);
+    }
+    alert((ok&&paidOk) ? ('✅ 保存しました'+(paidSaved?'（無料=公開リポ／有料=非公開リポ🔒）':'')) : '❌ 保存に失敗しました（Token権限・REPO名を確認）');
     this.textContent=o; this.classList.remove('saving');
   });
 });
