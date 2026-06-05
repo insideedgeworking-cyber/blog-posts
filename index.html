@@ -117,6 +117,8 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
 .spinner { display: inline-block; width: 28px; height: 28px; border: 3px solid #eee; border-top-color: #1a73e8; border-radius: 50%; animation: spin .7s linear infinite; margin-bottom: 10px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .empty { text-align: center; padding: 60px 20px; color: #aaa; font-size: 14px; }
+.src-box { max-height: 150px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; padding: 8px; }
+.suggest-box { white-space: pre-wrap; font-size: 13px; line-height: 1.7; background: #fffaf0; border: 1px solid #ffe0b2; border-radius: 8px; padding: 10px; margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -140,6 +142,8 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
   <div class="tab" data-tab="drafting">✍️作成中<span class="tab-count" id="cnt-drafting"></span></div>
   <div class="tab" data-tab="approved">✅承認済<span class="tab-count" id="cnt-approved"></span></div>
   <div class="tab" data-tab="published">📤投稿済<span class="tab-count" id="cnt-published"></span></div>
+  <div class="tab" data-tab="notefree">🆓note無料<span class="tab-count" id="cnt-notefree"></span></div>
+  <div class="tab" data-tab="notepaid">💰note有料<span class="tab-count" id="cnt-notepaid"></span></div>
 </div>
 
 <div class="filter-bar" id="filter-bar"></div>
@@ -162,7 +166,6 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
       <div class="modal-tab active" data-mtab="idea">💡 アイデア&生成</div>
       <div class="modal-tab" data-mtab="edit">✏️ 編集</div>
       <div class="modal-tab" data-mtab="preview">👁 プレビュー</div>
-      <div class="modal-tab" data-mtab="note">📒 note</div>
     </div>
     <div class="modal-body">
 
@@ -243,44 +246,51 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
         <button class="save-btn" id="save-btn-p">GitHubに保存</button>
       </div>
 
-      <!-- note（無料 / 有料） -->
-      <div class="tab-panel" id="panel-note">
-        <div class="section">
-          <div style="font-size:12px;color:#666;background:#f3f8ff;border-radius:8px;padding:10px;line-height:1.6;">
-            ブログ本文をもとに、<b>共食いしない"別角度"</b>のnote原稿を作ります（一人称「私」・性別中立・データ表/アフィリなし・末尾でブログへ送客）。<br>
-            ※記事を <b>「📤投稿済」</b> にすると <b>note無料</b> は自動生成されます（空のときだけ）。
-          </div>
-        </div>
-        <div class="section">
-          <label>🆓 note無料（ファン化用・公開して集客）</label>
-          <textarea id="notefree-input" class="body-area" oninput="syncNoteFree(this)" placeholder="「📤投稿済」にすると自動生成されます。または下の🤖ボタンで生成"></textarea>
-          <div class="char-count" id="notefree-count">0文字</div>
-          <div style="display:flex;gap:8px;">
-            <button class="sub-btn" id="gen-notefree-btn" style="margin-top:0;">🤖 note無料を生成</button>
-            <button class="sub-btn" id="copy-notefree-btn" style="margin-top:0;background:#e8f0fe;">📋 コピー</button>
-          </div>
-        </div>
-        <div class="section">
-          <label>💰 note有料（深掘り／システム化して直接課金で販売）</label>
-          <div style="font-size:12px;color:#888;margin-bottom:6px;line-height:1.6;">ブログそのままは有料化しません。①「💡有料ネタを提案」で“掘れる所／システム化できる所”を洗い出し → ②良ければネタ欄に書く → ③そのネタで本文生成（ブログは背景参照のみ・コピペしない）。<br>🔒 有料は<b>非公開リポに保存</b>（公開されません・複数端末で見れる）。構築システム系は基本この有料側。ブログからの「詳しくは有料noteで」の誘導は手動で入れてください。</div>
-          <button class="sub-btn" id="suggest-notepaid-btn" style="margin-top:0;background:#fff3e0;color:#a05a00;">💡 有料ネタを提案（ブログを分析）</button>
-          <div id="notepaid-suggest" style="display:none;white-space:pre-wrap;font-size:13px;line-height:1.7;background:#fffaf0;border:1px solid #ffe0b2;border-radius:8px;padding:10px;margin-top:8px;"></div>
-        </div>
-        <div class="section">
-          <label>✍️ 有料ネタ・素材（あなたが用意：深掘りの中身／作るシステムの概要・手順など）</label>
-          <textarea id="notepaididea-input" rows="4" oninput="syncNotePaidIdea(this)" placeholder="例：低スペPCでもブログを自動投稿するシステムの作り方／実際のコードと設定手順／使ったプロンプト全文 …" style="min-height:auto;"></textarea>
-          <button class="sub-btn" id="gen-notepaid-btn" style="margin-top:8px;">🤖 このネタで有料本文を生成</button>
-        </div>
-        <div class="section">
-          <label>💰 有料本文（生成結果・編集可）</label>
-          <textarea id="notepaid-input" class="body-area" oninput="syncNotePaid(this)" placeholder="上の🤖で生成されます（ブログのコピペにはしません）"></textarea>
-          <div class="char-count" id="notepaid-count">0文字</div>
-          <button class="sub-btn" id="copy-notepaid-btn" style="margin-top:0;background:#e8f0fe;">📋 コピー</button>
-        </div>
-        <div class="gen-status" id="gen-status-n"></div>
-        <button class="save-btn" id="save-btn-n">GitHubに保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- note 記事モーダル（独立：無料=公開リポ／有料=非公開リポ） -->
+<div class="modal-overlay" id="note-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="note-modal-title">note</h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button id="note-delete" style="background:#e53935;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:14px;font-weight:bold;cursor:pointer;">🗑</button>
+        <button class="close-btn" id="note-close">×</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="section">
+        <label>📝 タイトル</label>
+        <textarea id="note-title" rows="2" placeholder="noteのタイトル" oninput="if(curNote)curNote.title=this.value" style="min-height:auto;"></textarea>
+      </div>
+      <div class="section">
+        <label>📄 元ブログ記事（複数選択OK・合体して1本にできます）</label>
+        <div id="note-sources" class="src-box"></div>
       </div>
 
+      <!-- 有料のみ -->
+      <div class="section" id="note-paid-block" style="display:none;">
+        <div style="font-size:12px;color:#888;line-height:1.6;background:#fff8f0;border-radius:8px;padding:10px;">
+          ブログそのままは有料化しません。①「💡有料ネタを提案」→ ②良ければネタ欄に書く → ③そのネタで本文生成（ブログは背景参照のみ・コピペしない）。<br>🔒 有料は<b>非公開リポに保存</b>（公開されません）。ブログからの「詳しくは有料noteで」誘導は手動で。
+        </div>
+        <button class="sub-btn" id="note-suggest-btn" style="background:#fff3e0;color:#a05a00;">💡 有料ネタを提案（選んだ記事を分析）</button>
+        <div id="note-suggest" class="suggest-box" style="display:none;"></div>
+        <label style="margin-top:12px;">✍️ 有料ネタ・素材（あなたが用意：深掘りの中身／作るシステムの概要・手順）</label>
+        <textarea id="note-idea" rows="4" placeholder="例：低スペPCでブログを自動投稿するシステムの作り方／実際のコードと手順／使ったプロンプト全文 …" oninput="if(curNote)curNote.idea=this.value" style="min-height:auto;"></textarea>
+      </div>
+
+      <button class="gen-btn" id="note-gen-btn">🤖 生成</button>
+      <div class="gen-status" id="gen-status-note"></div>
+
+      <div class="section">
+        <label>📄 本文（生成結果・編集可）</label>
+        <textarea id="note-body" class="body-area" placeholder="🤖で生成されます（ブログのコピペにはしません）" oninput="if(curNote){curNote.body=this.value;noteCount();}"></textarea>
+        <div class="char-count" id="note-count">0文字</div>
+        <button class="sub-btn" id="note-copy-btn" style="background:#e8f0fe;">📋 コピー（note.comに貼る）</button>
+      </div>
+      <button class="save-btn" id="note-save-btn">保存</button>
     </div>
   </div>
 </div>
@@ -316,8 +326,9 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
 const REPO   = 'insideedgeworking-cyber/blog-posts';
 const BRANCH = 'main';
 const API_BASE = `https://api.github.com/repos/${REPO}/contents/posts/`;
-const PRIVATE_REPO = 'insideedgeworking-cyber/blog-posts-private';   // note有料専用（非公開）
-const PRIV_API = `https://api.github.com/repos/${PRIVATE_REPO}/contents/paid/`;
+const PRIVATE_REPO = 'insideedgeworking-cyber/blog-posts-private';            // note有料専用（非公開）
+const NOTES_API  = `https://api.github.com/repos/${REPO}/contents/notes/`;          // note無料（公開）
+const PNOTES_API = `https://api.github.com/repos/${PRIVATE_REPO}/contents/notes/`;  // note有料（非公開）
 const CATEGORIES = ["アフィリエイト", "副業", "YouTube", "X・Threads", "AI活用", "用語", "ノウハウ", "ツール紹介", "比較", "体験談", "その他"];
 const DEFAULT_MODEL = 'claude-opus-4-8';
 
@@ -332,6 +343,8 @@ let currentCategory = 'all';
 let writingGuide = '';   // docs/記事作成ガイド.md の内容（生成・修正時に参照）
 let affiliates = [];     // アフィリエイト素材（posts/affiliates.json）
 let affSha = '';
+let notesFree = [], notesPaid = [];          // note記事（独立）
+let curNote = null, curNoteKind = 'free', curNoteIsNew = false;
 
 // ── 記事作成ガイド・執筆ルールの読み込み（生成プロンプトに反映）──
 async function loadGuide() {
@@ -424,10 +437,13 @@ function updateCounts() {
     const el = document.getElementById('cnt-'+st);
     if (el) el.textContent = n ? n : '';
   });
+  const cf=document.getElementById('cnt-notefree'); if(cf) cf.textContent = notesFree.length ? notesFree.length : '';
+  const cp=document.getElementById('cnt-notepaid'); if(cp) cp.textContent = notesPaid.length ? notesPaid.length : '';
 }
 
 function renderList() {
   updateCounts();
+  if (currentTab==='notefree' || currentTab==='notepaid') { renderNotes(); return; }
   const c = document.getElementById('scripts-list');
   let list = posts;
   if (currentTab!=='all') list = list.filter(p => (p.status||'idea')===currentTab);
@@ -465,6 +481,28 @@ function renderList() {
         <span class="status-dot status-${cur}"></span>${statusSel}
         <span class="tag">📄 ${s.char_count||0}字</span>
         <span class="tag">📅 ${s.created_at||''}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── note一覧（独立タブ）──
+function renderNotes(){
+  const c = document.getElementById('scripts-list');
+  const kind = currentTab==='notepaid' ? 'paid' : 'free';
+  const list = kind==='paid' ? notesPaid : notesFree;
+  const { githubToken } = getSettings();
+  if (kind==='paid' && !githubToken){ c.innerHTML='<div class="empty">🔒 有料は非公開リポです<br><br>⚙️設定でGitHub Tokenを入れると表示・作成できます</div>'; return; }
+  if (!list.length){ c.innerHTML='<div class="empty">📭 まだありません<br><br>上の「＋ note'+(kind==='paid'?'有料':'無料')+'を作成」から作れます</div>'; return; }
+  c.innerHTML = list.map(n=>{
+    const srcs = (n.source_ids||[]).map(id=>{ const p=posts.find(x=>x.id===id); return p?`<span class="tag">📄${esc((p.title||p.theme||id).slice(0,12))}</span>`:''; }).join('');
+    return `<div class="script-card" onclick="openNote('${n.id}','${kind}')">
+      <div class="card-top"><div class="card-title">${n.title?esc(n.title):'<span class="muted">（無題）</span>'}</div></div>
+      <div class="card-meta">
+        <span class="tag cat">${kind==='paid'?'💰有料':'🆓無料'}</span>
+        <span class="tag">📝 ${(n.body||'').length}字</span>
+        ${srcs}
+        <span class="tag">📅 ${n.created_at||''}</span>
       </div>
     </div>`;
   }).join('');
@@ -521,10 +559,9 @@ async function changeStatus(e, id) {
   if (!ok) { p.status = prev; alert('❌ ステータス変更の保存に失敗しました（Token/REPOを確認）'); renderList(); return; }
   deriveApprovedOrder(); await saveOrderToGitHub();
   updateCounts(); renderList();
-  if (val==='published') await autoGenNoteFreeOnPublish(p);
 }
-// 公開リポに書く用：有料フィールドは必ず除外（公開リポに有料を置かない）
-function publicJson(p){ const o = JSON.parse(JSON.stringify(p)); delete o.note_paid; delete o.note_paid_idea; delete o.note_paid_suggest; delete o._paidLoaded; return o; }
+// 公開リポに書く用：note関連フィールドは必ず除外（公開リポに有料を置かない）
+function publicJson(p){ const o = JSON.parse(JSON.stringify(p)); ['note_paid','note_paid_idea','note_paid_suggest','note_free','_paidLoaded'].forEach(k=>delete o[k]); return o; }
 // 任意の記事JSONをGitHubへ保存（ステータス変更などの単体更新用）
 async function putPost(p) {
   const { githubToken } = getSettings();
@@ -554,7 +591,7 @@ async function saveOrderToGitHub() {
   } catch(e){}
 }
 
-// ── モーダル ──
+// ── ブログ記事モーダル ──
 function nextId() {
   let max = 0;
   posts.forEach(p => { const n = parseInt((p.id||'').replace('post_','')); if(!isNaN(n)&&n>max) max=n; });
@@ -564,7 +601,7 @@ function today() { return new Date().toISOString().slice(0,10); }
 
 function newPost() {
   isNew = true;
-  currentPost = { id: nextId(), created_at: today(), theme:'', ideas:'', title:'', category: CATEGORIES[0], keywords:[], body:'', char_count:0, status:'idea', wp_post_id:null, notes:'', excerpt:'', note_free:'', note_paid:'', note_paid_idea:'', note_paid_suggest:'' };
+  currentPost = { id: nextId(), created_at: today(), theme:'', ideas:'', title:'', category: CATEGORIES[0], keywords:[], body:'', char_count:0, status:'idea', wp_post_id:null, notes:'', excerpt:'' };
   openModalForm('💡 新規テーマ');
   switchModalTab('idea');
 }
@@ -584,12 +621,11 @@ function openModalForm(titleText) {
 
 function switchModalTab(tab) {
   document.querySelectorAll('.modal-tab').forEach(t => t.classList.toggle('active', t.dataset.mtab===tab));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#modal-overlay .tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById(`panel-${tab}`).classList.add('active');
   if (tab==='idea')    fillIdea();
   if (tab==='edit')    fillEdit();
   if (tab==='preview') fillPreview();
-  if (tab==='note')    fillNote();
 }
 
 function fillIdea() {
@@ -632,195 +668,227 @@ function updateExcerptCount(){
   document.getElementById('excerpt-count').textContent = `${v.length}字`;
 }
 
-// ── note 無料/有料 原稿 ──
-function blogUrlFor(p){ return p.wp_post_id ? `https://workstartedge.com/?p=${p.wp_post_id}` : 'https://workstartedge.com/'; }
-async function fillNote(){
-  // 無料はpostに同梱／有料は非公開リポから取得（モーダルを開くたび1回だけ）
-  if (!currentPost._paidLoaded){
-    document.getElementById('notefree-input').value = currentPost.note_free || '';
-    document.getElementById('notepaididea-input').value = '';
-    document.getElementById('notepaid-input').value = '';
-    const { githubToken } = getSettings();
-    if (githubToken){ showStatus('n','🔒 非公開リポから有料データを読み込み中...'); await loadPaid(currentPost); hideStatus(); }
-    currentPost._paidLoaded = true;
-  }
-  document.getElementById('notefree-input').value = currentPost.note_free || '';
-  document.getElementById('notepaididea-input').value = currentPost.note_paid_idea || '';
-  document.getElementById('notepaid-input').value = currentPost.note_paid || '';
-  const box = document.getElementById('notepaid-suggest');
-  if (currentPost.note_paid_suggest){ box.textContent = currentPost.note_paid_suggest; box.style.display='block'; }
-  else { box.textContent=''; box.style.display='none'; }
-  updateNoteCounts();
+// ══════════ note（独立記事：無料=公開リポ notes/ ／有料=非公開リポ notes/） ══════════
+function blogUrlFor(p){ return p && p.wp_post_id ? `https://workstartedge.com/?p=${p.wp_post_id}` : 'https://workstartedge.com/'; }
+
+async function loadNotes(){
+  notesFree = await loadNoteDir(NOTES_API, false);
+  notesPaid = await loadNoteDir(PNOTES_API, true);
+  updateCounts();
+  if (currentTab==='notefree' || currentTab==='notepaid') renderList();
 }
-// 有料データを非公開リポ paid/<id>.json から読み込み
-async function loadPaid(p){
+async function loadNoteDir(api, auth){
   const { githubToken } = getSettings();
-  if (!githubToken) return;
+  if (auth && !githubToken) return [];
+  const headers = auth ? {Authorization:`token ${githubToken}`} : {};
   try{
-    const r = await fetch(`${PRIV_API}${p.id}.json?t=${Date.now()}`, {headers:{Authorization:`token ${githubToken}`}, cache:'no-store'});
-    if (r.ok){
-      const meta = await r.json();
-      const txt = decodeURIComponent(escape(atob((meta.content||'').replace(/\n/g,''))));
-      const d = JSON.parse(txt);
-      p.note_paid_idea=d.note_paid_idea||''; p.note_paid_suggest=d.note_paid_suggest||''; p.note_paid=d.note_paid||'';
-    }
-  }catch(e){}
+    const r = await fetch(`${api}?t=${Date.now()}`, {headers, cache:'no-store'});
+    if (!r.ok) return [];
+    const files = await r.json();
+    if (!Array.isArray(files)) return [];
+    const items = await Promise.all(files.filter(f=>f.name.endsWith('.json')).map(async f=>{
+      try{
+        if (auth){
+          const rr = await fetch(`${api}${f.name}?t=${Date.now()}`, {headers, cache:'no-store'});
+          const meta = await rr.json();
+          return JSON.parse(decodeURIComponent(escape(atob((meta.content||'').replace(/\n/g,'')))));
+        } else {
+          const rr = await fetch(f.download_url+'?t='+Date.now(), {cache:'no-store'});
+          return rr.json();
+        }
+      }catch(e){ return null; }
+    }));
+    return items.filter(Boolean).sort((a,b)=>(b.created_at||'').localeCompare(a.created_at||''));
+  }catch(e){ return []; }
 }
-// 有料データを非公開リポ paid/<id>.json へ保存（公開リポには書かない）
-async function savePaid(p){
+async function saveNote(n){
   const { githubToken } = getSettings();
-  if (!githubToken) return false;
-  const payload = { note_paid_idea:p.note_paid_idea||'', note_paid_suggest:p.note_paid_suggest||'', note_paid:p.note_paid||'' };
-  const fileName = `${p.id}.json`;
+  if (!githubToken){ alert('⚙️設定でGitHub Tokenを入力してください'); return false; }
+  const api = n.kind==='paid' ? PNOTES_API : NOTES_API;
+  const fileName = `${n.id}.json`;
   let sha='';
-  try{ const r=await fetch(`${PRIV_API}${fileName}?t=${Date.now()}`, {headers:{Authorization:`token ${githubToken}`}, cache:'no-store'}); if(r.ok) sha=(await r.json()).sha; }catch(e){}
-  const body={message:`paid: ${p.id}`, content: btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2)))), branch:'main'};
+  try{ const r=await fetch(`${api}${fileName}?t=${Date.now()}`,{headers:{Authorization:`token ${githubToken}`},cache:'no-store'}); if(r.ok) sha=(await r.json()).sha; }catch(e){}
+  const body={message:`note(${n.kind}): ${n.id}`, content: btoa(unescape(encodeURIComponent(JSON.stringify(n,null,2)))), branch:'main'};
   if(sha) body.sha=sha;
-  try{ const res=await fetch(`${PRIV_API}${fileName}`, {method:'PUT', headers:{Authorization:`token ${githubToken}`,'Content-Type':'application/json'}, body:JSON.stringify(body)}); return res.ok; }catch(e){ return false; }
+  try{ const res=await fetch(`${api}${fileName}`,{method:'PUT',headers:{Authorization:`token ${githubToken}`,'Content-Type':'application/json'},body:JSON.stringify(body)}); return res.ok; }catch(e){ return false; }
 }
-function syncNoteFree(el){ currentPost.note_free = el.value; updateNoteCounts(); }
-function syncNotePaid(el){ currentPost.note_paid = el.value; updateNoteCounts(); }
-function syncNotePaidIdea(el){ currentPost.note_paid_idea = el.value; }
-function updateNoteCounts(){
-  document.getElementById('notefree-count').textContent = (currentPost.note_free||'').length + '文字';
-  document.getElementById('notepaid-count').textContent = (currentPost.note_paid||'').length + '文字';
+function nextNoteId(kind){
+  const pre = kind==='paid'?'np_':'nf_';
+  const list = kind==='paid'?notesPaid:notesFree;
+  let max=0; list.forEach(n=>{ const m=parseInt((n.id||'').replace(pre,'')); if(!isNaN(m)&&m>max) max=m; });
+  return pre+String(max+1).padStart(3,'0');
 }
-function noteFreePrompt(p){
-  return `あなたはnoteのトップクリエイターです。次のブログ記事をもとに、noteで公開する「無料記事」を書いてください。目的は読者のファン化（自己開示・信頼構築）です。
+function newNote(kind){
+  curNoteIsNew=true; curNoteKind=kind;
+  curNote={ id:nextNoteId(kind), kind, created_at:today(), title:'', body:'', idea:'', suggest:'', source_ids:[], status:'drafting', notes:'' };
+  openNoteModal();
+}
+function openNote(id, kind){
+  curNoteIsNew=false; curNoteKind=kind;
+  const list = kind==='paid'?notesPaid:notesFree;
+  const found = list.find(n=>n.id===id);
+  if(!found) return;
+  curNote = JSON.parse(JSON.stringify(found));
+  openNoteModal();
+}
+function openNoteModal(){
+  document.getElementById('note-modal-title').textContent = (curNoteKind==='paid'?'💰 note有料':'🆓 note無料');
+  document.getElementById('note-delete').style.display = curNoteIsNew?'none':'block';
+  document.getElementById('note-paid-block').style.display = curNoteKind==='paid'?'block':'none';
+  document.getElementById('note-gen-btn').textContent = curNoteKind==='paid'?'🤖 このネタで有料本文を生成':'🤖 note無料を生成';
+  document.getElementById('note-title').value = curNote.title||'';
+  document.getElementById('note-idea').value = curNote.idea||'';
+  document.getElementById('note-body').value = curNote.body||'';
+  const sg=document.getElementById('note-suggest');
+  if(curNote.suggest){ sg.textContent=curNote.suggest; sg.style.display='block'; } else { sg.textContent=''; sg.style.display='none'; }
+  const el=document.getElementById('gen-status-note'); if(el) el.style.display='none';
+  renderNoteSources(); noteCount();
+  document.getElementById('note-overlay').classList.add('open');
+}
+function renderNoteSources(){
+  const box=document.getElementById('note-sources');
+  const list = posts.slice().sort((a,b)=>orderIndex(a.id)-orderIndex(b.id));
+  box.innerHTML = list.length ? list.map(p=>{
+    const on=(curNote.source_ids||[]).includes(p.id);
+    return `<label style="display:flex;gap:8px;align-items:center;font-size:13px;margin:5px 0;color:#333;cursor:pointer;">
+      <input type="checkbox" style="width:auto;flex:none;" ${on?'checked':''} onchange="toggleSource('${p.id}',this.checked)"> ${esc(p.title||p.theme||p.id)}</label>`;
+  }).join('') : '<div style="color:#aaa;">ブログ記事がありません</div>';
+}
+function toggleSource(id,on){
+  curNote.source_ids = curNote.source_ids||[];
+  if(on){ if(!curNote.source_ids.includes(id)) curNote.source_ids.push(id); }
+  else curNote.source_ids = curNote.source_ids.filter(x=>x!==id);
+}
+function noteCount(){ document.getElementById('note-count').textContent=(curNote.body||'').length+'文字'; }
+function noteSourceText(){
+  const sel=(curNote.source_ids||[]).map(id=>posts.find(p=>p.id===id)).filter(Boolean);
+  return sel.map(p=>`# ${p.title||p.theme}\n${p.body||''}`).join('\n\n────────\n\n');
+}
+function noteSourceUrls(){
+  const sel=(curNote.source_ids||[]).map(id=>posts.find(p=>p.id===id)).filter(Boolean);
+  return sel.map(p=>`[${p.title||p.theme}](${blogUrlFor(p)})`).join(' ／ ') || 'https://workstartedge.com/';
+}
+function freePromptN(){
+  return `あなたはnoteのトップクリエイターです。次のブログ記事（複数あれば合体して1本に）をもとに、noteで公開する「無料記事」を書いてください。目的は読者のファン化（自己開示・信頼構築）です。
 
-【元のブログ記事タイトル】
-${p.title}
-
-【元のブログ本文（Markdown）】
-${p.body}
+【元のブログ記事（複数可・これらを材料に1本へ）】
+${noteSourceText()}
 
 【最重要：ブログと共食いさせないルール】
-- ブログ本文を絶対にコピペしない。ほぼ同一の文も禁止。同じ題材を「本音・感情・舞台裏・一次情報」の一人称エッセイに“書き直す”こと。
-- データの表・数字の羅列・ランキング・比較はnoteに書かない（それはブログの役割）。触れるとしても雰囲気程度。
-- アフィリエイトリンクや商品宣伝は一切入れない（noteはファン化が目的）。
+- ブログ本文を絶対にコピペしない。ほぼ同一の文も禁止。同じ題材を「本音・感情・舞台裏・一次情報」の一人称エッセイに“書き直す”。
+- データの表・数字の羅列・ランキング・比較はnoteに書かない（ブログの役割）。
+- アフィリエイトリンクや商品宣伝は入れない。
 
 【文体・ペルソナ】
-- 一人称は必ず「私」。
-- 性別が分かる表現は使わない（僕・俺・女・男などの語や、性別を匂わせる言い回しを避ける。将来の展開で性別未定のため）。
-- 等身大で正直。成功談だけでなく、情けない部分・失敗・心の動きも書く。読み物として面白く。
+- 一人称は必ず「私」。性別が分かる表現は使わない（僕・俺・女・男などを避ける。将来の展開で性別未定）。
+- 等身大で正直。成功談だけでなく失敗・心の動きも。読み物として面白く。
 
 【構成・分量】
-- 引き込む書き出し → 体験ストーリー → 気づき → これから、の流れ。
-- 1800〜2800字程度。読みやすい##見出しと短めの段落。
-- 末尾に必ず：①フォローのお願い ②「具体的な情報・数字はブログにまとめています」とブログへ誘導（Markdownリンク [ブログで読む](${blogUrlFor(p)}) を置く）③次回予告。
+- 引き込む書き出し → 体験ストーリー → 気づき → これから。1800〜2800字。読みやすい##見出しと短い段落。
+- 末尾に必ず：①フォローのお願い ②「具体的な情報・数字はブログに」とブログへ誘導（Markdownリンク ${noteSourceUrls()}）③次回予告。
 
-出力はMarkdown本文のみ（前置きの説明文は不要）。1行目を「# タイトル」にしてください。`;
+出力はMarkdown本文のみ。1行目を「# タイトル」に。`;
 }
-function notePaidPrompt(p){
+function paidPromptN(){
   return `あなたはnoteのトップクリエイターです。下記の「有料ネタ・素材」を主役にして、noteで販売する有料記事の原稿を書いてください。
 
-【今回の有料ネタ・素材（これが記事の中身。これを深掘り／具体化する）】
-${p.note_paid_idea}
+【今回の有料ネタ・素材（これが記事の中身。深掘り／具体化する）】
+${curNote.idea}
 
-【参考：関連するブログ記事（テーマ・読者像の把握だけに使う。絶対にコピペしない／要約の再掲もしない）】
-タイトル: ${p.title}
-本文: ${p.body}
+【参考：関連ブログ記事（テーマ・読者像の把握だけ。絶対にコピペしない／要約再掲もしない）】
+${noteSourceText()}
 
 【厳守ルール】
-- ブログ本文をそのまま有料にしない。ブログは“背景理解”だけに使い、本文の文章は流用しない。
-- 価値の源泉は上の「有料ネタ・素材」。検索やブログでは得られない具体性を出す：実際の手順、コード/設定、使ったプロンプト全文、テンプレ、つまずきと回避策、チェックリストなど。
-- ネタが「自動化機能/システムの構築」なら、作るものの全体像→必要なもの→手順→動かし方→応用、まで実用的に。
-- 無理に水増ししない。質の低い埋め草は書かない。素材が薄くて書けない場合は、正直にその旨と「何の情報を足せば書けるか」を返して止める。
+- ブログ本文をそのまま有料にしない。ブログは“背景理解”のみ、本文は流用しない。
+- 価値の源泉は上の「有料ネタ・素材」。検索やブログでは得られない具体性（実際の手順・コード/設定・プロンプト全文・テンプレ・つまずきと回避策・チェックリスト）。
+- ネタが「自動化機能/システム構築」なら、全体像→必要なもの→手順→動かし方→応用まで実用的に。
+- 無理に水増ししない。素材が薄くて書けない場合は、正直にその旨と「何の情報を足せば書けるか」を返して止める。
 - アフィリエイトリンクは入れない。
 
 【構成】
-- 冒頭は無料で読める導入（誰向け・読むと何ができる・目次）。続きが有料、という構成。
-- 区切りに「━━━ ここから有料 ━━━」を明記。
+- 冒頭は無料で読める導入（誰向け・読むと何ができる・目次）。続きが有料。区切りに「━━━ ここから有料 ━━━」を明記。
 
 【文体・ペルソナ】
-- 一人称は必ず「私」。性別が分かる表現は使わない（僕・俺・女・男などを避ける）。
-- 一次情報・実体験ベースで具体的に。煽りすぎない。
+- 一人称は必ず「私」。性別が分かる表現は使わない。一次情報・実体験ベースで具体的に。
 
-出力はMarkdown本文のみ（前置き不要）。1行目を「# タイトル」にしてください。`;
+出力はMarkdown本文のみ。1行目を「# タイトル」に。`;
 }
-function notePaidSuggestPrompt(p){
-  return `あなたはnote収益化の戦略家です。次のブログ記事を分析し、「有料note」に発展させられる“タネ”があるかを正直に見極めてください。
+function suggestPromptN(){
+  return `あなたはnote収益化の戦略家です。次のブログ記事を分析し、「有料note」に発展させられる“タネ”があるか正直に見極めてください。
 
-【ブログ記事タイトル】
-${p.title}
-
-【ブログ本文（Markdown）】
-${p.body}
+【ブログ記事（複数可）】
+${noteSourceText()}
 
 【観点（この2タイプだけ。ブログをそのまま有料化する提案は禁止）】
-A. 深掘り候補：この記事のどの部分を、どこまで掘れば「有料記事の“一部分（1セクション）”」として売れるか。
+A. 深掘り候補：どの部分をどこまで掘れば「有料の一部分（1セクション）」として売れるか。
 B. システム化候補：このテーマから、どんな自動化機能/ツール/システムを“作って”有料の目玉にできるか。
 
-【最重要：質のゲート】
-- 本当に価値がある時だけ提案する。ありふれている・無理やり・薄いものは出さない。
-- 良い候補が無ければ、正直に「今回は有料候補なし」とだけ返す。点数稼ぎの水増しは禁止。
+【質のゲート】本当に価値がある時だけ提案。ありふれ・無理やり・薄いものは出さない。良い候補が無ければ「今回は有料候補なし」とだけ返す。
 
-【各候補の書式（簡潔に。記事本文そのものは書かない）】
+【各候補の書式（簡潔に・記事本文は書かない）】
 ・種別：深掘り / システム化
-・タイトル案：（1行）
-・何を売るのか：（2〜3行。検索やブログでは手に入らない具体的価値）
+・タイトル案：
+・何を売るのか：（2〜3行）
 ・想定読者：
 ・想定価格：（円）
-・システム化の場合のみ→ ブログからの誘導文の例：（1行）
+・システム化なら→ ブログからの誘導文の例：
 
-箇条書きで最大3件まで。前置き不要。`;
+箇条書きで最大3件。前置き不要。`;
 }
-async function genNote(kind){
-  const isPaid = kind==='paid';
-  if (!isPaid && !currentPost.body){ showStatus('n','⚠️ 先にブログ本文を作成してください', true); return; }
-  if (isPaid && !(currentPost.note_paid_idea||'').trim()){ showStatus('n','⚠️ 先に「有料ネタ・素材」を入力してください（💡提案ボタンでヒントを出せます）', true); return; }
-  showStatus('n', isPaid?'🤖 note有料を生成中...（少し時間がかかります）':'🤖 note無料を生成中...（少し時間がかかります）');
-  const text = await callClaude(isPaid?notePaidPrompt(currentPost):noteFreePrompt(currentPost), isPaid?8000:6000);
-  const out = (text||'').trim();
-  if (isPaid){ currentPost.note_paid = out; document.getElementById('notepaid-input').value = out; }
-  else { currentPost.note_free = out; document.getElementById('notefree-input').value = out; }
-  updateNoteCounts();
-  showStatus('n','✅ 生成しました。内容を確認して「GitHubに保存」してください');
-}
-document.getElementById('gen-notefree-btn').addEventListener('click', async function(){
-  this.disabled=true; try{ await genNote('free'); }catch(e){ showStatus('n','❌ '+e.message, true); } this.disabled=false;
-});
-document.getElementById('gen-notepaid-btn').addEventListener('click', async function(){
-  this.disabled=true; try{ await genNote('paid'); }catch(e){ showStatus('n','❌ '+e.message, true); } this.disabled=false;
-});
-document.getElementById('suggest-notepaid-btn').addEventListener('click', async function(){
-  if (!currentPost.body){ showStatus('n','⚠️ 先にブログ本文を作成してください', true); return; }
-  this.disabled=true; showStatus('n','💡 有料ネタを分析中...');
+document.getElementById('note-gen-btn').addEventListener('click', async function(){
+  if (!(curNote.source_ids||[]).length && curNoteKind==='free'){ showStatus('note','⚠️ 元ブログ記事を1つ以上選んでください', true); return; }
+  if (curNoteKind==='paid' && !(curNote.idea||'').trim()){ showStatus('note','⚠️ 先に「有料ネタ・素材」を入力（💡提案も使えます）', true); return; }
+  this.disabled=true; showStatus('note','🤖 生成中...（少し時間がかかります）');
   try{
-    const text = await callClaude(notePaidSuggestPrompt(currentPost), 3000);
-    const out = (text||'').trim();
-    currentPost.note_paid_suggest = out;
-    const box = document.getElementById('notepaid-suggest');
-    box.textContent = out; box.style.display='block';
-    showStatus('n','✅ 提案を出しました。良ければ下の「有料ネタ・素材」に書いて🤖生成へ');
-  }catch(e){ showStatus('n','❌ '+e.message, true); }
+    const text = await callClaude(curNoteKind==='paid'?paidPromptN():freePromptN(), curNoteKind==='paid'?8000:6000);
+    curNote.body=(text||'').trim();
+    document.getElementById('note-body').value=curNote.body; noteCount();
+    if(!curNote.title){ const m=curNote.body.match(/^#\s+(.+)$/m); if(m){ curNote.title=m[1].trim(); document.getElementById('note-title').value=curNote.title; } }
+    showStatus('note','✅ 生成しました。確認して保存してください');
+  }catch(e){ showStatus('note','❌ '+e.message, true); }
   this.disabled=false;
 });
-function copyNote(which){
-  const text = which==='paid' ? (currentPost.note_paid||'') : (currentPost.note_free||'');
-  if (!text){ alert('まだ原稿がありません'); return; }
-  const btn = document.getElementById(which==='paid'?'copy-notepaid-btn':'copy-notefree-btn');
-  const done = ()=>{ const o=btn.textContent; btn.textContent='✅ コピー'; setTimeout(()=>btn.textContent=o,1500); };
-  if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done));
-  else fallbackCopy(text, done);
-}
-document.getElementById('copy-notefree-btn').addEventListener('click', ()=>copyNote('free'));
-document.getElementById('copy-notepaid-btn').addEventListener('click', ()=>copyNote('paid'));
-// 「📤投稿済」にしたとき、note無料を自動生成（既に原稿があれば何もしない）
-async function autoGenNoteFreeOnPublish(p){
-  const { anthropicKey } = getSettings();
-  if (!anthropicKey || !p.body) return;
-  if (p.note_free && p.note_free.trim()) return;
-  if (!confirm('「📤投稿済」にしました。ブログ本文から note無料記事 を自動生成しますか？\n（Claude APIを使用します。あとで📒noteタブから手動でも生成できます）')) return;
-  try {
-    const text = await callClaude(noteFreePrompt(p), 6000);
-    p.note_free = (text||'').trim();
-    const i = posts.findIndex(x=>x.id===p.id); if(i>=0) posts[i].note_free = p.note_free;
-    if (currentPost && currentPost.id===p.id){ currentPost.note_free = p.note_free; const t=document.getElementById('notefree-input'); if(t){ t.value=p.note_free; updateNoteCounts(); } }
-    await putPost(p);
-    alert('✅ note無料記事を生成・保存しました（📒 noteタブで確認・編集できます）');
-  } catch(e){ alert('note無料の自動生成に失敗しました: '+e.message); }
-}
+document.getElementById('note-suggest-btn').addEventListener('click', async function(){
+  if (!(curNote.source_ids||[]).length){ showStatus('note','⚠️ 元ブログ記事を選んでください', true); return; }
+  this.disabled=true; showStatus('note','💡 有料ネタを分析中...');
+  try{
+    const text=await callClaude(suggestPromptN(),3000); const out=(text||'').trim();
+    curNote.suggest=out; const box=document.getElementById('note-suggest'); box.textContent=out; box.style.display='block';
+    showStatus('note','✅ 提案を出しました。良ければ「有料ネタ・素材」に書いて🤖生成へ');
+  }catch(e){ showStatus('note','❌ '+e.message, true); }
+  this.disabled=false;
+});
+document.getElementById('note-copy-btn').addEventListener('click', function(){
+  const text=curNote && curNote.body || ''; if(!text){ alert('まだ本文がありません'); return; }
+  const btn=this; const done=()=>{ const o=btn.textContent; btn.textContent='✅ コピーしました'; setTimeout(()=>btn.textContent=o,1500); };
+  if(navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done)); else fallbackCopy(text,done);
+});
+document.getElementById('note-save-btn').addEventListener('click', async function(){
+  if(!(curNote.title||'').trim() && !(curNote.body||'').trim()){ alert('タイトルか本文を入れてください'); return; }
+  const o=this.textContent; this.textContent='保存中...'; this.classList.add('saving');
+  const ok=await saveNote(curNote);
+  if(ok){
+    const list=curNoteKind==='paid'?notesPaid:notesFree;
+    if(curNoteIsNew){ list.unshift(JSON.parse(JSON.stringify(curNote))); curNoteIsNew=false; document.getElementById('note-delete').style.display='block'; }
+    else { const i=list.findIndex(n=>n.id===curNote.id); if(i>=0) list[i]=JSON.parse(JSON.stringify(curNote)); }
+    updateCounts(); renderList();
+  }
+  alert(ok?('✅ 保存しました'+(curNoteKind==='paid'?'（非公開リポ🔒）':'（公開リポ）')):'❌ 保存に失敗しました（Token権限を確認）');
+  this.textContent=o; this.classList.remove('saving');
+});
+document.getElementById('note-delete').addEventListener('click', async function(){
+  if(curNoteIsNew) return;
+  const { githubToken }=getSettings(); if(!githubToken){ alert('⚙️設定でGitHub Tokenを入れてください'); return; }
+  if(!confirm('このnoteを削除しますか？')) return;
+  const api=curNoteKind==='paid'?PNOTES_API:NOTES_API; const fileName=`${curNote.id}.json`;
+  let sha=''; try{ const r=await fetch(`${api}${fileName}?t=${Date.now()}`,{headers:{Authorization:`token ${githubToken}`},cache:'no-store'}); if(r.ok) sha=(await r.json()).sha; }catch(e){}
+  if(!sha){ alert('❌ ファイルが見つかりません'); return; }
+  const res=await fetch(`${api}${fileName}`,{method:'DELETE',headers:{Authorization:`token ${githubToken}`,'Content-Type':'application/json'},body:JSON.stringify({message:`delete note ${curNote.id}`,sha,branch:'main'})});
+  if(res.ok){ const list=curNoteKind==='paid'?notesPaid:notesFree; const i=list.findIndex(n=>n.id===curNote.id); if(i>=0) list.splice(i,1); document.getElementById('note-overlay').classList.remove('open'); updateCounts(); renderList(); alert('🗑 削除しました'); }
+  else alert('❌ 削除に失敗しました');
+});
+document.getElementById('note-close').addEventListener('click', ()=>document.getElementById('note-overlay').classList.remove('open'));
+document.getElementById('note-overlay').addEventListener('click', e=>{ if(e.target===document.getElementById('note-overlay')) document.getElementById('note-overlay').classList.remove('open'); });
 
 // ── 簡易Markdownレンダラ ──
 function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -876,9 +944,10 @@ function parseJsonObj(text){
 
 function showStatus(panel, msg, isError=false){
   const el = document.getElementById('gen-status-'+panel);
+  if (!el) return;
   el.textContent = msg; el.className = 'gen-status' + (isError?' error':''); el.style.display='block';
 }
-function hideStatus(){ ['i','e','n'].forEach(p=>{ const el=document.getElementById('gen-status-'+p); if(el) el.style.display='none'; }); }
+function hideStatus(){ ['i','e','note'].forEach(p=>{ const el=document.getElementById('gen-status-'+p); if(el) el.style.display='none'; }); }
 
 // 本文生成
 document.getElementById('gen-btn').addEventListener('click', async function(){
@@ -1011,19 +1080,13 @@ async function saveToGitHub() {
   await saveOrderToGitHub();
   document.getElementById('total-badge').textContent = `${posts.length}本`;
   renderList();
-  if (currentPost.status==='published') await autoGenNoteFreeOnPublish(currentPost);
   return true;
 }
-['save-btn-i','save-btn-e','save-btn-p','save-btn-n'].forEach(id => {
+['save-btn-i','save-btn-e','save-btn-p'].forEach(id => {
   document.getElementById(id).addEventListener('click', async function(){
     const o=this.textContent; this.textContent='保存中...'; this.classList.add('saving');
     const ok = await saveToGitHub();
-    // 有料（非公開リポ）：読み込み済みで中身があれば一緒に保存
-    let paidOk = true, paidSaved = false;
-    if (currentPost && currentPost._paidLoaded && ((currentPost.note_paid||'')||(currentPost.note_paid_idea||'')||(currentPost.note_paid_suggest||''))){
-      paidSaved = true; paidOk = await savePaid(currentPost);
-    }
-    alert((ok&&paidOk) ? ('✅ 保存しました'+(paidSaved?'（無料=公開リポ／有料=非公開リポ🔒）':'')) : '❌ 保存に失敗しました（Token権限・REPO名を確認）');
+    alert(ok ? '✅ GitHubに保存しました' : '❌ 保存に失敗しました（Token権限・REPO名を確認）');
     this.textContent=o; this.classList.remove('saving');
   });
 });
@@ -1053,13 +1116,23 @@ async function deletePost() {
   } else alert('❌ 削除に失敗しました');
 }
 
+// ── 新規ボタン（タブに応じて）──
+function updateNewBtnLabel(){
+  const b=document.getElementById('new-btn');
+  b.textContent = currentTab==='notefree' ? '＋ note無料を作成' : currentTab==='notepaid' ? '＋ note有料を作成' : '＋ 新規テーマを追加';
+}
+
 // ── イベント ──
-document.getElementById('new-btn').addEventListener('click', newPost);
+document.getElementById('new-btn').addEventListener('click', ()=>{
+  if (currentTab==='notefree') newNote('free');
+  else if (currentTab==='notepaid') newNote('paid');
+  else newPost();
+});
 document.querySelectorAll('.modal-tab').forEach(t => t.addEventListener('click', ()=>switchModalTab(t.dataset.mtab)));
 document.getElementById('close-modal').addEventListener('click', ()=>document.getElementById('modal-overlay').classList.remove('open'));
 document.getElementById('delete-modal').addEventListener('click', deletePost);
 document.getElementById('modal-overlay').addEventListener('click', e=>{ if(e.target===document.getElementById('modal-overlay')) document.getElementById('modal-overlay').classList.remove('open'); });
-document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', ()=>{ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active'); currentTab=t.dataset.tab; renderList(); }));
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', ()=>{ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active'); currentTab=t.dataset.tab; updateNewBtnLabel(); renderList(); }));
 
 document.getElementById('settings-btn').addEventListener('click', ()=>{
   const s = getSettings();
@@ -1073,7 +1146,7 @@ document.getElementById('settings-save-btn').addEventListener('click', ()=>{
   localStorage.setItem('blog_github_token',  document.getElementById('github-token-input').value.trim());
   localStorage.setItem('blog_model',         document.getElementById('model-input').value.trim() || DEFAULT_MODEL);
   document.getElementById('settings-modal').classList.remove('open');
-  alert('✅ 設定を保存しました'); loadPosts();
+  alert('✅ 設定を保存しました'); loadPosts(); loadNotes();
 });
 document.getElementById('settings-close-btn').addEventListener('click', ()=>document.getElementById('settings-modal').classList.remove('open'));
 
@@ -1163,6 +1236,7 @@ buildCategorySelect();
 loadGuide();
 loadAffiliates();
 loadPosts();
+loadNotes();
 </script>
 </body>
 </html>
