@@ -657,8 +657,13 @@ async function loadPaid(p){
   const { githubToken } = getSettings();
   if (!githubToken) return;
   try{
-    const r = await fetch(`${PRIV_API}${p.id}.json?t=${Date.now()}`, {headers:{Authorization:`token ${githubToken}`, Accept:'application/vnd.github.raw'}, cache:'no-store'});
-    if (r.ok){ const d = JSON.parse(await r.text()); p.note_paid_idea=d.note_paid_idea||''; p.note_paid_suggest=d.note_paid_suggest||''; p.note_paid=d.note_paid||''; }
+    const r = await fetch(`${PRIV_API}${p.id}.json?t=${Date.now()}`, {headers:{Authorization:`token ${githubToken}`}, cache:'no-store'});
+    if (r.ok){
+      const meta = await r.json();
+      const txt = decodeURIComponent(escape(atob((meta.content||'').replace(/\n/g,''))));
+      const d = JSON.parse(txt);
+      p.note_paid_idea=d.note_paid_idea||''; p.note_paid_suggest=d.note_paid_suggest||''; p.note_paid=d.note_paid||'';
+    }
   }catch(e){}
 }
 // 有料データを非公開リポ paid/<id>.json へ保存（公開リポには書かない）
