@@ -563,6 +563,7 @@ async function changeStatus(e, id) {
   if (!ok) { p.status = prev; alert('❌ ステータス変更の保存に失敗しました（Token/REPOを確認）'); renderList(); return; }
   deriveApprovedOrder(); await saveOrderToGitHub();
   updateCounts(); renderList();
+  if (val==='published') await autoCreateNoteFreeOnPublish(p);   // 投稿済→note無料を自動生成
 }
 // 公開リポに書く用：note関連フィールドは必ず除外（公開リポに有料を置かない）
 function publicJson(p){ const o = JSON.parse(JSON.stringify(p)); ['note_paid','note_paid_idea','note_paid_suggest','note_free','_paidLoaded'].forEach(k=>delete o[k]); return o; }
@@ -907,6 +908,48 @@ document.getElementById('note-preview-btn').addEventListener('click', function()
 document.getElementById('note-close').addEventListener('click', ()=>document.getElementById('note-overlay').classList.remove('open'));
 document.getElementById('note-overlay').addEventListener('click', e=>{ if(e.target===document.getElementById('note-overlay')) document.getElementById('note-overlay').classList.remove('open'); });
 
+// ── ブログ投稿時に note無料 を自動生成（独立記事 nf_xxx として作成）──
+function noteFreePromptFromPost(post){
+  return `あなたはnoteのトップクリエイターです。次のブログ記事をもとに、noteで公開する「無料記事」を書いてください。目的は読者のファン化（自己開示・信頼構築）です。
+
+【元のブログ記事タイトル】
+${post.title}
+
+【元のブログ本文（Markdown）】
+${(post.body||'').slice(0,6000)}
+
+【最重要：ブログと共食いさせないルール】
+- ブログ本文を絶対にコピペしない。同じ題材を「本音・感情・舞台裏・一次情報」の一人称エッセイに書き直す。
+- データの表・数字の羅列・比較・用語の羅列はnoteに書かない（ブログの役割）。アフィリエイトリンクも入れない。
+
+【文体・ペルソナ】
+- 一人称は必ず「私」。性別が分かる表現は使わない（僕・俺・女・男などを避ける）。等身大で正直に。
+
+【構成・分量】
+- 引き込む書き出し→体験→気づき→これから。1800〜2800字。読みやすい##見出しと短い段落。
+- 末尾に必ず：①フォローのお願い ②「具体的な情報はブログにまとめています」とブログへ誘導（Markdownリンク [ブログで読む](${blogUrlFor(post)})）③次回予告。
+
+出力はMarkdown本文のみ。1行目を「# タイトル」に。`;
+}
+async function autoCreateNoteFreeOnPublish(post){
+  try{
+    const { anthropicKey } = getSettings();
+    if (!anthropicKey || !post || !post.body) return;
+    if (notesFree.some(n => (n.source_ids||[]).includes(post.id))) return;  // 既にあればスキップ
+    const text = await callClaude(noteFreePromptFromPost(post), 6000);
+    const body = (text||'').trim(); if (!body) return;
+    const m = body.match(/^#\s+(.+)$/m);
+    const item = { id: nextNoteId('free'), kind:'free', created_at: today(),
+      title: m ? m[1].trim() : (post.title||''), body, idea:'', suggest:'',
+      source_ids:[post.id], status:'drafting', notes:'' };
+    if (await saveNote(item)) {
+      notesFree.unshift(item); updateCounts();
+      if (currentTab==='notefree') renderList();
+      alert('🆓 note無料を自動生成しました（🆓note無料タブに追加。確認・コピーはそこから）\n' + item.title);
+    }
+  }catch(e){ /* 自動処理なので静かに無視 */ }
+}
+
 // ── 簡易Markdownレンダラ ──
 function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function inline(s){
@@ -1159,6 +1202,7 @@ async function saveToGitHub() {
   await saveOrderToGitHub();
   document.getElementById('total-badge').textContent = `${posts.length}本`;
   renderList();
+  if (currentPost.status==='published') await autoCreateNoteFreeOnPublish(currentPost);   // 投稿済→note無料を自動生成
   return true;
 }
 ['save-btn-i','save-btn-e','save-btn-p'].forEach(id => {
