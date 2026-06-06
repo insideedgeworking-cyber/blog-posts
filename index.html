@@ -966,6 +966,66 @@ function showStatus(panel, msg, isError=false){
 }
 function hideStatus(){ ['i','e','note'].forEach(p=>{ const el=document.getElementById('gen-status-'+p); if(el) el.style.display='none'; }); }
 
+// ── 用語の自動追加（記事生成時、新出用語を用語解説へ追記）──
+const GLOSSARY_MAP = { 'PC':'post_002', '副業':'post_003', 'SNS':'post_004', 'ブログ':'post_005' };
+function glossaryExistingTerms(){
+  const set = new Set();
+  Object.values(GLOSSARY_MAP).forEach(id=>{
+    const p = posts.find(x=>x.id===id);
+    if (!p || !p.body) return;
+    (p.body.match(/^###\s+(.+)$/gm)||[]).forEach(h=>{
+      h.replace(/^###\s+/,'').split(/[／/（(・]/).forEach(t=>{ t=t.trim(); if(t) set.add(t); });
+    });
+  });
+  return set;
+}
+function appendGlossaryTerms(p, items){
+  const header = '## 新しく追加された用語';
+  const block = items.map(it=>`### ${it.term}\n${it.def}`).join('\n\n');
+  if (p.body.includes(header)) {
+    p.body = p.body.replace(header, header + '\n\n' + block);
+  } else {
+    const ins = '\n' + header + '\n\n' + block + '\n\n';
+    const idx = p.body.indexOf('## あわせて読みたい');
+    p.body = (idx>=0) ? (p.body.slice(0,idx) + ins + p.body.slice(idx)) : (p.body.trimEnd() + '\n\n' + ins);
+  }
+  p.char_count = p.body.length;
+}
+async function autoAddGlossary(title, body){
+  try {
+    const { anthropicKey } = getSettings();
+    if (!anthropicKey || !body) return;
+    if (currentPost && currentPost.category==='用語') return; // 用語集の記事自身からは抽出しない
+    showStatus('i','📘 新出用語を用語解説に追加中...');
+    const existing = [...glossaryExistingTerms()];
+    const text = await callClaude(
+`次のブログ記事から、初心者がつまずきそうな専門用語で、かつ「既存リスト」に無いものだけ抽出してください。
+【タイトル】${title}
+【本文】${(body||'').slice(0,6000)}
+【既存リスト(これらは出さない)】${existing.join('、')}
+ルール: ジャンルは PC / 副業 / SNS / ブログ のどれかに当てはまるものだけ（当てはまらない語は出さない）。各語は初心者向けに1〜2文・たとえ話でやさしく定義。最大8個。一般的すぎる語・重複は除く。
+次のJSON配列のみで返す（前後に説明文なし）:
+[{"term":"用語","genre":"PC|副業|SNS|ブログ","def":"定義"}]`, 2000);
+    const m = text.match(/\[[\s\S]*\]/); if (!m) return;
+    const arr = JSON.parse(m[0]);
+    const added = {};
+    for (const it of arr) {
+      if (!it || !it.term || !it.def) continue;
+      const pid = GLOSSARY_MAP[it.genre]; if (!pid) continue;
+      const p = posts.find(x=>x.id===pid); if (!p || !p.body) continue;
+      if (p.body.includes('### ' + it.term)) continue;   // 重複スキップ
+      (added[pid] = added[pid] || {p, items:[]}).items.push({term:it.term, def:it.def});
+    }
+    const names = [];
+    for (const pid in added) {
+      const { p, items } = added[pid];
+      appendGlossaryTerms(p, items);
+      if (await putPost(p)) names.push(`${pid.replace('post_','post ')}：${items.map(x=>x.term).join('・')}`);
+    }
+    if (names.length) alert('📘 用語解説に自動追加しました（不要なら各記事の✏️編集で削除OK）\n' + names.join('\n'));
+  } catch(e) { /* 自動処理なので静かに無視 */ }
+}
+
 // 本文生成
 document.getElementById('gen-btn').addEventListener('click', async function(){
   readIdea();
@@ -998,6 +1058,8 @@ document.getElementById('gen-btn').addEventListener('click', async function(){
     if (currentPost.status==='idea') currentPost.status = 'drafting';
     showStatus('i','✅ 生成完了！「✏️編集」「👁プレビュー」で確認して保存してください');
     document.getElementById('modal-title').textContent = currentPost.title;
+    await autoAddGlossary(currentPost.title, currentPost.body);   // 新出用語を用語解説へ自動追記
+    showStatus('i','✅ 生成完了！「✏️編集」「👁プレビュー」で確認して保存してください');
   } catch(e){ showStatus('i','❌ '+e.message, true); }
   this.disabled = false;
 });
