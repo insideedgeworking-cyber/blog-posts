@@ -114,6 +114,22 @@ def media_upload(cred, path, filename):
     with urllib.request.urlopen(req, timeout=180) as r:
         return json.load(r)["source_url"]
 
+def media_ensure_id(cred, path, filename, slug):
+    """slugで既存メディアを探し、無ければアップロード。media idを返す（アイキャッチ用）。"""
+    try:
+        res = api(cred, f"/media?slug={slug}&per_page=20")
+        for m in res:
+            if m.get("slug") == slug:
+                return m["id"]
+    except SystemExit:
+        pass
+    data = open(path, "rb").read()
+    req = urllib.request.Request(cred["_base"] + "/media", data=data, method="POST",
+        headers={"Authorization": "Basic " + cred["_token"], "Content-Type": "image/png",
+                 "Content-Disposition": f'attachment; filename="{filename}"'})
+    with urllib.request.urlopen(req, timeout=180) as r:
+        return json.load(r)["id"]
+
 def localize_images(cred, body):
     """本文中のGitHub画像URLを、WordPressメディアにアップした自前URLへ置き換える。"""
     for url in sorted(set(RAW_IMG_RE.findall(body))):
@@ -190,8 +206,18 @@ def main():
         print(content[:600]); return
 
     cat_id = get_or_create_category(cred, post["category"])
+    # アイキャッチ（表紙）: images/cover-<id>.png があれば featured_media に設定
+    # ファイル名はアンダースコア無し（post_017 -> cover-post017.png）
+    featured_id = None
+    cid = post_id.replace("_", "")
+    cover_path = os.path.join(ROOT, "images", f"cover-{cid}.png")
+    if os.path.exists(cover_path):
+        featured_id = media_ensure_id(cred, cover_path, f"cover-{cid}.png", f"cover-{cid}")
+        print("  アイキャッチ:", f"cover-{cid}.png", "-> media", featured_id)
     payload = {"title": post["title"], "content": content,
                "status": status, "categories": [cat_id]}
+    if featured_id:
+        payload["featured_media"] = featured_id
     if post.get("excerpt"):                              # メタ説明（検索スニペット用）
         payload["excerpt"] = post["excerpt"]
     if post.get("wp_post_id"):                                 # 既存があれば更新
