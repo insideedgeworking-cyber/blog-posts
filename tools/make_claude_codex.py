@@ -47,7 +47,7 @@ def card(x, name, maker, accent, rows, who):
     ax.text(x+w/2, 1.03, who, ha="center", va="center", fontproperties=fp(10.5, True), color=GREEN)
 
 card(0.15, "Claude Code", "Anthropic", BLUE, [
-    ("料金", "Claude Pro 月20ドル〜（重い人はMax）"),
+    ("料金", "無料〜／Pro 月20ドル（重い人はMax）"),
     ("得意", "文章・調査・作業全般の自動化の作り込み"),
     ("使い勝手", "Proは5時間ごとの利用枠／文脈が広い"),
 ], "こんな人に：書き味重視・作業全般を自動化したい")
