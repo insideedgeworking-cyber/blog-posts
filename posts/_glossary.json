@@ -315,28 +315,6 @@
           ]
         },
         {
-          "slug": "gpts",
-          "match": "GPTs",
-          "aliases": [
-            "GPTs"
-          ]
-        },
-        {
-          "slug": "interpreter",
-          "match": "高度なデータ分析",
-          "aliases": [
-            "高度なデータ分析",
-            "コードインタープリター"
-          ]
-        },
-        {
-          "slug": "voicemode",
-          "match": "ボイスモード",
-          "aliases": [
-            "ボイスモード"
-          ]
-        },
-        {
           "slug": "gemini",
           "match": "Gemini",
           "aliases": [
@@ -361,18 +339,25 @@
           ]
         },
         {
-          "slug": "perplexity",
-          "match": "Perplexity",
+          "slug": "gpts",
+          "match": "GPTs",
           "aliases": [
-            "Perplexity",
-            "パープレキシティ"
+            "GPTs"
           ]
         },
         {
-          "slug": "notebooklm",
-          "match": "NotebookLM",
+          "slug": "interpreter",
+          "match": "高度なデータ分析",
           "aliases": [
-            "NotebookLM"
+            "高度なデータ分析",
+            "コードインタープリター"
+          ]
+        },
+        {
+          "slug": "voicemode",
+          "match": "ボイスモード",
+          "aliases": [
+            "ボイスモード"
           ]
         },
         {
@@ -549,6 +534,21 @@
           "match": "Autoclickr",
           "aliases": [
             "Autoclickr"
+          ]
+        },
+        {
+          "slug": "perplexity",
+          "match": "Perplexity",
+          "aliases": [
+            "Perplexity",
+            "パープレキシティ"
+          ]
+        },
+        {
+          "slug": "notebooklm",
+          "match": "NotebookLM",
+          "aliases": [
+            "NotebookLM"
           ]
         },
         {
