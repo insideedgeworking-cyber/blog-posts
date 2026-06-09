@@ -6,7 +6,6 @@
     "post_017",
     "post_016",
     "post_015",
-    "post_014",
     "post_007",
     "post_008",
     "post_009",
@@ -19,9 +18,10 @@
     "post_003",
     "post_004",
     "post_005",
-    "post_006"
+    "post_006",
+    "post_023",
+    "post_021",
+    "post_022"
   ],
-  "approved_order": [
-    "post_017"
-  ]
+  "approved_order": []
 }
