@@ -265,6 +265,32 @@
           ]
         },
         {
+          "slug": "automation",
+          "match": "自動化",
+          "aliases": []
+        },
+        {
+          "slug": "aiagent",
+          "match": "AIエージェント",
+          "aliases": [
+            "AIエージェント"
+          ]
+        },
+        {
+          "slug": "skill",
+          "match": "スキル",
+          "aliases": [
+            "スキル"
+          ]
+        },
+        {
+          "slug": "mcp",
+          "match": "MCP",
+          "aliases": [
+            "MCP"
+          ]
+        },
+        {
           "slug": "artifacts",
           "match": "Artifacts",
           "aliases": [
@@ -273,10 +299,203 @@
           ]
         },
         {
-          "slug": "aiagent",
-          "match": "AIエージェント",
+          "slug": "chatgpt",
+          "match": "ChatGPT",
           "aliases": [
-            "AIエージェント"
+            "ChatGPT",
+            "チャットGPT"
+          ]
+        },
+        {
+          "slug": "claude",
+          "match": "Claude",
+          "aliases": [
+            "Claude",
+            "クロード"
+          ]
+        },
+        {
+          "slug": "gpts",
+          "match": "GPTs",
+          "aliases": [
+            "GPTs"
+          ]
+        },
+        {
+          "slug": "interpreter",
+          "match": "高度なデータ分析",
+          "aliases": [
+            "高度なデータ分析",
+            "コードインタープリター"
+          ]
+        },
+        {
+          "slug": "voicemode",
+          "match": "ボイスモード",
+          "aliases": [
+            "ボイスモード"
+          ]
+        },
+        {
+          "slug": "gemini",
+          "match": "Gemini",
+          "aliases": [
+            "Gemini",
+            "ジェミニ"
+          ]
+        },
+        {
+          "slug": "grok",
+          "match": "Grok",
+          "aliases": [
+            "Grok",
+            "グロック"
+          ]
+        },
+        {
+          "slug": "copilot",
+          "match": "Copilot",
+          "aliases": [
+            "Copilot",
+            "コパイロット"
+          ]
+        },
+        {
+          "slug": "perplexity",
+          "match": "Perplexity",
+          "aliases": [
+            "Perplexity",
+            "パープレキシティ"
+          ]
+        },
+        {
+          "slug": "notebooklm",
+          "match": "NotebookLM",
+          "aliases": [
+            "NotebookLM"
+          ]
+        },
+        {
+          "slug": "dalle",
+          "match": "DALL-E",
+          "aliases": [
+            "DALL-E"
+          ]
+        },
+        {
+          "slug": "midjourney",
+          "match": "Midjourney",
+          "aliases": [
+            "Midjourney"
+          ]
+        },
+        {
+          "slug": "sd",
+          "match": "Stable Diffusion",
+          "aliases": [
+            "Stable Diffusion"
+          ]
+        },
+        {
+          "slug": "firefly",
+          "match": "Adobe Firefly",
+          "aliases": [
+            "Adobe Firefly",
+            "Firefly"
+          ]
+        },
+        {
+          "slug": "whisk",
+          "match": "Whisk",
+          "aliases": [
+            "Whisk"
+          ]
+        },
+        {
+          "slug": "canva",
+          "match": "Canva",
+          "aliases": [
+            "Canva"
+          ]
+        },
+        {
+          "slug": "nanobanana",
+          "match": "NanoBanana",
+          "aliases": [
+            "NanoBanana"
+          ]
+        },
+        {
+          "slug": "vrew",
+          "match": "Vrew",
+          "aliases": [
+            "Vrew",
+            "ブリュー"
+          ]
+        },
+        {
+          "slug": "capcut",
+          "match": "CapCut",
+          "aliases": [
+            "CapCut",
+            "キャップカット"
+          ]
+        },
+        {
+          "slug": "googleflow",
+          "match": "Google Flow",
+          "aliases": [
+            "Google Flow",
+            "Veo"
+          ]
+        },
+        {
+          "slug": "runway",
+          "match": "Runway",
+          "aliases": [
+            "Runway"
+          ]
+        },
+        {
+          "slug": "sora",
+          "match": "Sora",
+          "aliases": [
+            "Sora"
+          ]
+        },
+        {
+          "slug": "voicevox",
+          "match": "VOICEVOX",
+          "aliases": [
+            "VOICEVOX"
+          ]
+        },
+        {
+          "slug": "yukkuri",
+          "match": "ゆっくりムービーメーカー",
+          "aliases": [
+            "ゆっくりムービーメーカー"
+          ]
+        },
+        {
+          "slug": "fishaudio",
+          "match": "Fish Audio",
+          "aliases": [
+            "Fish Audio"
+          ]
+        },
+        {
+          "slug": "elevenlabs",
+          "match": "ElevenLabs",
+          "aliases": [
+            "ElevenLabs"
+          ]
+        },
+        {
+          "slug": "suno",
+          "match": "Suno",
+          "aliases": [
+            "Suno"
           ]
         },
         {
@@ -298,10 +517,24 @@
           ]
         },
         {
+          "slug": "genspark",
+          "match": "Genspark",
+          "aliases": [
+            "Genspark"
+          ]
+        },
+        {
           "slug": "n8n",
           "match": "n8n",
           "aliases": [
             "n8n"
+          ]
+        },
+        {
+          "slug": "cursor",
+          "match": "Cursor",
+          "aliases": [
+            "Cursor"
           ]
         },
         {
@@ -312,22 +545,18 @@
           ]
         },
         {
-          "slug": "automation",
-          "match": "自動化",
-          "aliases": []
-        },
-        {
-          "slug": "skill",
-          "match": "スキル",
+          "slug": "autoclickr",
+          "match": "Autoclickr",
           "aliases": [
-            "スキル"
+            "Autoclickr"
           ]
         },
         {
-          "slug": "mcp",
-          "match": "MCP",
+          "slug": "vidiq",
+          "match": "VidIQ",
           "aliases": [
-            "MCP"
+            "VidIQ",
+            "vidIQ"
           ]
         },
         {
@@ -364,87 +593,6 @@
           "match": "API",
           "aliases": [
             "API"
-          ]
-        },
-        {
-          "slug": "gpts",
-          "match": "GPTs",
-          "aliases": [
-            "GPTs"
-          ]
-        },
-        {
-          "slug": "dalle",
-          "match": "DALL-E",
-          "aliases": [
-            "DALL-E"
-          ]
-        },
-        {
-          "slug": "interpreter",
-          "match": "高度なデータ分析",
-          "aliases": [
-            "高度なデータ分析",
-            "コードインタープリター"
-          ]
-        },
-        {
-          "slug": "voicemode",
-          "match": "ボイスモード",
-          "aliases": [
-            "ボイスモード"
-          ]
-        },
-        {
-          "slug": "gemini",
-          "match": "Gemini",
-          "aliases": [
-            "Gemini",
-            "ジェミニ"
-          ]
-        },
-        {
-          "slug": "grok",
-          "match": "Grok",
-          "aliases": [
-            "Grok",
-            "グロック"
-          ]
-        },
-        {
-          "slug": "midjourney",
-          "match": "Midjourney",
-          "aliases": [
-            "Midjourney"
-          ]
-        },
-        {
-          "slug": "suno",
-          "match": "Suno",
-          "aliases": [
-            "Suno"
-          ]
-        },
-        {
-          "slug": "vrew",
-          "match": "Vrew",
-          "aliases": [
-            "Vrew",
-            "ブリュー"
-          ]
-        },
-        {
-          "slug": "voicevox",
-          "match": "VOICEVOX",
-          "aliases": [
-            "VOICEVOX"
-          ]
-        },
-        {
-          "slug": "sora",
-          "match": "Sora",
-          "aliases": [
-            "Sora"
           ]
         }
       ]
