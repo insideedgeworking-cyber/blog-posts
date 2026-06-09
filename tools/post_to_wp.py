@@ -52,11 +52,19 @@ def load_glossary():
     except Exception:
         return None
 
-def save_glossary_url(url):
+def glossaries_list(g):
+    """新形式 {"glossaries":[...]} と旧形式(単一dict)の両対応で、用語集の配列を返す。"""
+    if not g: return []
+    return g.get("glossaries") or [g]
+
+def save_glossary_url(post_id, url):
     g = load_glossary()
-    if g is not None and g.get("url") != url:
-        g["url"] = url
-        json.dump(g, open(GLOSSARY_PATH, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    if not g: return
+    for x in (g.get("glossaries") or [g]):
+        if x.get("glossary_post_id") == post_id and x.get("url") != url:
+            x["url"] = url
+            json.dump(g, open(GLOSSARY_PATH, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+            return
 
 def add_anchor_ids(html, gloss):
     """用語解説記事の見出しに id を付ける（他記事からの飛び先アンカー）。"""
@@ -69,20 +77,25 @@ def add_anchor_ids(html, gloss):
         html, n = pat.subn(r'\1 id="g-' + e["slug"] + r'">\2', html, count=1)
     return html
 
-def autolink_terms(body, gloss, url):
-    """本文(マークダウン)中、各用語の最初の1回だけを用語解説へリンクする。"""
-    pairs = []
-    for e in gloss["terms"]:
-        for a in e.get("aliases", []):
-            pairs.append((a, e["slug"]))
-    pairs.sort(key=lambda x: -len(x[0]))      # 長い語を優先（部分一致の誤リンク防止）
+def autolink_terms(body, glist):
+    """本文(マークダウン)中、各用語の最初の1回だけを、その用語が属する用語解説へリンクする。
+    glist = url付きの用語集の配列（複数グロッサリ対応）。"""
+    pairs = []                                  # (alias, slug, url)
+    for gl in glist:
+        url = gl.get("url")
+        if not url:
+            continue                            # URL未確定の用語集はスキップ
+        for e in gl["terms"]:
+            for a in e.get("aliases", []):
+                pairs.append((a, e["slug"], url))
+    pairs.sort(key=lambda x: -len(x[0]))        # 長い語を優先（部分一致の誤リンク防止）
     used = set()
     lines = body.split("\n")
     for i, line in enumerate(lines):
         s = line.lstrip()
         if s.startswith(("#", "!", "<!--", ">", "|")) or "](" in line:
-            continue                          # 見出し/画像/コメント/引用/既存リンク行は対象外
-        for a, slug in pairs:
+            continue                            # 見出し/画像/コメント/引用/既存リンク行は対象外
+        for a, slug, url in pairs:
             if slug in used:
                 continue
             idx = line.find(a)
@@ -189,16 +202,17 @@ def main():
     cred = load_cred()
 
     gloss = load_glossary()
-    is_glossary = bool(gloss) and post_id == gloss.get("glossary_post_id")
+    glist = glossaries_list(gloss)
+    matched = next((x for x in glist if x.get("glossary_post_id") == post_id), None)
+    is_glossary = matched is not None
 
     body = post["body"] if dry else localize_images(cred, post["body"])   # 画像をWPメディアへ
-    # 用語の自動リンク（用語解説記事そのものは対象外。URL未確定ならスキップ）
-    if gloss and gloss.get("url") and not is_glossary:
-        body = autolink_terms(body, gloss, gloss["url"])
-        print("  用語リンク:", body.count(gloss["url"] + "#g-"), "件")
+    # 用語の自動リンク（自分が属する用語集は対象外。URL未確定の用語集はスキップ）
+    body = autolink_terms(body, [x for x in glist if x is not matched])
+    print("  用語リンク:", body.count("#g-"), "件")
     content = md_to_html(body)
-    if is_glossary and gloss:
-        content = add_anchor_ids(content, gloss)
+    if is_glossary:
+        content = add_anchor_ids(content, matched)
         print("  用語アンカー付与:", content.count('id="g-'), "件")
 
     if dry:
@@ -225,7 +239,7 @@ def main():
     else:
         res = api(cred, "/posts", "POST", payload)
     if is_glossary:                                            # 用語解説のURLを記録（他記事のリンク先）
-        save_glossary_url(res.get("link", ""))
+        save_glossary_url(post_id, res.get("link", ""))
 
     print("OK id=", res["id"], "status=", res["status"], "category=", post["category"], f"(id {cat_id})")
     print("edit:", cred["site_url"].rstrip("/") + f"/wp-admin/post.php?post={res['id']}&action=edit")

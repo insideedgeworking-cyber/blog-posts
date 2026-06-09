@@ -1010,7 +1010,7 @@ function showStatus(panel, msg, isError=false){
 function hideStatus(){ ['i','e','note'].forEach(p=>{ const el=document.getElementById('gen-status-'+p); if(el) el.style.display='none'; }); }
 
 // ── 用語の自動追加（記事生成時、新出用語を用語解説へ追記）──
-const GLOSSARY_MAP = { 'PC':'post_002', '副業':'post_003', 'SNS':'post_004', 'ブログ':'post_005' };
+const GLOSSARY_MAP = { 'PC':'post_002', '副業':'post_003', 'SNS':'post_004', 'ブログ':'post_005', 'AI':'post_021' };
 function glossaryExistingTerms(){
   const set = new Set();
   Object.values(GLOSSARY_MAP).forEach(id=>{
@@ -1046,7 +1046,7 @@ async function autoAddGlossary(title, body){
 【タイトル】${title}
 【本文】${(body||'').slice(0,6000)}
 【既存リスト(これらは出さない)】${existing.join('、')}
-ルール: ジャンルは PC / 副業 / SNS / ブログ のどれかに当てはまるものだけ（当てはまらない語は出さない）。各語は初心者向けに1〜2文・たとえ話でやさしく定義。最大8個。一般的すぎる語・重複は除く。
+ルール: ジャンルは PC / 副業 / SNS / ブログ / AI のどれかに当てはまるものだけ（当てはまらない語は出さない）。各語は初心者向けに1〜2文・たとえ話でやさしく定義。最大8個。一般的すぎる語・重複は除く。
 次のJSON配列のみで返す（前後に説明文なし）:
 [{"term":"用語","genre":"PC|副業|SNS|ブログ","def":"定義"}]`, 2000);
     const m = text.match(/\[[\s\S]*\]/); if (!m) return;
