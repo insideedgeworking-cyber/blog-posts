@@ -365,6 +365,87 @@
           "aliases": [
             "API"
           ]
+        },
+        {
+          "slug": "gpts",
+          "match": "GPTs",
+          "aliases": [
+            "GPTs"
+          ]
+        },
+        {
+          "slug": "dalle",
+          "match": "DALL-E",
+          "aliases": [
+            "DALL-E"
+          ]
+        },
+        {
+          "slug": "interpreter",
+          "match": "高度なデータ分析",
+          "aliases": [
+            "高度なデータ分析",
+            "コードインタープリター"
+          ]
+        },
+        {
+          "slug": "voicemode",
+          "match": "ボイスモード",
+          "aliases": [
+            "ボイスモード"
+          ]
+        },
+        {
+          "slug": "gemini",
+          "match": "Gemini",
+          "aliases": [
+            "Gemini",
+            "ジェミニ"
+          ]
+        },
+        {
+          "slug": "grok",
+          "match": "Grok",
+          "aliases": [
+            "Grok",
+            "グロック"
+          ]
+        },
+        {
+          "slug": "midjourney",
+          "match": "Midjourney",
+          "aliases": [
+            "Midjourney"
+          ]
+        },
+        {
+          "slug": "suno",
+          "match": "Suno",
+          "aliases": [
+            "Suno"
+          ]
+        },
+        {
+          "slug": "vrew",
+          "match": "Vrew",
+          "aliases": [
+            "Vrew",
+            "ブリュー"
+          ]
+        },
+        {
+          "slug": "voicevox",
+          "match": "VOICEVOX",
+          "aliases": [
+            "VOICEVOX"
+          ]
+        },
+        {
+          "slug": "sora",
+          "match": "Sora",
+          "aliases": [
+            "Sora"
+          ]
         }
       ]
     }
