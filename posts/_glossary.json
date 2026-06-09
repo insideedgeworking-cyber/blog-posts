@@ -170,10 +170,26 @@
       "url": "",
       "terms": [
         {
-          "slug": "aiagent",
-          "match": "AIエージェント",
+          "slug": "seisei-ai",
+          "match": "生成AI",
           "aliases": [
-            "AIエージェント"
+            "生成AI"
+          ]
+        },
+        {
+          "slug": "llm",
+          "match": "LLM",
+          "aliases": [
+            "LLM",
+            "大規模言語モデル"
+          ]
+        },
+        {
+          "slug": "chatai",
+          "match": "対話型AI",
+          "aliases": [
+            "対話型AI",
+            "チャットAI"
           ]
         },
         {
@@ -188,6 +204,130 @@
           "match": "トークン",
           "aliases": [
             "トークン"
+          ]
+        },
+        {
+          "slug": "context",
+          "match": "コンテキスト",
+          "aliases": [
+            "コンテキスト",
+            "文脈"
+          ]
+        },
+        {
+          "slug": "model",
+          "match": "モデル",
+          "aliases": [
+            "AIモデル"
+          ]
+        },
+        {
+          "slug": "multimodal",
+          "match": "マルチモーダル",
+          "aliases": [
+            "マルチモーダル"
+          ]
+        },
+        {
+          "slug": "halluc",
+          "match": "ハルシネーション",
+          "aliases": [
+            "ハルシネーション"
+          ]
+        },
+        {
+          "slug": "imagegen",
+          "match": "画像生成AI",
+          "aliases": [
+            "画像生成"
+          ]
+        },
+        {
+          "slug": "videogen",
+          "match": "動画生成AI",
+          "aliases": [
+            "動画生成"
+          ]
+        },
+        {
+          "slug": "voice",
+          "match": "AI音声",
+          "aliases": [
+            "AI音声",
+            "音声合成"
+          ]
+        },
+        {
+          "slug": "transcribe",
+          "match": "文字起こし",
+          "aliases": [
+            "文字起こし"
+          ]
+        },
+        {
+          "slug": "artifacts",
+          "match": "Artifacts",
+          "aliases": [
+            "Artifacts",
+            "アーティファクト"
+          ]
+        },
+        {
+          "slug": "aiagent",
+          "match": "AIエージェント",
+          "aliases": [
+            "AIエージェント"
+          ]
+        },
+        {
+          "slug": "claudecode",
+          "match": "Claude Code",
+          "aliases": []
+        },
+        {
+          "slug": "codex",
+          "match": "Codex",
+          "aliases": []
+        },
+        {
+          "slug": "manus",
+          "match": "Manus",
+          "aliases": [
+            "Manus",
+            "マナス"
+          ]
+        },
+        {
+          "slug": "n8n",
+          "match": "n8n",
+          "aliases": [
+            "n8n"
+          ]
+        },
+        {
+          "slug": "cowork",
+          "match": "Cowork",
+          "aliases": [
+            "Cowork"
+          ]
+        },
+        {
+          "slug": "automation",
+          "match": "自動化",
+          "aliases": []
+        },
+        {
+          "slug": "skill",
+          "match": "スキル",
+          "aliases": [
+            "スキル"
+          ]
+        },
+        {
+          "slug": "mcp",
+          "match": "MCP",
+          "aliases": [
+            "MCP"
           ]
         },
         {
@@ -220,39 +360,10 @@
           ]
         },
         {
-          "slug": "mcp",
-          "match": "MCP",
-          "aliases": [
-            "MCP"
-          ]
-        },
-        {
           "slug": "api",
           "match": "API",
           "aliases": [
             "API"
-          ]
-        },
-        {
-          "slug": "skill",
-          "match": "スキル",
-          "aliases": [
-            "スキル"
-          ]
-        },
-        {
-          "slug": "artifacts",
-          "match": "Artifacts",
-          "aliases": [
-            "Artifacts",
-            "アーティファクト"
-          ]
-        },
-        {
-          "slug": "model",
-          "match": "モデル",
-          "aliases": [
-            "AIモデル"
           ]
         }
       ]
