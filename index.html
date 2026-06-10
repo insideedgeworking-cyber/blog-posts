@@ -402,7 +402,9 @@ async function loadPosts() {
     const jsons = files.filter(f => f.name.startsWith('post_') && f.name.endsWith('.json'));
     posts = await Promise.all(jsons.map(async f => {
       const r = await fetch(f.download_url + '?t=' + Date.now(), {cache:'no-store'});
-      return r.json();
+      const p = await r.json();
+      p._loadedSha = f.sha;   // 読み込んだ時点のGitHub版＝保存時の競合検知に使う
+      return p;
     }));
     posts.sort((a,b) => (b.created_at||'').localeCompare(a.created_at||''));
     // 並び順ファイル
@@ -566,7 +568,7 @@ async function changeStatus(e, id) {
   if (val==='published') await autoCreateNoteFreeOnPublish(p);   // 投稿済→note無料を自動生成
 }
 // 公開リポに書く用：note関連フィールドは必ず除外（公開リポに有料を置かない）
-function publicJson(p){ const o = JSON.parse(JSON.stringify(p)); ['note_paid','note_paid_idea','note_paid_suggest','note_free','_paidLoaded'].forEach(k=>delete o[k]); return o; }
+function publicJson(p){ const o = JSON.parse(JSON.stringify(p)); ['note_paid','note_paid_idea','note_paid_suggest','note_free','_paidLoaded','_loadedSha'].forEach(k=>delete o[k]); return o; }
 // 任意の記事JSONをGitHubへ保存（ステータス変更などの単体更新用）
 async function putPost(p) {
   const { githubToken } = getSettings();
@@ -1186,6 +1188,19 @@ async function saveToGitHub() {
     const r = await fetch(`${API_BASE}${fileName}?t=${Date.now()}`, {headers:{Authorization:`token ${githubToken}`}, cache:'no-store'});
     if (r.ok){ sha = (await r.json()).sha; }
   } catch(e){}
+  // ── 競合検知（データ消失防止）──
+  // この記事を開いた後に、別経路（別タブ・CLI・別端末）でGitHub側が更新されていたら、
+  // 黙って上書きせず確認する。これをしないと相手の変更を消してしまう。
+  if (!isNew && currentPost._loadedSha && sha && sha !== currentPost._loadedSha) {
+    const reload = confirm(
+      '⚠️ この記事は、あなたが開いたあとにGitHub側で更新されています。\n'+
+      '（別タブ・別端末・自動処理などの保存）\n\n'+
+      'このまま保存すると、その新しい変更を上書きして消してしまう恐れがあります。\n\n'+
+      '［OK］最新を読み直す（推奨。いま編集中の内容は破棄されます）\n'+
+      '［キャンセル］それでも今の内容で上書き保存する');
+    if (reload) { await loadPosts(); alert('🔄 最新を読み込みました。内容を確認して、もう一度編集・保存してください。'); return false; }
+    // キャンセル＝ユーザーが上書きを明示選択 → そのまま続行
+  }
   const body = {message:`${isNew?'create':'update'}: ${currentPost.title||currentPost.theme}`, content, branch:BRANCH};
   if (sha) body.sha = sha;
   const res = await fetch(`${API_BASE}${fileName}`, {
@@ -1193,6 +1208,7 @@ async function saveToGitHub() {
     body: JSON.stringify(body)
   });
   if (!res.ok) return false;
+  try { const rd = await res.json(); if (rd && rd.content && rd.content.sha) currentPost._loadedSha = rd.content.sha; } catch(e){}
   // ローカル反映
   if (isNew) { posts.unshift(JSON.parse(JSON.stringify(currentPost))); isNew = false; document.getElementById('delete-modal').style.display='block'; manualOrder.unshift(currentPost.id); }
   else { const i = posts.findIndex(s=>s.id===currentPost.id); if(i>=0) posts[i]=JSON.parse(JSON.stringify(currentPost)); }
