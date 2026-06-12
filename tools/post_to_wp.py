@@ -234,6 +234,8 @@ def main():
         payload["featured_media"] = featured_id
     if post.get("excerpt"):                              # メタ説明（検索スニペット用）
         payload["excerpt"] = post["excerpt"]
+    if post.get("slug"):                                 # URLスラッグ（英語推奨・SEO）
+        payload["slug"] = post["slug"]
     if post.get("wp_post_id"):                                 # 既存があれば更新
         res = api(cred, f"/posts/{post['wp_post_id']}", "POST", payload)
     else:
