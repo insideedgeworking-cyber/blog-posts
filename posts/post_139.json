@@ -3,7 +3,7 @@
   "created_at": "2026-06-13",
   "theme": "音楽配信サービス比較（TuneCore/DistroKid/AnyMind）",
   "ideas": "BGM収益向けに比較。分配率・AI可否・料金・剥奪リスク。AI音楽ならDistroKid寄り。",
-  "title": "音楽配信サービス比較｜DistroKid・TuneCore・CD Baby・AnyMindをAI可否で選ぶ【2026】",
+  "title": "音楽配信サービス比較｜AIで稼ぐなら選ぶべきはどれ？【2026年最新】",
   "category": "YouTube",
   "keywords": [
     "音楽配信",
@@ -17,5 +17,6 @@
   "status": "draft",
   "wp_post_id": null,
   "notes": "AI×音楽配信(DistroKid/Suno等)のアイデア。AI推しブログと相性◎。post_023(BGM収益)関連(2026-06-13)。 本文化(2026-06-13):比較特化(使い方は136/作るは138/稼ぐは137へ送客しカニバリ回避)。DistroKid/TuneCore/CD Baby/AnyMind/SoundOn/ドワンゴを5軸(AI可否/料金/還元/振込/日本語)で比較。結論=AI量産はDistroKid・TikTokはSoundOn・無料はドワンゴ・日本語×人作りはTuneCore。乗り換え注意/二重配信NG/共通注意。Web+字幕由来。 追加リサーチで増強(2026-06-13):Amuse(無料枠/100%還元/Fast Forwardスカウト)/RouteNote(無料85%・有料100%)/BIG UP!(無料70%・有料100%)/LANDR(AI最も制限的・月12曲上限・Content ID等除外)を追加。Spotify年1000再生未満は収益ゼロ(2024〜)。AI対応は多数派だが条件バラバラ。 第3次リサーチ(2026-06-13):コスト早見(シングル12+アルバム1=DistroKid年3500円 vs TuneCore2-3万規模)/振込・配信スピード(反映Spotify5日Apple3日他1-2週間・収益2-3ヶ月後はほぼ共通・アップロード頻度高でSpotifyアルゴリズム優遇)/迷ったら選ぶフロー(LINE MUSICはTuneCore等)。配信比較字幕由来。 第4次リサーチ(2026-06-13):配信先で単価差/ISRC・UPC解説(曲の背番号・無料自動発行)/乗り換え解約の落とし穴(プレイリストから消える・ISRC/UPC引き継ぎ・重複配信停止・メタデータ統一)/国内系vs海外系/FAQ追加(レーベルとの違い・無料の還元率・AI審査の厳しさ・1曲だけ)。Web由来。",
-  "slug": "music-distribution-hikaku"
+  "slug": "music-distribution-hikaku",
+  "excerpt": "音楽配信サービスをAI可否で比較。DistroKid・TuneCore・CD Baby・SoundOnなど主要9社の料金・還元率・特徴を整理し、AIで稼ぐなら選ぶべきはどれかを解説します。"
 }
