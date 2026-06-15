@@ -440,7 +440,9 @@ function deriveApprovedOrder() {
 
 function updateCounts() {
   ['idea','drafting','approved','published'].forEach(st => {
-    const n = posts.filter(p => (p.status||'idea')===st).length;
+    let arr = posts.filter(p => (p.status||'idea')===st);
+    if (st==='idea') arr = arr.filter(p => !(p.tags||[]).includes('深掘り候補'));  // 深掘り候補は専用タブのみ
+    const n = arr.length;
     const el = document.getElementById('cnt-'+st);
     if (el) el.textContent = n ? n : '';
   });
@@ -455,6 +457,7 @@ function renderList() {
   const c = document.getElementById('scripts-list');
   let list = posts;
   if (currentTab==='deepdive') list = list.filter(p => (p.tags||[]).includes('深掘り候補'));
+  else if (currentTab==='idea') list = list.filter(p => (p.status||'idea')==='idea' && !(p.tags||[]).includes('深掘り候補'));
   else if (currentTab!=='all') list = list.filter(p => (p.status||'idea')===currentTab);
   if (currentCategory!=='all') list = list.filter(p => p.category===currentCategory);
 
