@@ -142,6 +142,7 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
   <div class="tab" data-tab="drafting">✍️作成中<span class="tab-count" id="cnt-drafting"></span></div>
   <div class="tab" data-tab="approved">✅承認済<span class="tab-count" id="cnt-approved"></span></div>
   <div class="tab" data-tab="published">📤投稿済<span class="tab-count" id="cnt-published"></span></div>
+  <div class="tab" data-tab="deepdive">🏷深掘り候補<span class="tab-count" id="cnt-deepdive"></span></div>
   <div class="tab" data-tab="notefree">🆓note無料<span class="tab-count" id="cnt-notefree"></span></div>
   <div class="tab" data-tab="notepaid">💰note有料<span class="tab-count" id="cnt-notepaid"></span></div>
 </div>
@@ -443,6 +444,7 @@ function updateCounts() {
     const el = document.getElementById('cnt-'+st);
     if (el) el.textContent = n ? n : '';
   });
+  const cd=document.getElementById('cnt-deepdive'); if(cd){ const n=posts.filter(p=>(p.tags||[]).includes('深掘り候補')).length; cd.textContent = n ? n : ''; }
   const cf=document.getElementById('cnt-notefree'); if(cf) cf.textContent = notesFree.length ? notesFree.length : '';
   const cp=document.getElementById('cnt-notepaid'); if(cp) cp.textContent = notesPaid.length ? notesPaid.length : '';
 }
@@ -452,7 +454,8 @@ function renderList() {
   if (currentTab==='notefree' || currentTab==='notepaid') { renderNotes(); return; }
   const c = document.getElementById('scripts-list');
   let list = posts;
-  if (currentTab!=='all') list = list.filter(p => (p.status||'idea')===currentTab);
+  if (currentTab==='deepdive') list = list.filter(p => (p.tags||[]).includes('深掘り候補'));
+  else if (currentTab!=='all') list = list.filter(p => (p.status||'idea')===currentTab);
   if (currentCategory!=='all') list = list.filter(p => p.category===currentCategory);
 
   const isApproved = currentTab==='approved';
