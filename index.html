@@ -487,6 +487,8 @@ function renderList() {
         <span class="status-dot status-${cur}"></span>${statusSel}
         <span class="tag">📄 ${s.char_count||0}字</span>
         <span class="tag">📅 ${s.created_at||''}</span>
+        ${(s.tags||[]).map(t=>`<span class="tag" style="background:#fdeccb;color:#9a5b00;border-color:#f1ce95;">🏷${esc(t)}</span>`).join('')}
+        ${s.hub?`<span class="tag" title="${esc(s.connects||'')}" style="background:#e6f0ff;color:#1a56b8;border-color:#bcd6ff;">🔗${esc((((posts.find(p=>p.id===s.hub)||{}).title)||((posts.find(p=>p.id===s.hub)||{}).theme)||s.hub).slice(0,16))}</span>`:''}
       </div>
     </div>`;
   }).join('');
