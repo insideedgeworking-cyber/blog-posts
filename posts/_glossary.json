@@ -596,6 +596,216 @@
           ]
         }
       ]
+    },
+    {
+      "glossary_post_id": "post_003",
+      "url": "",
+      "terms": [
+        {
+          "slug": "kakutei-shinkoku",
+          "match": "確定申告",
+          "aliases": [
+            "確定申告",
+            "20万円ルール"
+          ]
+        },
+        {
+          "slug": "keihi",
+          "match": "経費",
+          "aliases": [
+            "経費",
+            "領収書"
+          ]
+        },
+        {
+          "slug": "aoiro-shiroiro",
+          "match": "青色申告",
+          "aliases": [
+            "青色申告",
+            "白色申告"
+          ]
+        },
+        {
+          "slug": "kaigyo",
+          "match": "個人事業主",
+          "aliases": [
+            "開業届",
+            "屋号",
+            "個人事業主"
+          ]
+        },
+        {
+          "slug": "juminzei",
+          "match": "住民税",
+          "aliases": [
+            "住民税"
+          ]
+        },
+        {
+          "slug": "tokubetsu-futsu",
+          "match": "特別徴収",
+          "aliases": [
+            "特別徴収",
+            "普通徴収"
+          ]
+        },
+        {
+          "slug": "gensen",
+          "match": "源泉徴収",
+          "aliases": [
+            "源泉徴収",
+            "源泉徴収票",
+            "支払調書"
+          ]
+        },
+        {
+          "slug": "fuyo",
+          "match": "扶養",
+          "aliases": [
+            "扶養"
+          ]
+        },
+        {
+          "slug": "invoice",
+          "match": "インボイス",
+          "aliases": [
+            "インボイス",
+            "マイナンバー"
+          ]
+        },
+        {
+          "slug": "tokutan",
+          "match": "特単",
+          "aliases": [
+            "特単"
+          ]
+        },
+        {
+          "slug": "kaji-anbun",
+          "match": "家事按分",
+          "aliases": [
+            "家事按分"
+          ]
+        },
+        {
+          "slug": "kiso-soneki",
+          "match": "基礎控除",
+          "aliases": [
+            "基礎控除",
+            "損益通算"
+          ]
+        }
+      ]
+    },
+    {
+      "glossary_post_id": "post_005",
+      "url": "",
+      "terms": [
+        {
+          "slug": "rental-server",
+          "match": "レンタルサーバー",
+          "aliases": [
+            "レンタルサーバー"
+          ]
+        },
+        {
+          "slug": "internal-link",
+          "match": "内部リンク",
+          "aliases": [
+            "内部リンク",
+            "外部リンク",
+            "被リンク"
+          ]
+        },
+        {
+          "slug": "permalink",
+          "match": "パーマリンク",
+          "aliases": [
+            "パーマリンク",
+            "パンくず"
+          ]
+        },
+        {
+          "slug": "topic-cluster",
+          "match": "トピッククラスター",
+          "aliases": [
+            "トピッククラスター",
+            "ピラーページ"
+          ]
+        },
+        {
+          "slug": "index-crawl",
+          "match": "クロール",
+          "aliases": [
+            "クロール",
+            "インデックス",
+            "サイトマップ",
+            "クロールバジェット"
+          ]
+        },
+        {
+          "slug": "affiliate",
+          "match": "アフィリエイト",
+          "aliases": [
+            "アフィリエイト",
+            "ASP",
+            "アドセンス"
+          ]
+        },
+        {
+          "slug": "selfback",
+          "match": "セルフバック",
+          "aliases": [
+            "セルフバック"
+          ]
+        },
+        {
+          "slug": "search-intent",
+          "match": "キーワード",
+          "aliases": [
+            "検索意図",
+            "共起語",
+            "ロングテール"
+          ]
+        },
+        {
+          "slug": "rewrite",
+          "match": "リライト",
+          "aliases": [
+            "リライト"
+          ]
+        },
+        {
+          "slug": "persona",
+          "match": "ペルソナ",
+          "aliases": [
+            "ペルソナ"
+          ]
+        },
+        {
+          "slug": "cannibal",
+          "match": "カニバリ",
+          "aliases": [
+            "カニバリ"
+          ]
+        },
+        {
+          "slug": "anchor-text",
+          "match": "アンカーテキスト",
+          "aliases": [
+            "アンカーテキスト"
+          ]
+        },
+        {
+          "slug": "tokka-zakki",
+          "match": "特化ブログ",
+          "aliases": [
+            "特化ブログ",
+            "雑記ブログ",
+            "超特化ブログ"
+          ]
+        }
+      ]
     }
   ]
 }
