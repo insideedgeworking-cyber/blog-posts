@@ -806,6 +806,162 @@
           ]
         }
       ]
+    },
+    {
+      "glossary_post_id": "post_159",
+      "url": "",
+      "terms": [
+        {
+          "slug": "ga4",
+          "match": "GA4",
+          "aliases": [
+            "GA4"
+          ]
+        },
+        {
+          "slug": "search-console",
+          "match": "サーチコンソール",
+          "aliases": [
+            "サーチコンソール",
+            "サチコ"
+          ]
+        },
+        {
+          "slug": "measurement-id",
+          "match": "測定ID",
+          "aliases": [
+            "測定ID"
+          ]
+        },
+        {
+          "slug": "data-stream",
+          "match": "データストリーム",
+          "aliases": [
+            "データストリーム"
+          ]
+        },
+        {
+          "slug": "key-event",
+          "match": "キーイベント",
+          "aliases": [
+            "キーイベント"
+          ]
+        },
+        {
+          "slug": "engagement",
+          "match": "エンゲージメント",
+          "aliases": [
+            "エンゲージメント率",
+            "エンゲージメント"
+          ]
+        },
+        {
+          "slug": "traffic-acq",
+          "match": "トラフィック獲得",
+          "aliases": [
+            "トラフィック獲得"
+          ]
+        },
+        {
+          "slug": "source-medium",
+          "match": "参照元",
+          "aliases": [
+            "参照元／メディア",
+            "参照元"
+          ]
+        },
+        {
+          "slug": "landing-page",
+          "match": "ランディングページ",
+          "aliases": [
+            "ランディングページ"
+          ]
+        },
+        {
+          "slug": "googleシグナル",
+          "match": "Googleシグナル",
+          "aliases": [
+            "Googleシグナル"
+          ]
+        },
+        {
+          "slug": "internal-traffic",
+          "match": "内部トラフィック",
+          "aliases": [
+            "内部トラフィック"
+          ]
+        },
+        {
+          "slug": "query",
+          "match": "クエリ",
+          "aliases": [
+            "クエリ"
+          ]
+        },
+        {
+          "slug": "impressions",
+          "match": "表示回数",
+          "aliases": [
+            "表示回数"
+          ]
+        },
+        {
+          "slug": "rank-pos",
+          "match": "掲載順位",
+          "aliases": [
+            "掲載順位"
+          ]
+        },
+        {
+          "slug": "url-inspect",
+          "match": "URL検査",
+          "aliases": [
+            "URL検査"
+          ]
+        },
+        {
+          "slug": "soft404",
+          "match": "ソフト404",
+          "aliases": [
+            "ソフト404"
+          ]
+        },
+        {
+          "slug": "discover",
+          "match": "Discover",
+          "aliases": [
+            "Discover"
+          ]
+        },
+        {
+          "slug": "flow-channel",
+          "match": "流入チャネル",
+          "aliases": [
+            "流入チャネル"
+          ]
+        },
+        {
+          "slug": "organic",
+          "match": "Organic Search",
+          "aliases": [
+            "Organic Search"
+          ]
+        },
+        {
+          "slug": "looker",
+          "match": "Looker Studio",
+          "aliases": [
+            "Looker Studio"
+          ]
+        },
+        {
+          "slug": "clarity",
+          "match": "Microsoft Clarity",
+          "aliases": [
+            "Microsoft Clarity"
+          ]
+        }
+      ]
     }
   ]
 }
