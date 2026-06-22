@@ -1,6 +1,6 @@
 {
   "manual_order": [
-    "post_152",
+    "post_157",
     "post_053",
     "post_032",
     "post_031",
@@ -50,23 +50,15 @@
     "post_052",
     "post_054",
     "post_055",
-    "post_056",
-    "post_057",
     "post_058",
     "post_059",
     "post_060",
     "post_061",
     "post_062",
     "post_063",
-    "post_064",
-    "post_065",
-    "post_066",
     "post_067",
     "post_068",
     "post_069",
-    "post_070",
-    "post_071",
-    "post_072",
     "post_073",
     "post_074",
     "post_075",
@@ -142,7 +134,13 @@
     "post_140",
     "post_141",
     "post_142",
-    "post_145"
+    "post_145",
+    "post_155",
+    "post_156",
+    "post_143",
+    "post_144",
+    "post_153",
+    "post_154"
   ],
   "approved_order": []
 }
