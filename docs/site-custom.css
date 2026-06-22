@@ -29,3 +29,43 @@ article.post, .article{ background:#fff !important; border-radius:12px; }
 .wp-block-button__link, .btn, a.btn, .more-button{ background:#ff7a3d !important; border-color:#ff7a3d !important; color:#fff !important; border-radius:8px !important; }
 .entry-content blockquote{ border-left:4px solid #2f6fb3 !important; background:#f5f8fc !important; padding:1em 1.2em !important; border-radius:0 8px 8px 0; }
 .entry-content img{ border-radius:8px; }
+
+/* =========================================================
+   ▼ 読みやすさ強化（2026-06 追記）
+   本文の文字サイズ・行間・余白・箇条書き・強調を最適化。
+   研究の目安: 本文16〜17px / 行間1.7〜1.9 / 余白広め。
+   ========================================================= */
+
+/* 本文タイポグラフィ（最重要） */
+.entry-content{ font-size:17px !important; line-height:1.9 !important; letter-spacing:.02em !important; color:#333 !important; }
+.entry-content p{ margin:0 0 1.6em !important; }
+@media (max-width:480px){
+  .entry-content{ font-size:16px !important; line-height:1.85 !important; }
+  .article, .entry-content{ word-break:normal; overflow-wrap:anywhere; }
+}
+
+/* 見出しの上下余白を広げ、区切りを明確に */
+.entry-content h2, .article h2{ margin:2.4em 0 1em !important; }
+.entry-content h3, .article h3{ margin:2em 0 .7em !important; }
+
+/* 箇条書き・番号リストを読みやすく（行間と項目間に余白） */
+.entry-content ul, .entry-content ol{ margin:1.2em 0 1.8em !important; padding-left:1.45em !important; }
+.entry-content li{ margin-bottom:.7em !important; line-height:1.85 !important; }
+
+/* 太字を上品なマーカーで強調（読み飛ばしでも要点が拾える） */
+.entry-content strong{ color:#1d3a5f !important; font-weight:700 !important; background:linear-gradient(transparent 62%, #ffe0cc 62%) !important; }
+
+/* リンクは下線で明示（回遊UP・誤タップ減） */
+.entry-content a{ text-decoration:underline !important; text-underline-offset:2px; }
+.entry-content a:hover{ color:#ff7a3d !important; }
+
+/* 表をスマホで横スクロール対応（崩れ防止） */
+.entry-content table{ display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; border-collapse:collapse; margin:1.4em 0 !important; }
+.entry-content th, .entry-content td{ border:1px solid #d6e0ec !important; padding:.55em .85em !important; }
+.entry-content th{ background:#eef3f9 !important; color:#1d3a5f; }
+
+/* 目次を読みやすく */
+.toc{ background:#f5f8fc !important; border:1px solid #d6e0ec !important; border-radius:10px !important; padding:1em 1.2em !important; }
+
+/* 段落どうしの間に呼吸（最初の段落の上だけ詰める） */
+.entry-content h2 + p, .entry-content h3 + p{ margin-top:.3em !important; }
