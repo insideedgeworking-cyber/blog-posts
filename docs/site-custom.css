@@ -69,3 +69,8 @@ article.post, .article{ background:#fff !important; border-radius:12px; }
 
 /* 段落どうしの間に呼吸（最初の段落の上だけ詰める） */
 .entry-content h2 + p, .entry-content h3 + p{ margin-top:.3em !important; }
+
+/* グローバルナビのドロップダウン（子カテゴリ）が白くて見えない問題の修正 */
+#navi .sub-menu, #navi ul ul{ background:#234f82 !important; border:none !important; }
+#navi .sub-menu li a, #navi ul ul li a{ color:#fff !important; background:transparent !important; border-bottom:1px solid rgba(255,255,255,.12) !important; }
+#navi .sub-menu li a:hover, #navi ul ul li a:hover{ background:rgba(255,255,255,.18) !important; color:#fff !important; }
