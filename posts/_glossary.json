@@ -1,967 +1,1123 @@
 {
-  "glossaries": [
+ "glossaries": [
+  {
+   "glossary_post_id": "post_002",
+   "url": "https://workstartedge.com/%e3%80%90%e4%bf%9d%e5%ad%98%e7%89%88%e3%80%91%e3%83%91%e3%82%bd%e3%82%b3%e3%83%b3%e7%94%a8%e8%aa%9e%e3%81%be%e3%81%a8%e3%82%81%ef%bd%9c%e5%89%af%e6%a5%ad%e3%83%bb%e3%82%b2%e3%83%bc%e3%83%a0%e7%94%a8pc/",
+   "terms": [
     {
-      "glossary_post_id": "post_002",
-      "url": "https://workstartedge.com/%e3%80%90%e4%bf%9d%e5%ad%98%e7%89%88%e3%80%91%e3%83%91%e3%82%bd%e3%82%b3%e3%83%b3%e7%94%a8%e8%aa%9e%e3%81%be%e3%81%a8%e3%82%81%ef%bd%9c%e5%89%af%e6%a5%ad%e3%83%bb%e3%82%b2%e3%83%bc%e3%83%a0%e7%94%a8pc/",
-      "terms": [
-        {
-          "slug": "gpu",
-          "match": "GPU",
-          "aliases": [
-            "グラフィックボード",
-            "グラボ",
-            "GPU"
-          ]
-        },
-        {
-          "slug": "cpu",
-          "match": "CPU",
-          "aliases": [
-            "CPU"
-          ]
-        },
-        {
-          "slug": "memory",
-          "match": "メモリ",
-          "aliases": [
-            "メモリ"
-          ]
-        },
-        {
-          "slug": "storage",
-          "match": "ストレージ",
-          "aliases": [
-            "ストレージ"
-          ]
-        },
-        {
-          "slug": "ssd",
-          "match": "SSDとHDD",
-          "aliases": [
-            "SSD",
-            "HDD"
-          ]
-        },
-        {
-          "slug": "vram",
-          "match": "VRAM",
-          "aliases": [
-            "VRAM"
-          ]
-        },
-        {
-          "slug": "sata-nvme",
-          "match": "SATA",
-          "aliases": [
-            "NVMe",
-            "M.2",
-            "SATA"
-          ]
-        },
-        {
-          "slug": "spec",
-          "match": "スペック",
-          "aliases": [
-            "スペック"
-          ]
-        },
-        {
-          "slug": "corei",
-          "match": "Intel Core",
-          "aliases": [
-            "Core i7",
-            "Core i5",
-            "Core i3",
-            "Core i9"
-          ]
-        },
-        {
-          "slug": "ryzen",
-          "match": "AMD Ryzen",
-          "aliases": [
-            "Ryzen"
-          ]
-        },
-        {
-          "slug": "bto",
-          "match": "BTO",
-          "aliases": [
-            "BTO"
-          ]
-        },
-        {
-          "slug": "motherboard",
-          "match": "マザーボード",
-          "aliases": [
-            "マザーボード"
-          ]
-        },
-        {
-          "slug": "psu",
-          "match": "電源ユニット",
-          "aliases": [
-            "電源ユニット"
-          ]
-        },
-        {
-          "slug": "cooling",
-          "match": "冷却",
-          "aliases": [
-            "水冷",
-            "空冷"
-          ]
-        },
-        {
-          "slug": "bench",
-          "match": "ベンチマーク",
-          "aliases": [
-            "ベンチマーク"
-          ]
-        },
-        {
-          "slug": "refresh",
-          "match": "モニター",
-          "aliases": [
-            "リフレッシュレート"
-          ]
-        },
-        {
-          "slug": "resolution",
-          "match": "解像度",
-          "aliases": [
-            "解像度",
-            "フルHD",
-            "WQHD"
-          ]
-        },
-        {
-          "slug": "fps",
-          "match": "fps",
-          "aliases": [
-            "fps"
-          ]
-        },
-        {
-          "slug": "gmouse",
-          "match": "ゲーミングマウス",
-          "aliases": [
-            "ゲーミングマウス",
-            "多ボタンマウス"
-          ]
-        },
-        {
-          "slug": "lefthand",
-          "match": "左手デバイス",
-          "aliases": [
-            "左手デバイス"
-          ]
-        },
-        {
-          "slug": "mechkb",
-          "match": "メカニカルキーボード",
-          "aliases": [
-            "メカニカルキーボード"
-          ]
-        }
-      ]
+     "slug": "gpu",
+     "match": "GPU",
+     "aliases": [
+      "グラフィックボード",
+      "グラボ",
+      "GPU"
+     ]
     },
     {
-      "glossary_post_id": "post_021",
-      "url": "https://workstartedge.com/ai%e7%94%a8%e8%aa%9e%ef%bc%86%e5%89%af%e6%a5%ad%e3%81%a7%e4%bd%bf%e3%81%86ai%e3%83%84%e3%83%bc%e3%83%ab%e4%ba%8b%e5%85%b8%ef%bd%9c%e4%bd%bf%e3%81%84%e6%96%b9%e3%81%a4%e3%81%8d%e3%83%bb%e5%88%9d/",
-      "terms": [
-        {
-          "slug": "seisei-ai",
-          "match": "生成AI",
-          "aliases": [
-            "生成AI"
-          ]
-        },
-        {
-          "slug": "llm",
-          "match": "LLM",
-          "aliases": [
-            "LLM",
-            "大規模言語モデル"
-          ]
-        },
-        {
-          "slug": "chatai",
-          "match": "対話型AI",
-          "aliases": [
-            "対話型AI",
-            "チャットAI"
-          ]
-        },
-        {
-          "slug": "prompt",
-          "match": "プロンプト",
-          "aliases": [
-            "プロンプト"
-          ]
-        },
-        {
-          "slug": "token",
-          "match": "トークン",
-          "aliases": [
-            "トークン"
-          ]
-        },
-        {
-          "slug": "context",
-          "match": "コンテキスト",
-          "aliases": [
-            "コンテキスト",
-            "文脈"
-          ]
-        },
-        {
-          "slug": "model",
-          "match": "モデル",
-          "aliases": [
-            "AIモデル"
-          ]
-        },
-        {
-          "slug": "multimodal",
-          "match": "マルチモーダル",
-          "aliases": [
-            "マルチモーダル"
-          ]
-        },
-        {
-          "slug": "halluc",
-          "match": "ハルシネーション",
-          "aliases": [
-            "ハルシネーション"
-          ]
-        },
-        {
-          "slug": "imagegen",
-          "match": "画像生成AI",
-          "aliases": [
-            "画像生成"
-          ]
-        },
-        {
-          "slug": "videogen",
-          "match": "動画生成AI",
-          "aliases": [
-            "動画生成"
-          ]
-        },
-        {
-          "slug": "voice",
-          "match": "AI音声",
-          "aliases": [
-            "AI音声",
-            "音声合成"
-          ]
-        },
-        {
-          "slug": "transcribe",
-          "match": "文字起こし",
-          "aliases": [
-            "文字起こし"
-          ]
-        },
-        {
-          "slug": "automation",
-          "match": "自動化",
-          "aliases": []
-        },
-        {
-          "slug": "aiagent",
-          "match": "AIエージェント",
-          "aliases": [
-            "AIエージェント"
-          ]
-        },
-        {
-          "slug": "skill",
-          "match": "スキル",
-          "aliases": [
-            "スキル"
-          ]
-        },
-        {
-          "slug": "mcp",
-          "match": "MCP",
-          "aliases": [
-            "MCP"
-          ]
-        },
-        {
-          "slug": "artifacts",
-          "match": "Artifacts",
-          "aliases": [
-            "Artifacts",
-            "アーティファクト"
-          ]
-        },
-        {
-          "slug": "chatgpt",
-          "match": "ChatGPT",
-          "aliases": [
-            "ChatGPT",
-            "チャットGPT"
-          ]
-        },
-        {
-          "slug": "claude",
-          "match": "Claude",
-          "aliases": [
-            "Claude",
-            "クロード"
-          ]
-        },
-        {
-          "slug": "gemini",
-          "match": "Gemini",
-          "aliases": [
-            "Gemini",
-            "ジェミニ"
-          ]
-        },
-        {
-          "slug": "grok",
-          "match": "Grok",
-          "aliases": [
-            "Grok",
-            "グロック"
-          ]
-        },
-        {
-          "slug": "copilot",
-          "match": "Copilot",
-          "aliases": [
-            "Copilot",
-            "コパイロット"
-          ]
-        },
-        {
-          "slug": "gpts",
-          "match": "GPTs",
-          "aliases": [
-            "GPTs"
-          ]
-        },
-        {
-          "slug": "interpreter",
-          "match": "高度なデータ分析",
-          "aliases": [
-            "高度なデータ分析",
-            "コードインタープリター"
-          ]
-        },
-        {
-          "slug": "voicemode",
-          "match": "ボイスモード",
-          "aliases": [
-            "ボイスモード"
-          ]
-        },
-        {
-          "slug": "dalle",
-          "match": "DALL-E",
-          "aliases": [
-            "DALL-E"
-          ]
-        },
-        {
-          "slug": "midjourney",
-          "match": "Midjourney",
-          "aliases": [
-            "Midjourney"
-          ]
-        },
-        {
-          "slug": "sd",
-          "match": "Stable Diffusion",
-          "aliases": [
-            "Stable Diffusion"
-          ]
-        },
-        {
-          "slug": "firefly",
-          "match": "Adobe Firefly",
-          "aliases": [
-            "Adobe Firefly",
-            "Firefly"
-          ]
-        },
-        {
-          "slug": "whisk",
-          "match": "Whisk",
-          "aliases": [
-            "Whisk"
-          ]
-        },
-        {
-          "slug": "canva",
-          "match": "Canva",
-          "aliases": [
-            "Canva"
-          ]
-        },
-        {
-          "slug": "nanobanana",
-          "match": "NanoBanana",
-          "aliases": [
-            "NanoBanana"
-          ]
-        },
-        {
-          "slug": "vrew",
-          "match": "Vrew",
-          "aliases": [
-            "Vrew",
-            "ブリュー"
-          ]
-        },
-        {
-          "slug": "capcut",
-          "match": "CapCut",
-          "aliases": [
-            "CapCut",
-            "キャップカット"
-          ]
-        },
-        {
-          "slug": "googleflow",
-          "match": "Google Flow",
-          "aliases": [
-            "Google Flow",
-            "Veo"
-          ]
-        },
-        {
-          "slug": "runway",
-          "match": "Runway",
-          "aliases": [
-            "Runway"
-          ]
-        },
-        {
-          "slug": "sora",
-          "match": "Sora",
-          "aliases": [
-            "Sora"
-          ]
-        },
-        {
-          "slug": "voicevox",
-          "match": "VOICEVOX",
-          "aliases": [
-            "VOICEVOX"
-          ]
-        },
-        {
-          "slug": "yukkuri",
-          "match": "ゆっくりムービーメーカー",
-          "aliases": [
-            "ゆっくりムービーメーカー"
-          ]
-        },
-        {
-          "slug": "fishaudio",
-          "match": "Fish Audio",
-          "aliases": [
-            "Fish Audio"
-          ]
-        },
-        {
-          "slug": "elevenlabs",
-          "match": "ElevenLabs",
-          "aliases": [
-            "ElevenLabs"
-          ]
-        },
-        {
-          "slug": "suno",
-          "match": "Suno",
-          "aliases": [
-            "Suno"
-          ]
-        },
-        {
-          "slug": "claudecode",
-          "match": "Claude Code",
-          "aliases": []
-        },
-        {
-          "slug": "codex",
-          "match": "Codex",
-          "aliases": []
-        },
-        {
-          "slug": "manus",
-          "match": "Manus",
-          "aliases": [
-            "Manus",
-            "マナス"
-          ]
-        },
-        {
-          "slug": "genspark",
-          "match": "Genspark",
-          "aliases": [
-            "Genspark"
-          ]
-        },
-        {
-          "slug": "n8n",
-          "match": "n8n",
-          "aliases": [
-            "n8n"
-          ]
-        },
-        {
-          "slug": "cursor",
-          "match": "Cursor",
-          "aliases": [
-            "Cursor"
-          ]
-        },
-        {
-          "slug": "cowork",
-          "match": "Cowork",
-          "aliases": [
-            "Cowork"
-          ]
-        },
-        {
-          "slug": "autoclickr",
-          "match": "Autoclickr",
-          "aliases": [
-            "Autoclickr"
-          ]
-        },
-        {
-          "slug": "perplexity",
-          "match": "Perplexity",
-          "aliases": [
-            "Perplexity",
-            "パープレキシティ"
-          ]
-        },
-        {
-          "slug": "notebooklm",
-          "match": "NotebookLM",
-          "aliases": [
-            "NotebookLM"
-          ]
-        },
-        {
-          "slug": "vidiq",
-          "match": "VidIQ",
-          "aliases": [
-            "VidIQ",
-            "vidIQ"
-          ]
-        },
-        {
-          "slug": "terminal",
-          "match": "ターミナル",
-          "aliases": [
-            "ターミナル"
-          ]
-        },
-        {
-          "slug": "install",
-          "match": "インストール",
-          "aliases": [
-            "インストール"
-          ]
-        },
-        {
-          "slug": "folder",
-          "match": "フォルダ",
-          "aliases": [
-            "フォルダ"
-          ]
-        },
-        {
-          "slug": "md",
-          "match": "マークダウン",
-          "aliases": [
-            "マークダウン",
-            "CLAUDE.md"
-          ]
-        },
-        {
-          "slug": "api",
-          "match": "API",
-          "aliases": [
-            "API"
-          ]
-        }
-      ]
+     "slug": "cpu",
+     "match": "CPU",
+     "aliases": [
+      "CPU"
+     ]
     },
     {
-      "glossary_post_id": "post_003",
-      "url": "https://workstartedge.com/%e3%80%90%e5%89%af%e6%a5%ad%e5%88%9d%e5%bf%83%e8%80%85%e3%81%ab%e3%82%82%e3%82%8f%e3%81%8b%e3%82%8b%e3%80%91%e5%89%af%e6%a5%ad%e7%94%a8%e8%aa%9e%e3%81%be%e3%81%a8%e3%82%81%ef%bd%9c%e7%9f%a5%e3%81%a3/",
-      "terms": [
-        {
-          "slug": "kakutei-shinkoku",
-          "match": "確定申告",
-          "aliases": [
-            "確定申告",
-            "20万円ルール"
-          ]
-        },
-        {
-          "slug": "keihi",
-          "match": "経費",
-          "aliases": [
-            "経費",
-            "領収書"
-          ]
-        },
-        {
-          "slug": "aoiro-shiroiro",
-          "match": "青色申告",
-          "aliases": [
-            "青色申告",
-            "白色申告"
-          ]
-        },
-        {
-          "slug": "kaigyo",
-          "match": "個人事業主",
-          "aliases": [
-            "開業届",
-            "屋号",
-            "個人事業主"
-          ]
-        },
-        {
-          "slug": "juminzei",
-          "match": "住民税",
-          "aliases": [
-            "住民税"
-          ]
-        },
-        {
-          "slug": "tokubetsu-futsu",
-          "match": "特別徴収",
-          "aliases": [
-            "特別徴収",
-            "普通徴収"
-          ]
-        },
-        {
-          "slug": "gensen",
-          "match": "源泉徴収",
-          "aliases": [
-            "源泉徴収",
-            "源泉徴収票",
-            "支払調書"
-          ]
-        },
-        {
-          "slug": "fuyo",
-          "match": "扶養",
-          "aliases": [
-            "扶養"
-          ]
-        },
-        {
-          "slug": "invoice",
-          "match": "インボイス",
-          "aliases": [
-            "インボイス",
-            "マイナンバー"
-          ]
-        },
-        {
-          "slug": "tokutan",
-          "match": "特単",
-          "aliases": [
-            "特単"
-          ]
-        },
-        {
-          "slug": "kaji-anbun",
-          "match": "家事按分",
-          "aliases": [
-            "家事按分"
-          ]
-        },
-        {
-          "slug": "kiso-soneki",
-          "match": "基礎控除",
-          "aliases": [
-            "基礎控除",
-            "損益通算"
-          ]
-        }
-      ]
+     "slug": "memory",
+     "match": "メモリ",
+     "aliases": [
+      "メモリ"
+     ]
     },
     {
-      "glossary_post_id": "post_005",
-      "url": "https://workstartedge.com/%e3%80%90%e5%89%af%e6%a5%ad%e5%88%9d%e5%bf%83%e8%80%85%e3%81%ab%e3%82%82%e3%82%8f%e3%81%8b%e3%82%8b%e3%80%91%e3%83%96%e3%83%ad%e3%82%b0%e7%94%a8%e8%aa%9e%e3%81%be%e3%81%a8%e3%82%81%ef%bd%9c%e6%9c%80/",
-      "terms": [
-        {
-          "slug": "rental-server",
-          "match": "レンタルサーバー",
-          "aliases": [
-            "レンタルサーバー"
-          ]
-        },
-        {
-          "slug": "internal-link",
-          "match": "内部リンク",
-          "aliases": [
-            "内部リンク",
-            "外部リンク",
-            "被リンク"
-          ]
-        },
-        {
-          "slug": "permalink",
-          "match": "パーマリンク",
-          "aliases": [
-            "パーマリンク",
-            "パンくず"
-          ]
-        },
-        {
-          "slug": "topic-cluster",
-          "match": "トピッククラスター",
-          "aliases": [
-            "トピッククラスター",
-            "ピラーページ"
-          ]
-        },
-        {
-          "slug": "index-crawl",
-          "match": "クロール",
-          "aliases": [
-            "クロール",
-            "インデックス",
-            "サイトマップ",
-            "クロールバジェット"
-          ]
-        },
-        {
-          "slug": "affiliate",
-          "match": "アフィリエイト",
-          "aliases": [
-            "アフィリエイト",
-            "ASP",
-            "アドセンス"
-          ]
-        },
-        {
-          "slug": "selfback",
-          "match": "セルフバック",
-          "aliases": [
-            "セルフバック"
-          ]
-        },
-        {
-          "slug": "search-intent",
-          "match": "キーワード",
-          "aliases": [
-            "検索意図",
-            "共起語",
-            "ロングテール"
-          ]
-        },
-        {
-          "slug": "rewrite",
-          "match": "リライト",
-          "aliases": [
-            "リライト"
-          ]
-        },
-        {
-          "slug": "persona",
-          "match": "ペルソナ",
-          "aliases": [
-            "ペルソナ"
-          ]
-        },
-        {
-          "slug": "cannibal",
-          "match": "カニバリ",
-          "aliases": [
-            "カニバリ"
-          ]
-        },
-        {
-          "slug": "anchor-text",
-          "match": "アンカーテキスト",
-          "aliases": [
-            "アンカーテキスト"
-          ]
-        },
-        {
-          "slug": "tokka-zakki",
-          "match": "特化ブログ",
-          "aliases": [
-            "特化ブログ",
-            "雑記ブログ",
-            "超特化ブログ"
-          ]
-        }
-      ]
+     "slug": "storage",
+     "match": "ストレージ",
+     "aliases": [
+      "ストレージ"
+     ]
     },
     {
-      "glossary_post_id": "post_159",
-      "url": "https://workstartedge.com/access-analysis-glossary/",
-      "terms": [
-        {
-          "slug": "ga4",
-          "match": "GA4",
-          "aliases": [
-            "GA4"
-          ]
-        },
-        {
-          "slug": "search-console",
-          "match": "サーチコンソール",
-          "aliases": [
-            "サーチコンソール",
-            "サチコ"
-          ]
-        },
-        {
-          "slug": "measurement-id",
-          "match": "測定ID",
-          "aliases": [
-            "測定ID"
-          ]
-        },
-        {
-          "slug": "data-stream",
-          "match": "データストリーム",
-          "aliases": [
-            "データストリーム"
-          ]
-        },
-        {
-          "slug": "key-event",
-          "match": "キーイベント",
-          "aliases": [
-            "キーイベント"
-          ]
-        },
-        {
-          "slug": "engagement",
-          "match": "エンゲージメント",
-          "aliases": [
-            "エンゲージメント率",
-            "エンゲージメント"
-          ]
-        },
-        {
-          "slug": "traffic-acq",
-          "match": "トラフィック獲得",
-          "aliases": [
-            "トラフィック獲得"
-          ]
-        },
-        {
-          "slug": "source-medium",
-          "match": "参照元",
-          "aliases": [
-            "参照元／メディア",
-            "参照元"
-          ]
-        },
-        {
-          "slug": "landing-page",
-          "match": "ランディングページ",
-          "aliases": [
-            "ランディングページ"
-          ]
-        },
-        {
-          "slug": "googleシグナル",
-          "match": "Googleシグナル",
-          "aliases": [
-            "Googleシグナル"
-          ]
-        },
-        {
-          "slug": "internal-traffic",
-          "match": "内部トラフィック",
-          "aliases": [
-            "内部トラフィック"
-          ]
-        },
-        {
-          "slug": "query",
-          "match": "クエリ",
-          "aliases": [
-            "クエリ"
-          ]
-        },
-        {
-          "slug": "impressions",
-          "match": "表示回数",
-          "aliases": [
-            "表示回数"
-          ]
-        },
-        {
-          "slug": "rank-pos",
-          "match": "掲載順位",
-          "aliases": [
-            "掲載順位"
-          ]
-        },
-        {
-          "slug": "url-inspect",
-          "match": "URL検査",
-          "aliases": [
-            "URL検査"
-          ]
-        },
-        {
-          "slug": "soft404",
-          "match": "ソフト404",
-          "aliases": [
-            "ソフト404"
-          ]
-        },
-        {
-          "slug": "discover",
-          "match": "Discover",
-          "aliases": [
-            "Discover"
-          ]
-        },
-        {
-          "slug": "flow-channel",
-          "match": "流入チャネル",
-          "aliases": [
-            "流入チャネル"
-          ]
-        },
-        {
-          "slug": "organic",
-          "match": "Organic Search",
-          "aliases": [
-            "Organic Search"
-          ]
-        },
-        {
-          "slug": "looker",
-          "match": "Looker Studio",
-          "aliases": [
-            "Looker Studio"
-          ]
-        },
-        {
-          "slug": "clarity",
-          "match": "Microsoft Clarity",
-          "aliases": [
-            "Microsoft Clarity"
-          ]
-        }
-      ]
+     "slug": "ssd",
+     "match": "SSDとHDD",
+     "aliases": [
+      "SSD",
+      "HDD"
+     ]
+    },
+    {
+     "slug": "vram",
+     "match": "VRAM",
+     "aliases": [
+      "VRAM"
+     ]
+    },
+    {
+     "slug": "sata-nvme",
+     "match": "SATA",
+     "aliases": [
+      "NVMe",
+      "M.2",
+      "SATA"
+     ]
+    },
+    {
+     "slug": "spec",
+     "match": "スペック",
+     "aliases": [
+      "スペック"
+     ]
+    },
+    {
+     "slug": "corei",
+     "match": "Intel Core",
+     "aliases": [
+      "Core i7",
+      "Core i5",
+      "Core i3",
+      "Core i9"
+     ]
+    },
+    {
+     "slug": "ryzen",
+     "match": "AMD Ryzen",
+     "aliases": [
+      "Ryzen"
+     ]
+    },
+    {
+     "slug": "bto",
+     "match": "BTO",
+     "aliases": [
+      "BTO"
+     ]
+    },
+    {
+     "slug": "motherboard",
+     "match": "マザーボード",
+     "aliases": [
+      "マザーボード"
+     ]
+    },
+    {
+     "slug": "psu",
+     "match": "電源ユニット",
+     "aliases": [
+      "電源ユニット"
+     ]
+    },
+    {
+     "slug": "cooling",
+     "match": "冷却",
+     "aliases": [
+      "水冷",
+      "空冷"
+     ]
+    },
+    {
+     "slug": "bench",
+     "match": "ベンチマーク",
+     "aliases": [
+      "ベンチマーク"
+     ]
+    },
+    {
+     "slug": "refresh",
+     "match": "モニター",
+     "aliases": [
+      "リフレッシュレート"
+     ]
+    },
+    {
+     "slug": "resolution",
+     "match": "解像度",
+     "aliases": [
+      "解像度",
+      "フルHD",
+      "WQHD"
+     ]
+    },
+    {
+     "slug": "fps",
+     "match": "fps",
+     "aliases": [
+      "fps"
+     ]
+    },
+    {
+     "slug": "gmouse",
+     "match": "ゲーミングマウス",
+     "aliases": [
+      "ゲーミングマウス",
+      "多ボタンマウス"
+     ]
+    },
+    {
+     "slug": "lefthand",
+     "match": "左手デバイス",
+     "aliases": [
+      "左手デバイス"
+     ]
+    },
+    {
+     "slug": "mechkb",
+     "match": "メカニカルキーボード",
+     "aliases": [
+      "メカニカルキーボード"
+     ]
     }
-  ]
+   ]
+  },
+  {
+   "glossary_post_id": "post_021",
+   "url": "https://workstartedge.com/ai%e7%94%a8%e8%aa%9e%ef%bc%86%e5%89%af%e6%a5%ad%e3%81%a7%e4%bd%bf%e3%81%86ai%e3%83%84%e3%83%bc%e3%83%ab%e4%ba%8b%e5%85%b8%ef%bd%9c%e4%bd%bf%e3%81%84%e6%96%b9%e3%81%a4%e3%81%8d%e3%83%bb%e5%88%9d/",
+   "terms": [
+    {
+     "slug": "seisei-ai",
+     "match": "生成AI",
+     "aliases": [
+      "生成AI"
+     ]
+    },
+    {
+     "slug": "llm",
+     "match": "LLM",
+     "aliases": [
+      "LLM",
+      "大規模言語モデル"
+     ]
+    },
+    {
+     "slug": "chatai",
+     "match": "対話型AI",
+     "aliases": [
+      "対話型AI",
+      "チャットAI"
+     ]
+    },
+    {
+     "slug": "prompt",
+     "match": "プロンプト",
+     "aliases": [
+      "プロンプト"
+     ]
+    },
+    {
+     "slug": "token",
+     "match": "トークン",
+     "aliases": [
+      "トークン"
+     ]
+    },
+    {
+     "slug": "context",
+     "match": "コンテキスト",
+     "aliases": [
+      "コンテキスト",
+      "文脈"
+     ]
+    },
+    {
+     "slug": "model",
+     "match": "モデル",
+     "aliases": [
+      "AIモデル"
+     ]
+    },
+    {
+     "slug": "multimodal",
+     "match": "マルチモーダル",
+     "aliases": [
+      "マルチモーダル"
+     ]
+    },
+    {
+     "slug": "halluc",
+     "match": "ハルシネーション",
+     "aliases": [
+      "ハルシネーション"
+     ]
+    },
+    {
+     "slug": "imagegen",
+     "match": "画像生成AI",
+     "aliases": [
+      "画像生成"
+     ]
+    },
+    {
+     "slug": "videogen",
+     "match": "動画生成AI",
+     "aliases": [
+      "動画生成"
+     ]
+    },
+    {
+     "slug": "voice",
+     "match": "AI音声",
+     "aliases": [
+      "AI音声",
+      "音声合成"
+     ]
+    },
+    {
+     "slug": "transcribe",
+     "match": "文字起こし",
+     "aliases": [
+      "文字起こし"
+     ]
+    },
+    {
+     "slug": "automation",
+     "match": "自動化",
+     "aliases": []
+    },
+    {
+     "slug": "aiagent",
+     "match": "AIエージェント",
+     "aliases": [
+      "AIエージェント"
+     ]
+    },
+    {
+     "slug": "skill",
+     "match": "スキル",
+     "aliases": [
+      "スキル"
+     ]
+    },
+    {
+     "slug": "mcp",
+     "match": "MCP",
+     "aliases": [
+      "MCP"
+     ]
+    },
+    {
+     "slug": "artifacts",
+     "match": "Artifacts",
+     "aliases": [
+      "Artifacts",
+      "アーティファクト"
+     ]
+    },
+    {
+     "slug": "chatgpt",
+     "match": "ChatGPT",
+     "aliases": [
+      "ChatGPT",
+      "チャットGPT"
+     ]
+    },
+    {
+     "slug": "claude",
+     "match": "Claude",
+     "aliases": [
+      "Claude",
+      "クロード"
+     ]
+    },
+    {
+     "slug": "gemini",
+     "match": "Gemini",
+     "aliases": [
+      "Gemini",
+      "ジェミニ"
+     ]
+    },
+    {
+     "slug": "grok",
+     "match": "Grok",
+     "aliases": [
+      "Grok",
+      "グロック"
+     ]
+    },
+    {
+     "slug": "copilot",
+     "match": "Copilot",
+     "aliases": [
+      "Copilot",
+      "コパイロット"
+     ]
+    },
+    {
+     "slug": "gpts",
+     "match": "GPTs",
+     "aliases": [
+      "GPTs"
+     ]
+    },
+    {
+     "slug": "interpreter",
+     "match": "高度なデータ分析",
+     "aliases": [
+      "高度なデータ分析",
+      "コードインタープリター"
+     ]
+    },
+    {
+     "slug": "voicemode",
+     "match": "ボイスモード",
+     "aliases": [
+      "ボイスモード"
+     ]
+    },
+    {
+     "slug": "dalle",
+     "match": "DALL-E",
+     "aliases": [
+      "DALL-E"
+     ]
+    },
+    {
+     "slug": "midjourney",
+     "match": "Midjourney",
+     "aliases": [
+      "Midjourney"
+     ]
+    },
+    {
+     "slug": "sd",
+     "match": "Stable Diffusion",
+     "aliases": [
+      "Stable Diffusion"
+     ]
+    },
+    {
+     "slug": "firefly",
+     "match": "Adobe Firefly",
+     "aliases": [
+      "Adobe Firefly",
+      "Firefly"
+     ]
+    },
+    {
+     "slug": "whisk",
+     "match": "Whisk",
+     "aliases": [
+      "Whisk"
+     ]
+    },
+    {
+     "slug": "canva",
+     "match": "Canva",
+     "aliases": [
+      "Canva"
+     ]
+    },
+    {
+     "slug": "nanobanana",
+     "match": "NanoBanana",
+     "aliases": [
+      "NanoBanana"
+     ]
+    },
+    {
+     "slug": "vrew",
+     "match": "Vrew",
+     "aliases": [
+      "Vrew",
+      "ブリュー"
+     ]
+    },
+    {
+     "slug": "capcut",
+     "match": "CapCut",
+     "aliases": [
+      "CapCut",
+      "キャップカット"
+     ]
+    },
+    {
+     "slug": "googleflow",
+     "match": "Google Flow",
+     "aliases": [
+      "Google Flow",
+      "Veo"
+     ]
+    },
+    {
+     "slug": "runway",
+     "match": "Runway",
+     "aliases": [
+      "Runway"
+     ]
+    },
+    {
+     "slug": "sora",
+     "match": "Sora",
+     "aliases": [
+      "Sora"
+     ]
+    },
+    {
+     "slug": "voicevox",
+     "match": "VOICEVOX",
+     "aliases": [
+      "VOICEVOX"
+     ]
+    },
+    {
+     "slug": "yukkuri",
+     "match": "ゆっくりムービーメーカー",
+     "aliases": [
+      "ゆっくりムービーメーカー"
+     ]
+    },
+    {
+     "slug": "fishaudio",
+     "match": "Fish Audio",
+     "aliases": [
+      "Fish Audio"
+     ]
+    },
+    {
+     "slug": "elevenlabs",
+     "match": "ElevenLabs",
+     "aliases": [
+      "ElevenLabs"
+     ]
+    },
+    {
+     "slug": "suno",
+     "match": "Suno",
+     "aliases": [
+      "Suno"
+     ]
+    },
+    {
+     "slug": "claudecode",
+     "match": "Claude Code",
+     "aliases": []
+    },
+    {
+     "slug": "codex",
+     "match": "Codex",
+     "aliases": []
+    },
+    {
+     "slug": "manus",
+     "match": "Manus",
+     "aliases": [
+      "Manus",
+      "マナス"
+     ]
+    },
+    {
+     "slug": "genspark",
+     "match": "Genspark",
+     "aliases": [
+      "Genspark"
+     ]
+    },
+    {
+     "slug": "n8n",
+     "match": "n8n",
+     "aliases": [
+      "n8n"
+     ]
+    },
+    {
+     "slug": "cursor",
+     "match": "Cursor",
+     "aliases": [
+      "Cursor"
+     ]
+    },
+    {
+     "slug": "cowork",
+     "match": "Cowork",
+     "aliases": [
+      "Cowork"
+     ]
+    },
+    {
+     "slug": "autoclickr",
+     "match": "Autoclickr",
+     "aliases": [
+      "Autoclickr"
+     ]
+    },
+    {
+     "slug": "perplexity",
+     "match": "Perplexity",
+     "aliases": [
+      "Perplexity",
+      "パープレキシティ"
+     ]
+    },
+    {
+     "slug": "notebooklm",
+     "match": "NotebookLM",
+     "aliases": [
+      "NotebookLM"
+     ]
+    },
+    {
+     "slug": "vidiq",
+     "match": "VidIQ",
+     "aliases": [
+      "VidIQ",
+      "vidIQ"
+     ]
+    },
+    {
+     "slug": "terminal",
+     "match": "ターミナル",
+     "aliases": [
+      "ターミナル"
+     ]
+    },
+    {
+     "slug": "install",
+     "match": "インストール",
+     "aliases": [
+      "インストール"
+     ]
+    },
+    {
+     "slug": "folder",
+     "match": "フォルダ",
+     "aliases": [
+      "フォルダ"
+     ]
+    },
+    {
+     "slug": "md",
+     "match": "マークダウン",
+     "aliases": [
+      "マークダウン",
+      "CLAUDE.md"
+     ]
+    },
+    {
+     "slug": "api",
+     "match": "API",
+     "aliases": [
+      "API"
+     ]
+    },
+    {
+     "slug": "deepresearch",
+     "match": "Deep Research",
+     "aliases": [
+      "Deep Research",
+      "ディープリサーチ"
+     ]
+    },
+    {
+     "slug": "deepthink",
+     "match": "Deep Think",
+     "aliases": [
+      "Deep Think",
+      "ディープシンク"
+     ]
+    },
+    {
+     "slug": "gems",
+     "match": "Gems",
+     "aliases": [
+      "Gems",
+      "ジェムズ",
+      "カスタムGem"
+     ]
+    },
+    {
+     "slug": "projects",
+     "match": "Projects",
+     "aliases": [
+      "Projects",
+      "プロジェクト機能"
+     ]
+    },
+    {
+     "slug": "canvas-feature",
+     "match": "Canvas",
+     "aliases": [
+      "Canvas",
+      "キャンバス"
+     ]
+    },
+    {
+     "slug": "agentmode",
+     "match": "Agent Mode",
+     "aliases": [
+      "Agent Mode",
+      "エージェントモード"
+     ]
+    },
+    {
+     "slug": "geminilive",
+     "match": "Gemini Live",
+     "aliases": [
+      "Gemini Live",
+      "ジェミニライブ"
+     ]
+    },
+    {
+     "slug": "imagen",
+     "match": "Imagen",
+     "aliases": [
+      "Imagen",
+      "イマジェン"
+     ]
+    },
+    {
+     "slug": "lyria",
+     "match": "Lyria",
+     "aliases": [
+      "Lyria",
+      "リリア"
+     ]
+    },
+    {
+     "slug": "superagent",
+     "match": "Super Agent",
+     "aliases": [
+      "Super Agent",
+      "スーパーエージェント"
+     ]
+    },
+    {
+     "slug": "moa",
+     "match": "MoA",
+     "aliases": [
+      "MoA",
+      "Mixture of Agents",
+      "混合エージェント"
+     ]
+    },
+    {
+     "slug": "orchestration",
+     "match": "オーケストレーション",
+     "aliases": [
+      "オーケストレーション"
+     ]
+    },
+    {
+     "slug": "sakanachat",
+     "match": "Sakana Chat",
+     "aliases": [
+      "Sakana Chat",
+      "サカナチャット"
+     ]
+    },
+    {
+     "slug": "namazu",
+     "match": "Namazu",
+     "aliases": [
+      "Namazu",
+      "ナマズ"
+     ]
+    },
+    {
+     "slug": "fugu",
+     "match": "Sakana Fugu",
+     "aliases": [
+      "Sakana Fugu",
+      "Fugu",
+      "フグ"
+     ]
+    },
+    {
+     "slug": "antigravity",
+     "match": "Antigravity CLI",
+     "aliases": [
+      "Antigravity CLI",
+      "Antigravity",
+      "アンチグラビティ"
+     ]
+    },
+    {
+     "slug": "claude-models",
+     "match": "Opus／Sonnet／Haiku",
+     "aliases": [
+      "Opus",
+      "Sonnet",
+      "Haiku"
+     ]
+    },
+    {
+     "slug": "fable5",
+     "match": "Fable 5",
+     "aliases": [
+      "Fable 5",
+      "フェイブル"
+     ]
+    },
+    {
+     "slug": "finetune",
+     "match": "事後学習",
+     "aliases": [
+      "事後学習",
+      "ファインチューニング"
+     ]
+    }
+   ]
+  },
+  {
+   "glossary_post_id": "post_003",
+   "url": "https://workstartedge.com/%e3%80%90%e5%89%af%e6%a5%ad%e5%88%9d%e5%bf%83%e8%80%85%e3%81%ab%e3%82%82%e3%82%8f%e3%81%8b%e3%82%8b%e3%80%91%e5%89%af%e6%a5%ad%e7%94%a8%e8%aa%9e%e3%81%be%e3%81%a8%e3%82%81%ef%bd%9c%e7%9f%a5%e3%81%a3/",
+   "terms": [
+    {
+     "slug": "kakutei-shinkoku",
+     "match": "確定申告",
+     "aliases": [
+      "確定申告",
+      "20万円ルール"
+     ]
+    },
+    {
+     "slug": "keihi",
+     "match": "経費",
+     "aliases": [
+      "経費",
+      "領収書"
+     ]
+    },
+    {
+     "slug": "aoiro-shiroiro",
+     "match": "青色申告",
+     "aliases": [
+      "青色申告",
+      "白色申告"
+     ]
+    },
+    {
+     "slug": "kaigyo",
+     "match": "個人事業主",
+     "aliases": [
+      "開業届",
+      "屋号",
+      "個人事業主"
+     ]
+    },
+    {
+     "slug": "juminzei",
+     "match": "住民税",
+     "aliases": [
+      "住民税"
+     ]
+    },
+    {
+     "slug": "tokubetsu-futsu",
+     "match": "特別徴収",
+     "aliases": [
+      "特別徴収",
+      "普通徴収"
+     ]
+    },
+    {
+     "slug": "gensen",
+     "match": "源泉徴収",
+     "aliases": [
+      "源泉徴収",
+      "源泉徴収票",
+      "支払調書"
+     ]
+    },
+    {
+     "slug": "fuyo",
+     "match": "扶養",
+     "aliases": [
+      "扶養"
+     ]
+    },
+    {
+     "slug": "invoice",
+     "match": "インボイス",
+     "aliases": [
+      "インボイス",
+      "マイナンバー"
+     ]
+    },
+    {
+     "slug": "tokutan",
+     "match": "特単",
+     "aliases": [
+      "特単"
+     ]
+    },
+    {
+     "slug": "kaji-anbun",
+     "match": "家事按分",
+     "aliases": [
+      "家事按分"
+     ]
+    },
+    {
+     "slug": "kiso-soneki",
+     "match": "基礎控除",
+     "aliases": [
+      "基礎控除",
+      "損益通算"
+     ]
+    }
+   ]
+  },
+  {
+   "glossary_post_id": "post_005",
+   "url": "https://workstartedge.com/%e3%80%90%e5%89%af%e6%a5%ad%e5%88%9d%e5%bf%83%e8%80%85%e3%81%ab%e3%82%82%e3%82%8f%e3%81%8b%e3%82%8b%e3%80%91%e3%83%96%e3%83%ad%e3%82%b0%e7%94%a8%e8%aa%9e%e3%81%be%e3%81%a8%e3%82%81%ef%bd%9c%e6%9c%80/",
+   "terms": [
+    {
+     "slug": "rental-server",
+     "match": "レンタルサーバー",
+     "aliases": [
+      "レンタルサーバー"
+     ]
+    },
+    {
+     "slug": "internal-link",
+     "match": "内部リンク",
+     "aliases": [
+      "内部リンク",
+      "外部リンク",
+      "被リンク"
+     ]
+    },
+    {
+     "slug": "permalink",
+     "match": "パーマリンク",
+     "aliases": [
+      "パーマリンク",
+      "パンくず"
+     ]
+    },
+    {
+     "slug": "topic-cluster",
+     "match": "トピッククラスター",
+     "aliases": [
+      "トピッククラスター",
+      "ピラーページ"
+     ]
+    },
+    {
+     "slug": "index-crawl",
+     "match": "クロール",
+     "aliases": [
+      "クロール",
+      "インデックス",
+      "サイトマップ",
+      "クロールバジェット"
+     ]
+    },
+    {
+     "slug": "affiliate",
+     "match": "アフィリエイト",
+     "aliases": [
+      "アフィリエイト",
+      "ASP",
+      "アドセンス"
+     ]
+    },
+    {
+     "slug": "selfback",
+     "match": "セルフバック",
+     "aliases": [
+      "セルフバック"
+     ]
+    },
+    {
+     "slug": "search-intent",
+     "match": "キーワード",
+     "aliases": [
+      "検索意図",
+      "共起語",
+      "ロングテール"
+     ]
+    },
+    {
+     "slug": "rewrite",
+     "match": "リライト",
+     "aliases": [
+      "リライト"
+     ]
+    },
+    {
+     "slug": "persona",
+     "match": "ペルソナ",
+     "aliases": [
+      "ペルソナ"
+     ]
+    },
+    {
+     "slug": "cannibal",
+     "match": "カニバリ",
+     "aliases": [
+      "カニバリ"
+     ]
+    },
+    {
+     "slug": "anchor-text",
+     "match": "アンカーテキスト",
+     "aliases": [
+      "アンカーテキスト"
+     ]
+    },
+    {
+     "slug": "tokka-zakki",
+     "match": "特化ブログ",
+     "aliases": [
+      "特化ブログ",
+      "雑記ブログ",
+      "超特化ブログ"
+     ]
+    }
+   ]
+  },
+  {
+   "glossary_post_id": "post_159",
+   "url": "https://workstartedge.com/access-analysis-glossary/",
+   "terms": [
+    {
+     "slug": "ga4",
+     "match": "GA4",
+     "aliases": [
+      "GA4"
+     ]
+    },
+    {
+     "slug": "search-console",
+     "match": "サーチコンソール",
+     "aliases": [
+      "サーチコンソール",
+      "サチコ"
+     ]
+    },
+    {
+     "slug": "measurement-id",
+     "match": "測定ID",
+     "aliases": [
+      "測定ID"
+     ]
+    },
+    {
+     "slug": "data-stream",
+     "match": "データストリーム",
+     "aliases": [
+      "データストリーム"
+     ]
+    },
+    {
+     "slug": "key-event",
+     "match": "キーイベント",
+     "aliases": [
+      "キーイベント"
+     ]
+    },
+    {
+     "slug": "engagement",
+     "match": "エンゲージメント",
+     "aliases": [
+      "エンゲージメント率",
+      "エンゲージメント"
+     ]
+    },
+    {
+     "slug": "traffic-acq",
+     "match": "トラフィック獲得",
+     "aliases": [
+      "トラフィック獲得"
+     ]
+    },
+    {
+     "slug": "source-medium",
+     "match": "参照元",
+     "aliases": [
+      "参照元／メディア",
+      "参照元"
+     ]
+    },
+    {
+     "slug": "landing-page",
+     "match": "ランディングページ",
+     "aliases": [
+      "ランディングページ"
+     ]
+    },
+    {
+     "slug": "googleシグナル",
+     "match": "Googleシグナル",
+     "aliases": [
+      "Googleシグナル"
+     ]
+    },
+    {
+     "slug": "internal-traffic",
+     "match": "内部トラフィック",
+     "aliases": [
+      "内部トラフィック"
+     ]
+    },
+    {
+     "slug": "query",
+     "match": "クエリ",
+     "aliases": [
+      "クエリ"
+     ]
+    },
+    {
+     "slug": "impressions",
+     "match": "表示回数",
+     "aliases": [
+      "表示回数"
+     ]
+    },
+    {
+     "slug": "rank-pos",
+     "match": "掲載順位",
+     "aliases": [
+      "掲載順位"
+     ]
+    },
+    {
+     "slug": "url-inspect",
+     "match": "URL検査",
+     "aliases": [
+      "URL検査"
+     ]
+    },
+    {
+     "slug": "soft404",
+     "match": "ソフト404",
+     "aliases": [
+      "ソフト404"
+     ]
+    },
+    {
+     "slug": "discover",
+     "match": "Discover",
+     "aliases": [
+      "Discover"
+     ]
+    },
+    {
+     "slug": "flow-channel",
+     "match": "流入チャネル",
+     "aliases": [
+      "流入チャネル"
+     ]
+    },
+    {
+     "slug": "organic",
+     "match": "Organic Search",
+     "aliases": [
+      "Organic Search"
+     ]
+    },
+    {
+     "slug": "looker",
+     "match": "Looker Studio",
+     "aliases": [
+      "Looker Studio"
+     ]
+    },
+    {
+     "slug": "clarity",
+     "match": "Microsoft Clarity",
+     "aliases": [
+      "Microsoft Clarity"
+     ]
+    }
+   ]
+  }
+ ]
 }
