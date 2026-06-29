@@ -765,6 +765,7 @@ document.getElementById('eeat-score-btn').addEventListener('click', async functi
 `あなたはGoogle検索品質評価ガイドラインに精通した辛口の評価者です。次のブログ記事を E-E-A-T（Experience経験 / Expertise専門性 / Authoritativeness権威性 / Trustworthiness信頼性）と SEO の観点から、甘えなしで厳しく採点してください。
 前提（厳しめ）: 新規ドメイン・自己サイトへのプロフィールリンクは権威性に加点しない。一文だけの体験は経験として弱い。本文中に一次情報の出典リンクが無ければ信頼性を低く見る。
 各観点を5点満点（E/Ex/A/T 合計20点）で、SEO（タイトル/見出し構造/内部リンク/メタ/キーワード/独自性）も5点満点で別に評価。
+画像・図解・動画があると良い箇所があれば、「Geminiの画像生成(Nano Banana)／動画生成(Veo)で作って入れる」前提で具体的にアドバイスに含めること（筆者はGemini契約済み。操作手順は実スクショ＋Geminiの図解が有効）。
 出力は必ず次のJSONだけ:
 {"score":"総合◯/20（E◯ Ex◯ A◯ T◯）｜SEO◯/5","advice":"・改善点を具体的に箇条書き（経験の厚み/一次情報の出典/内部リンク/タイトル/独自性など。各項目1行）"}
 
