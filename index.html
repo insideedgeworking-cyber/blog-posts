@@ -423,9 +423,15 @@ function buildCategorySelect() {
 async function loadPosts() {
   document.getElementById('scripts-list').innerHTML = '<div class="loading"><div class="spinner"></div><br>読み込み中...</div>';
   try {
-    const res   = await fetch(`${API_BASE}?ref=${BRANCH}&t=${Date.now()}`, {cache:'no-store'});
+    const _gh = getSettings().githubToken;
+    const _hdr = _gh ? {Authorization:`token ${_gh}`} : {};
+    const res   = await fetch(`${API_BASE}?ref=${BRANCH}&t=${Date.now()}`, {headers:_hdr, cache:'no-store'});
     const files = await res.json();
-    if (!Array.isArray(files)) throw new Error('リポジトリにアクセスできません');
+    if (!Array.isArray(files)) {
+      if (res.status===403 && res.headers.get('x-ratelimit-remaining')==='0')
+        throw new Error('GitHub APIの回数制限（未認証は60回/時）に達しました。⚙️設定でGitHub Tokenを入れると大幅に緩和されます。または数分待って再読込してください。');
+      throw new Error('リポジトリにアクセスできません（' + ((files&&files.message)?files.message:('HTTP '+res.status)) + '）');
+    }
     const jsons = files.filter(f => f.name.startsWith('post_') && f.name.endsWith('.json'));
     // 同時取得数を絞り、1本失敗しても残りは表示する（記事増加でGitHub rawが一時的に弾く対策）
     const LIMIT = 5, loaded = [], failed = [];
@@ -442,11 +448,17 @@ async function loadPosts() {
               const r = await fetch(f.download_url + '?t=' + Date.now(), {cache:'no-store'});
               if (!r.ok) throw new Error('HTTP ' + r.status);
               p = await r.json();
-            } else {
+            } else if (getSettings().githubToken) {
+              // 3回目以降：raw が続けて弾かれたら GitHub API(別ホスト・認証付き)から取得
               const r = await fetch(f.url + '?t=' + Date.now(), {headers:{Authorization:`token ${getSettings().githubToken}`}, cache:'no-store'});
               if (!r.ok) throw new Error('API ' + r.status);
               const meta = await r.json();
               p = JSON.parse(decodeURIComponent(escape(atob((meta.content||'').replace(/\n/g,'')))));
+            } else {
+              // トークン無し時は未認証APIを浪費しない（60回/時を守る）。raw を再試行
+              const r = await fetch(f.download_url + '?t=' + Date.now(), {cache:'no-store'});
+              if (!r.ok) throw new Error('HTTP ' + r.status);
+              p = await r.json();
             }
             p._loadedSha = f.sha;   // 読み込んだ時点のGitHub版＝保存時の競合検知に使う
             okp = p;
