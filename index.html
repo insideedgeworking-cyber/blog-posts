@@ -52,6 +52,7 @@ header h1 { font-size: 17px; font-weight: bold; }
 .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
 .status-idea { background: #f4b400; }
 .status-drafting { background: #9334e6; }
+.status-tuning { background: #ff7a3d; }
 .status-approved { background: #34a853; }
 .status-published { background: #1a73e8; }
 
@@ -140,6 +141,7 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
   <div class="tab active" data-tab="all">全て</div>
   <div class="tab" data-tab="idea">💡アイデア<span class="tab-count" id="cnt-idea"></span></div>
   <div class="tab" data-tab="drafting">✍️作成中<span class="tab-count" id="cnt-drafting"></span></div>
+  <div class="tab" data-tab="tuning">🎯調整中<span class="tab-count" id="cnt-tuning"></span></div>
   <div class="tab" data-tab="approved">✅承認済<span class="tab-count" id="cnt-approved"></span></div>
   <div class="tab" data-tab="published">📤投稿済<span class="tab-count" id="cnt-published"></span></div>
   <div class="tab" data-tab="deepdive">🏷深掘り候補<span class="tab-count" id="cnt-deepdive"></span></div>
@@ -167,6 +169,7 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
       <div class="modal-tab active" data-mtab="idea">💡 アイデア&生成</div>
       <div class="modal-tab" data-mtab="edit">✏️ 編集</div>
       <div class="modal-tab" data-mtab="preview">👁 プレビュー</div>
+      <div class="modal-tab" data-mtab="eeat">🎯 採点/調整</div>
     </div>
     <div class="modal-body">
 
@@ -231,6 +234,7 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
           <select id="status-input">
             <option value="idea">💡 アイデア</option>
             <option value="drafting">✍️ 作成中</option>
+            <option value="tuning">🎯 調整中</option>
             <option value="approved">✅ 承認済（投稿OK）</option>
             <option value="published">📤 投稿済</option>
           </select>
@@ -245,6 +249,28 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
           <textarea id="notes-input" rows="2" placeholder="気になった点・修正案など" style="min-height:auto;"></textarea>
         </div>
         <button class="save-btn" id="save-btn-p">GitHubに保存</button>
+      </div>
+
+      <!-- 採点/調整（EEAT＋SEO） -->
+      <div class="tab-panel" id="panel-eeat">
+        <div class="section">
+          <button class="gen-btn" id="eeat-score-btn">🎯 EEAT＋SEOを厳しめに採点</button>
+          <div class="gen-status" id="gen-status-eeat"></div>
+          <div style="font-size:12px;color:#888;margin-top:6px;">採点すると点数とアドバイスが入り、ステータスが「🎯調整中」になります（保存で確定）。</div>
+        </div>
+        <div class="section">
+          <label>📊 点数（EEAT＋SEO・辛口）</label>
+          <textarea id="eeat-score-input" rows="3" placeholder="採点ボタンで自動入力（手動編集も可）" style="min-height:auto;" oninput="if(currentPost)currentPost.eeat_score=this.value"></textarea>
+        </div>
+        <div class="section">
+          <label>🧭 改善アドバイス（採点AIから）</label>
+          <textarea id="eeat-advice-input" rows="6" placeholder="採点ボタンで自動入力" oninput="if(currentPost)currentPost.eeat_advice=this.value"></textarea>
+        </div>
+        <div class="section">
+          <label>💡 修正アイデア（自分用・直す/足す要素をメモ）</label>
+          <textarea id="revise-idea-input" rows="5" placeholder="ここに修正・追加したい要素を書いておく" oninput="if(currentPost)currentPost.revise_idea=this.value"></textarea>
+        </div>
+        <button class="save-btn" id="save-btn-eeat">GitHubに保存</button>
       </div>
 
     </div>
@@ -376,7 +402,7 @@ function getSettings() {
   };
 }
 
-const statusLabel = { idea:'アイデア', drafting:'作成中', approved:'承認済', published:'投稿済' };
+const statusLabel = { idea:'アイデア', drafting:'作成中', tuning:'調整中', approved:'承認済', published:'投稿済' };
 
 // ── カテゴリフィルタ生成 ──
 function buildFilterBar() {
@@ -464,7 +490,7 @@ function deriveApprovedOrder() {
 }
 
 function updateCounts() {
-  ['idea','drafting','approved','published'].forEach(st => {
+  ['idea','drafting','tuning','approved','published'].forEach(st => {
     let arr = posts.filter(p => (p.status||'idea')===st);
     if (st==='idea') arr = arr.filter(p => !(p.tags||[]).includes('深掘り候補'));  // 深掘り候補は専用タブのみ
     const n = arr.length;
@@ -502,7 +528,7 @@ function renderList() {
     </div>`;
     const cur = s.status||'idea';
     const statusSel = `<select class="card-status" onclick="event.stopPropagation()" onchange="changeStatus(event,'${s.id}')">`
-      + ['idea','drafting','approved','published'].map(v=>`<option value="${v}" ${v===cur?'selected':''}>${({idea:'💡アイデア',drafting:'✍️作成中',approved:'✅承認済',published:'📤投稿済'})[v]}</option>`).join('')
+      + ['idea','drafting','tuning','approved','published'].map(v=>`<option value="${v}" ${v===cur?'selected':''}>${({idea:'💡アイデア',drafting:'✍️作成中',tuning:'🎯調整中',approved:'✅承認済',published:'📤投稿済'})[v]}</option>`).join('')
       + `</select>`;
     return `<div class="script-card" id="card-${s.id}" draggable="true" data-id="${s.id}"
       ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)"
@@ -666,6 +692,7 @@ function switchModalTab(tab) {
   if (tab==='idea')    fillIdea();
   if (tab==='edit')    fillEdit();
   if (tab==='preview') fillPreview();
+  if (tab==='eeat')    fillEeat();
 }
 
 function fillIdea() {
@@ -707,6 +734,46 @@ function updateExcerptCount(){
   const v = document.getElementById('excerpt-input').value;
   document.getElementById('excerpt-count').textContent = `${v.length}字`;
 }
+function fillEeat(){
+  document.getElementById('eeat-score-input').value  = currentPost.eeat_score  || '';
+  document.getElementById('eeat-advice-input').value = currentPost.eeat_advice || '';
+  document.getElementById('revise-idea-input').value = currentPost.revise_idea || '';
+}
+function readEeat(){
+  currentPost.eeat_score  = document.getElementById('eeat-score-input').value;
+  currentPost.eeat_advice = document.getElementById('eeat-advice-input').value;
+  currentPost.revise_idea = document.getElementById('revise-idea-input').value;
+}
+// 🎯 EEAT＋SEO 厳しめ採点（Claude）
+document.getElementById('eeat-score-btn').addEventListener('click', async function(){
+  if (!currentPost || !(currentPost.body||'').trim()){ showStatus('eeat','本文がありません（先に生成・編集を）', true); return; }
+  this.disabled = true; showStatus('eeat','辛口で採点中…');
+  try{
+    const prompt =
+`あなたはGoogle検索品質評価ガイドラインに精通した辛口の評価者です。次のブログ記事を E-E-A-T（Experience経験 / Expertise専門性 / Authoritativeness権威性 / Trustworthiness信頼性）と SEO の観点から、甘えなしで厳しく採点してください。
+前提（厳しめ）: 新規ドメイン・自己サイトへのプロフィールリンクは権威性に加点しない。一文だけの体験は経験として弱い。本文中に一次情報の出典リンクが無ければ信頼性を低く見る。
+各観点を5点満点（E/Ex/A/T 合計20点）で、SEO（タイトル/見出し構造/内部リンク/メタ/キーワード/独自性）も5点満点で別に評価。
+出力は必ず次のJSONだけ:
+{"score":"総合◯/20（E◯ Ex◯ A◯ T◯）｜SEO◯/5","advice":"・改善点を具体的に箇条書き（経験の厚み/一次情報の出典/内部リンク/タイトル/独自性など。各項目1行）"}
+
+タイトル: ${currentPost.title||'(未設定)'}
+カテゴリ: ${currentPost.category||''}
+キーワード: ${(currentPost.keywords||[]).join(', ')}
+メタ説明: ${currentPost.excerpt||'(なし)'}
+本文:
+${(currentPost.body||'').slice(0,12000)}`;
+    const txt = await callClaude(prompt, 2000);
+    const obj = parseJsonObj(txt);
+    currentPost.eeat_score  = obj.score  || '';
+    currentPost.eeat_advice = obj.advice || '';
+    document.getElementById('eeat-score-input').value  = currentPost.eeat_score;
+    document.getElementById('eeat-advice-input').value = currentPost.eeat_advice;
+    const st = currentPost.status||'idea';
+    if (st==='idea' || st==='drafting') currentPost.status = 'tuning';
+    showStatus('eeat','✅ 採点しました。内容を確認して「GitHubに保存」を押すと調整中に入ります。');
+  }catch(e){ showStatus('eeat','失敗: '+e.message, true); }
+  this.disabled = false;
+});
 
 // ══════════ note（独立記事：無料=公開リポ notes/ ／有料=非公開リポ notes/） ══════════
 function blogUrlFor(p){ return p && p.wp_post_id ? `https://workstartedge.com/?p=${p.wp_post_id}` : 'https://workstartedge.com/'; }
@@ -1042,7 +1109,7 @@ function showStatus(panel, msg, isError=false){
   if (!el) return;
   el.textContent = msg; el.className = 'gen-status' + (isError?' error':''); el.style.display='block';
 }
-function hideStatus(){ ['i','e','note'].forEach(p=>{ const el=document.getElementById('gen-status-'+p); if(el) el.style.display='none'; }); }
+function hideStatus(){ ['i','e','note','eeat'].forEach(p=>{ const el=document.getElementById('gen-status-'+p); if(el) el.style.display='none'; }); }
 
 // ── 用語の自動追加（記事生成時、新出用語を用語解説へ追記）──
 const GLOSSARY_MAP = { 'PC':'post_002', '副業':'post_003', 'SNS':'post_004', 'ブログ':'post_005', 'AI':'post_021' };
@@ -1211,6 +1278,7 @@ async function saveToGitHub() {
   if (!githubToken) { alert('⚙️設定でGitHub Tokenを入力してください'); return false; }
   // 各パネルの入力を取り込む
   if (document.getElementById('panel-idea').classList.contains('active')) readIdea();
+  if (document.getElementById('panel-eeat').classList.contains('active')) readEeat();
   readPreviewFields();
   currentPost.char_count = (currentPost.body||'').length;
 
@@ -1254,7 +1322,7 @@ async function saveToGitHub() {
   if (currentPost.status==='published') await autoCreateNoteFreeOnPublish(currentPost);   // 投稿済→note無料を自動生成
   return true;
 }
-['save-btn-i','save-btn-e','save-btn-p'].forEach(id => {
+['save-btn-i','save-btn-e','save-btn-p','save-btn-eeat'].forEach(id => {
   document.getElementById(id).addEventListener('click', async function(){
     const o=this.textContent; this.textContent='保存中...'; this.classList.add('saving');
     const ok = await saveToGitHub();

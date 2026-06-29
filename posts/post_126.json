@@ -19,10 +19,13 @@
   "体験談"
  ],
  "hub": "post_037",
- "status": "published",
+ "status": "tuning",
  "wp_post_id": 366,
  "slug": "search-console-not-indexed-experience",
  "excerpt": "運営3週間でサーチコンソールの「クロール済み-インデックス未登録」21件に青ざめた体験談。調べたら大半はフィード等の正常URLで問題ゼロ。原因の見分け方と対処法を初心者目線で正直に記録。",
  "ideas": [],
- "notes": ""
+ "notes": "",
+ "eeat_score": "総合 13.2/20（E5.0 Ex3.5 A1.5 T3.2）｜SEO 3.5/5",
+ "eeat_advice": "・権威性：本文中に一次情報(公式)への出典リンクを点在させる\n・信頼性：注意点/デメリットと出典を本文に明記\n・SEO：タイトルが長い→32字前後に短縮\n・SEO：本文に一次情報(公式)リンクを置く",
+ "revise_idea": ""
 }

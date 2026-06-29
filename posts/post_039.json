@@ -19,10 +19,13 @@
   "ブログ"
  ],
  "hub": "post_037",
- "status": "published",
+ "status": "tuning",
  "wp_post_id": 358,
  "slug": "search-console-tsukaikata",
  "excerpt": "Googleサーチコンソールの使い方を初心者向けに解説。導入・サイトマップ送信・検索パフォーマンスの見方・インデックス登録のリクエスト・「クロール済み未登録」の正しい読み方まで実体験で紹介。",
  "ideas": [],
- "notes": ""
+ "notes": "",
+ "eeat_score": "総合 14.0/20（E3.0 Ex4.5 A2.5 T4.0）｜SEO 5.0/5",
+ "eeat_advice": "・大きな弱点なし。独自性(一次情報・体験の具体)をさらに足すと上位化しやすい",
+ "revise_idea": ""
 }
