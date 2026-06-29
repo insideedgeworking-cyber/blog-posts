@@ -49,6 +49,8 @@ header h1 { font-size: 17px; font-weight: bold; }
 .tag { font-size: 12px; padding: 3px 8px; border-radius: 10px; background: #f0f0f0; color: #555; }
 .tag.cat { background: #e8f0fe; color: #1a56b8; }
 .card-status { font-size: 12px; padding: 3px 6px; border-radius: 10px; border: 1px solid #ddd; background: #fff; color: #555; cursor: pointer; }
+.check-btn { font-size: 20px; cursor: pointer; background: none; border: none; line-height: 1; padding: 0 2px; flex-shrink: 0; }
+.script-card.is-checked { border-left: 5px solid #34a853; background: #f6fbf7; }
 .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
 .status-idea { background: #f4b400; }
 .status-drafting { background: #9334e6; }
@@ -542,7 +544,7 @@ function renderList() {
     const statusSel = `<select class="card-status" onclick="event.stopPropagation()" onchange="changeStatus(event,'${s.id}')">`
       + ['idea','drafting','tuning','approved','published'].map(v=>`<option value="${v}" ${v===cur?'selected':''}>${({idea:'💡アイデア',drafting:'✍️作成中',tuning:'🎯調整中',approved:'✅承認済',published:'📤投稿済'})[v]}</option>`).join('')
       + `</select>`;
-    return `<div class="script-card" id="card-${s.id}" draggable="true" data-id="${s.id}"
+    return `<div class="script-card${s.checked?' is-checked':''}" id="card-${s.id}" draggable="true" data-id="${s.id}"
       ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)"
       onclick="handleCardClick(event,'${s.id}')">
       <div class="card-top">
@@ -550,6 +552,7 @@ function renderList() {
           ${moveBtns}${handle}
           <div class="card-title">${orderNum}${titleHtml}</div>
         </div>
+        <button class="check-btn" title="チェック（完了/確認済みの目印）" onclick="toggleCheck(event,'${s.id}')">${s.checked?'✅':'⬜'}</button>
       </div>
       <div class="card-meta">
         ${s.category?`<span class="tag cat">${s.category}</span>`:''}
@@ -603,7 +606,20 @@ function handleCardClick(e, id){
   if (e.target.classList.contains('drag-handle')) return;
   if (e.target.classList.contains('move-btn')) return;
   if (e.target.classList.contains('card-status')) return;
+  if (e.target.classList.contains('check-btn')) return;
   openModal(id);
+}
+// ✅ チェックマーク（完了/確認済みの目印・GitHubに保存）
+async function toggleCheck(e, id){
+  e.stopPropagation();
+  const p = posts.find(x=>x.id===id); if(!p) return;
+  const prev = !!p.checked; p.checked = !prev;
+  e.target.textContent = p.checked ? '✅' : '⬜';
+  const card = document.getElementById('card-'+id); if(card) card.classList.toggle('is-checked', p.checked);
+  e.target.disabled = true;
+  const ok = await putPost(p);
+  e.target.disabled = false;
+  if(!ok){ p.checked = prev; e.target.textContent = p.checked?'✅':'⬜'; if(card) card.classList.toggle('is-checked', p.checked); alert('❌ チェックの保存に失敗しました（Token/REPOを確認）'); }
 }
 function moveCard(id, dir, e){
   e.stopPropagation();
