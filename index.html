@@ -402,20 +402,29 @@ async function loadPosts() {
     if (!Array.isArray(files)) throw new Error('リポジトリにアクセスできません');
     const jsons = files.filter(f => f.name.startsWith('post_') && f.name.endsWith('.json'));
     // 同時取得数を絞り、1本失敗しても残りは表示する（記事増加でGitHub rawが一時的に弾く対策）
-    const LIMIT = 8, loaded = [], failed = [];
+    const LIMIT = 5, loaded = [], failed = [];
     let _i = 0;
     async function _worker(){
       while (_i < jsons.length){
         const f = jsons[_i++];
         let okp = null;
-        for (let t = 0; t < 3 && !okp; t++){
+        for (let t = 0; t < 4 && !okp; t++){
           try{
-            const r = await fetch(f.download_url + '?t=' + Date.now(), {cache:'no-store'});
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-            const p = await r.json();
+            // 1〜2回目はraw、失敗が続いたらGitHub API(別ホスト)からbase64で取得＝取りこぼし救済
+            let p;
+            if (t < 2){
+              const r = await fetch(f.download_url + '?t=' + Date.now(), {cache:'no-store'});
+              if (!r.ok) throw new Error('HTTP ' + r.status);
+              p = await r.json();
+            } else {
+              const r = await fetch(f.url + '?t=' + Date.now(), {headers:{Authorization:`token ${getSettings().githubToken}`}, cache:'no-store'});
+              if (!r.ok) throw new Error('API ' + r.status);
+              const meta = await r.json();
+              p = JSON.parse(decodeURIComponent(escape(atob((meta.content||'').replace(/\n/g,'')))));
+            }
             p._loadedSha = f.sha;   // 読み込んだ時点のGitHub版＝保存時の競合検知に使う
             okp = p;
-          }catch(e){ if (t < 2) await new Promise(s => setTimeout(s, 400 * (t + 1))); }
+          }catch(e){ if (t < 3) await new Promise(s => setTimeout(s, 600 * (t + 1))); }
         }
         if (okp) loaded.push(okp); else failed.push(f.name);
       }
