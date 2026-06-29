@@ -401,12 +401,28 @@ async function loadPosts() {
     const files = await res.json();
     if (!Array.isArray(files)) throw new Error('リポジトリにアクセスできません');
     const jsons = files.filter(f => f.name.startsWith('post_') && f.name.endsWith('.json'));
-    posts = await Promise.all(jsons.map(async f => {
-      const r = await fetch(f.download_url + '?t=' + Date.now(), {cache:'no-store'});
-      const p = await r.json();
-      p._loadedSha = f.sha;   // 読み込んだ時点のGitHub版＝保存時の競合検知に使う
-      return p;
-    }));
+    // 同時取得数を絞り、1本失敗しても残りは表示する（記事増加でGitHub rawが一時的に弾く対策）
+    const LIMIT = 8, loaded = [], failed = [];
+    let _i = 0;
+    async function _worker(){
+      while (_i < jsons.length){
+        const f = jsons[_i++];
+        let okp = null;
+        for (let t = 0; t < 3 && !okp; t++){
+          try{
+            const r = await fetch(f.download_url + '?t=' + Date.now(), {cache:'no-store'});
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            const p = await r.json();
+            p._loadedSha = f.sha;   // 読み込んだ時点のGitHub版＝保存時の競合検知に使う
+            okp = p;
+          }catch(e){ if (t < 2) await new Promise(s => setTimeout(s, 400 * (t + 1))); }
+        }
+        if (okp) loaded.push(okp); else failed.push(f.name);
+      }
+    }
+    await Promise.all(Array.from({length: Math.min(LIMIT, jsons.length)}, _worker));
+    posts = loaded;
+    if (failed.length) console.warn('読み込めなかった記事（再読込で直ることが多い）:', failed);
     posts.sort((a,b) => (b.created_at||'').localeCompare(a.created_at||''));
     // 並び順ファイル
     const orderFile = files.find(f => f.name === '_order.json');
@@ -419,7 +435,7 @@ async function loadPosts() {
       manualOrder = (o.manual_order && o.manual_order.length) ? o.manual_order : [...approvedOrder];
     }
     normalizeOrder();
-    document.getElementById('total-badge').textContent = `${posts.length}本`;
+    document.getElementById('total-badge').textContent = failed.length ? `${posts.length}本（${failed.length}本読込失敗・再読込推奨）` : `${posts.length}本`;
     renderList();
   } catch(e) {
     document.getElementById('scripts-list').innerHTML = '<div class="empty">⚠️ ' + e.message + '<br><br>⚙️設定でGitHub Tokenを入れ、REPO名が正しいか確認してください</div>';
