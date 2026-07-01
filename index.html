@@ -153,6 +153,17 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
 
 <div class="filter-bar" id="filter-bar"></div>
 
+<div style="padding:6px 10px 0;display:flex;align-items:center;gap:8px;">
+  <span style="font-size:12px;color:#888;">↕ 並び替え</span>
+  <select id="sort-select" onchange="currentSort=this.value; renderList();" style="padding:4px 8px;border-radius:8px;border:1px solid #ddd;font-size:13px;background:#fff;">
+    <option value="manual">手動（ドラッグ順）</option>
+    <option value="score-asc">採点が低い順（要改善が上）</option>
+    <option value="score-desc">採点が高い順</option>
+    <option value="date-desc">日付が新しい順</option>
+    <option value="date-asc">日付が古い順</option>
+  </select>
+</div>
+
 <div class="scripts-list" id="scripts-list">
   <div class="loading"><div class="spinner"></div><br>読み込み中...</div>
 </div>
@@ -373,6 +384,7 @@ let currentPost = null;
 let isNew = false;
 let currentTab = 'all';
 let currentCategory = 'all';
+let currentSort = 'manual';
 let writingGuide = '';   // docs/記事作成ガイド.md の内容（生成・修正時に参照）
 let affiliates = [];     // アフィリエイト素材（posts/affiliates.json）
 let affSha = '';
@@ -498,6 +510,8 @@ function normalizeOrder() {
   posts.forEach(p => { if (!manualOrder.includes(p.id)) manualOrder.push(p.id); });
 }
 function orderIndex(id) { const i = manualOrder.indexOf(id); return i < 0 ? 9999 : i; }
+// eeat_score（"総合 12.5/20…"）から数値を取り出す。無ければnull
+function scoreOf(p){ const m=(p.eeat_score||'').match(/([\d.]+)\s*\/\s*20/); return m?parseFloat(m[1]):null; }
 // 承認済みだけを手動順で抜き出す＝投稿順（投稿ツールが読む approved_order）
 function deriveApprovedOrder() {
   approvedOrder = manualOrder.filter(id => { const p = posts.find(x=>x.id===id); return p && p.status==='approved'; });
@@ -527,8 +541,13 @@ function renderList() {
   if (currentCategory!=='all') list = list.filter(p => p.category===currentCategory);
 
   const isApproved = currentTab==='approved';
-  // 全タブで手動の並び順を適用
-  list = list.slice().sort((a,b)=> orderIndex(a.id) - orderIndex(b.id));
+  // 並び替え（手動／採点順／日付順）
+  list = list.slice();
+  if (currentSort==='score-asc')       list.sort((a,b)=> (scoreOf(a)===null?999:scoreOf(a)) - (scoreOf(b)===null?999:scoreOf(b)));
+  else if (currentSort==='score-desc') list.sort((a,b)=> (scoreOf(b)===null?-1:scoreOf(b)) - (scoreOf(a)===null?-1:scoreOf(a)));
+  else if (currentSort==='date-desc')  list.sort((a,b)=> (b.created_at||'').localeCompare(a.created_at||''));
+  else if (currentSort==='date-asc')   list.sort((a,b)=> (a.created_at||'').localeCompare(b.created_at||''));
+  else                                 list.sort((a,b)=> orderIndex(a.id) - orderIndex(b.id));
 
   if (!list.length){ c.innerHTML='<div class="empty">📭 記事がありません<br><br>「＋新規テーマを追加」から始めましょう</div>'; return; }
 
@@ -648,6 +667,7 @@ function moveCard(id, dir, e){
 // 表示中のカード順を全体の並び順(manualOrder)に反映→GitHubへ保存
 // （フィルタ中でも、表示外の記事の位置はそのまま保つ）
 async function commitVisibleOrder(visibleIds) {
+  if (currentSort!=='manual'){ alert('並び替えが「手動」以外のときは、ドラッグでの並べ替えはできません。\n上の「並び替え」を「手動」に戻してください。'); renderList(); return; }
   const slots = [];
   manualOrder.forEach((id, i) => { if (visibleIds.includes(id)) slots.push(i); });
   slots.forEach((pos, k) => { manualOrder[pos] = visibleIds[k]; });
