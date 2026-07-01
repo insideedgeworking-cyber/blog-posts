@@ -576,8 +576,11 @@ function renderNotes(){
   if (!list.length){ c.innerHTML='<div class="empty">📭 まだありません<br><br>上の「＋ note'+(kind==='paid'?'有料':'無料')+'を作成」から作れます</div>'; return; }
   c.innerHTML = list.map(n=>{
     const srcs = (n.source_ids||[]).map(id=>{ const p=posts.find(x=>x.id===id); return p?`<span class="tag">📄${esc((p.title||p.theme||id).slice(0,12))}</span>`:''; }).join('');
-    return `<div class="script-card" onclick="openNote('${n.id}','${kind}')">
-      <div class="card-top"><div class="card-title">${n.title?esc(n.title):'<span class="muted">（無題）</span>'}</div></div>
+    return `<div class="script-card${n.checked?' is-checked':''}" onclick="openNote('${n.id}','${kind}')">
+      <div class="card-top">
+        <div class="card-title" style="flex:1;min-width:0;">${n.title?esc(n.title):'<span class="muted">（無題）</span>'}</div>
+        <button class="check-btn" title="チェック（完了/確認済みの目印）" onclick="toggleNoteCheck(event,'${n.id}','${kind}')">${n.checked?'✅':'⬜'}</button>
+      </div>
       <div class="card-meta">
         <span class="tag cat">${kind==='paid'?'💰有料':'🆓無料'}</span>
         <span class="tag">📝 ${(n.body||'').length}字</span>
@@ -620,6 +623,19 @@ async function toggleCheck(e, id){
   const ok = await putPost(p);
   e.target.disabled = false;
   if(!ok){ p.checked = prev; e.target.textContent = p.checked?'✅':'⬜'; if(card) card.classList.toggle('is-checked', p.checked); alert('❌ チェックの保存に失敗しました（Token/REPOを確認）'); }
+}
+// ✅ note（無料/有料）カードのチェックマーク
+async function toggleNoteCheck(e, id, kind){
+  e.stopPropagation();
+  const list = kind==='paid' ? notesPaid : notesFree;
+  const n = list.find(x=>x.id===id); if(!n) return;
+  const prev = !!n.checked; n.checked = !prev;
+  e.target.textContent = n.checked ? '✅' : '⬜';
+  const card = e.target.closest('.script-card'); if(card) card.classList.toggle('is-checked', n.checked);
+  e.target.disabled = true;
+  const ok = await saveNote(n);
+  e.target.disabled = false;
+  if(!ok){ n.checked = prev; e.target.textContent = n.checked?'✅':'⬜'; if(card) card.classList.toggle('is-checked', n.checked); alert('❌ チェックの保存に失敗しました（Token/REPOを確認）'); }
 }
 function moveCard(id, dir, e){
   e.stopPropagation();
