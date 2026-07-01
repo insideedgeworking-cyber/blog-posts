@@ -512,6 +512,15 @@ function normalizeOrder() {
 function orderIndex(id) { const i = manualOrder.indexOf(id); return i < 0 ? 9999 : i; }
 // eeat_score（"総合 12.5/20…"）から数値を取り出す。無ければnull
 function scoreOf(p){ const m=(p.eeat_score||'').match(/([\d.]+)\s*\/\s*20/); return m?parseFloat(m[1]):null; }
+function seoOf(p){ const m=(p.eeat_score||'').match(/SEO\s*([\d.]+)\s*\/\s*5/); return m?parseFloat(m[1]):null; }
+// カード用：採点バッジ（低=赤/中=橙/高=緑）
+function scoreBadgeHtml(p){
+  const sc=scoreOf(p); if(sc===null) return '';
+  const seo=seoOf(p);
+  const col = sc<10?'#c62828':(sc<14?'#e65100':'#2e7d32');
+  const bg  = sc<10?'#ffebee':(sc<14?'#fff3e0':'#e8f5e9');
+  return `<span class="tag" title="EEAT＋SEO採点（開かなくても分かる）" style="background:${bg};color:${col};border-color:${col};font-weight:bold;">🎯${sc}/20${seo!==null?'・SEO'+seo:''}</span>`;
+}
 // 承認済みだけを手動順で抜き出す＝投稿順（投稿ツールが読む approved_order）
 function deriveApprovedOrder() {
   approvedOrder = manualOrder.filter(id => { const p = posts.find(x=>x.id===id); return p && p.status==='approved'; });
@@ -577,6 +586,7 @@ function renderList() {
         ${s.category?`<span class="tag cat">${s.category}</span>`:''}
         <span class="status-dot status-${cur}"></span>${statusSel}
         <span class="tag">📄 ${s.char_count||0}字</span>
+        ${scoreBadgeHtml(s)}
         <span class="tag">📅 ${s.created_at||''}</span>
         ${(s.tags||[]).map(t=>`<span class="tag" style="background:#fdeccb;color:#9a5b00;border-color:#f1ce95;">🏷${esc(t)}</span>`).join('')}
         ${s.hub?`<span class="tag" title="${esc(s.connects||'')}" style="background:#e6f0ff;color:#1a56b8;border-color:#bcd6ff;">🔗${esc((((posts.find(p=>p.id===s.hub)||{}).title)||((posts.find(p=>p.id===s.hub)||{}).theme)||s.hub).slice(0,16))}</span>`:''}
