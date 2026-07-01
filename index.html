@@ -844,6 +844,11 @@ async function loadNoteDir(api, auth){
           const rr = await fetch(`${api}${f.name}?t=${Date.now()}`, {headers, cache:'no-store'});
           const meta = await rr.json();
           return JSON.parse(decodeURIComponent(escape(atob((meta.content||'').replace(/\n/g,'')))));
+        } else if (getSettings().githubToken) {
+          // 無料でもToken有りならAPI経由で最新を取得（rawはCDNキャッシュで古いことがあり、チェックが戻る対策）
+          const rr = await fetch(`${api}${f.name}?t=${Date.now()}`, {headers:{Authorization:`token ${getSettings().githubToken}`}, cache:'no-store'});
+          const meta = await rr.json();
+          return JSON.parse(decodeURIComponent(escape(atob((meta.content||'').replace(/\n/g,'')))));
         } else {
           const rr = await fetch(f.download_url+'?t='+Date.now(), {cache:'no-store'});
           return rr.json();
