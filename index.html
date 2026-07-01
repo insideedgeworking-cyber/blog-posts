@@ -145,7 +145,7 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
   <div class="tab" data-tab="drafting">✍️作成中<span class="tab-count" id="cnt-drafting"></span></div>
   <div class="tab" data-tab="tuning">🎯調整中<span class="tab-count" id="cnt-tuning"></span></div>
   <div class="tab" data-tab="approved">✅承認済<span class="tab-count" id="cnt-approved"></span></div>
-  <div class="tab" data-tab="published">📤投稿済<span class="tab-count" id="cnt-published"></span></div>
+  <div class="tab" data-tab="published">🔧修正済み<span class="tab-count" id="cnt-published"></span></div>
   <div class="tab" data-tab="deepdive">🏷深掘り候補<span class="tab-count" id="cnt-deepdive"></span></div>
   <div class="tab" data-tab="notefree">🆓note無料<span class="tab-count" id="cnt-notefree"></span></div>
   <div class="tab" data-tab="notepaid">💰note有料<span class="tab-count" id="cnt-notepaid"></span></div>
@@ -249,7 +249,7 @@ textarea.body-area { min-height: 340px; font-family: ui-monospace, Menlo, Consol
             <option value="drafting">✍️ 作成中</option>
             <option value="tuning">🎯 調整中</option>
             <option value="approved">✅ 承認済（投稿OK）</option>
-            <option value="published">📤 投稿済</option>
+            <option value="published">🔧 修正済み</option>
           </select>
         </div>
         <div class="section">
@@ -416,7 +416,7 @@ function getSettings() {
   };
 }
 
-const statusLabel = { idea:'アイデア', drafting:'作成中', tuning:'調整中', approved:'承認済', published:'投稿済' };
+const statusLabel = { idea:'アイデア', drafting:'作成中', tuning:'調整中', approved:'承認済', published:'修正済み' };
 
 // ── カテゴリフィルタ生成 ──
 function buildFilterBar() {
@@ -570,7 +570,7 @@ function renderList() {
     </div>`;
     const cur = s.status||'idea';
     const statusSel = `<select class="card-status" onclick="event.stopPropagation()" onchange="changeStatus(event,'${s.id}')">`
-      + ['idea','drafting','tuning','approved','published'].map(v=>`<option value="${v}" ${v===cur?'selected':''}>${({idea:'💡アイデア',drafting:'✍️作成中',tuning:'🎯調整中',approved:'✅承認済',published:'📤投稿済'})[v]}</option>`).join('')
+      + ['idea','drafting','tuning','approved','published'].map(v=>`<option value="${v}" ${v===cur?'selected':''}>${({idea:'💡アイデア',drafting:'✍️作成中',tuning:'🎯調整中',approved:'✅承認済',published:'🔧修正済み'})[v]}</option>`).join('')
       + `</select>`;
     return `<div class="script-card${s.checked?' is-checked':''}" id="card-${s.id}" draggable="true" data-id="${s.id}"
       ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)"
