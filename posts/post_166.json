@@ -20,8 +20,8 @@
   "ブログ"
  ],
  "hub": "post_037",
- "status": "drafting",
- "wp_post_id": null,
+ "status": "published",
+ "wp_post_id": 685,
  "slug": "new-blog-index-slow",
  "excerpt": "新規ブログがインデックスされない・遅い理由を、開設1ヶ月で76記事の実体験から解説。site:の数字は当てにならない／未登録の大半はフィードで無害／本当に対処すべき記事の見分け方／内部リンク＋URL検査リクエストまで、実際にやったことを正直にまとめます。",
  "ideas": [],
