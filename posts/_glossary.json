@@ -1116,6 +1116,55 @@
      "aliases": [
       "Microsoft Clarity"
      ]
+    },
+    {
+     "slug": "idx",
+     "match": "インデックス",
+     "aliases": [
+      "インデックス"
+     ]
+    },
+    {
+     "slug": "crawl",
+     "match": "クロール",
+     "aliases": [
+      "クロール"
+     ]
+    },
+    {
+     "slug": "crawlbudget",
+     "match": "クロールバジェット",
+     "aliases": [
+      "クロールバジェット"
+     ]
+    },
+    {
+     "slug": "sitemap",
+     "match": "サイトマップ（sitemap.xml）",
+     "aliases": [
+      "サイトマップ"
+     ]
+    },
+    {
+     "slug": "sandbox",
+     "match": "サンドボックス",
+     "aliases": [
+      "サンドボックス"
+     ]
+    },
+    {
+     "slug": "longtail",
+     "match": "ロングテール（キーワード）",
+     "aliases": [
+      "ロングテール"
+     ]
+    },
+    {
+     "slug": "feed",
+     "match": "フィード（RSS／/feed/）",
+     "aliases": [
+      "フィード"
+     ]
     }
    ]
   }
